@@ -1,27 +1,25 @@
-#include <stdlib.h>
+#include "Polynom.h"
 
 #include "List.h"
-#include "Polynom.h"
 #include "Messages.h"
 #include "Types.h"
 
+#include <stdlib.h>
+
 typedef struct _Monom Monom;
 
-struct _Monom
-{
+struct _Monom {
 	int coef;
 	int degree;
 	List entry;
 };
 
-Polynom* poly_init(Polynom *poly)
+Polynom *poly_init(Polynom *poly)
 {
-	if (poly == NULL)
-	{
+	if (poly == NULL) {
 		poly = talloc(Polynom, 1);
 
-		if (poly == NULL)
-		{
+		if (poly == NULL) {
 			msg_error("couldn't allocate memory for the polynom!");
 			return NULL;
 		}
@@ -34,12 +32,11 @@ Polynom* poly_init(Polynom *poly)
 	return poly;
 }
 
-static Monom* __monom_alloc(int coef, int degree)
+static Monom *__monom_alloc(int coef, int degree)
 {
 	Monom *monom = talloc(Monom, 1);
 
-	if (monom == NULL)
-	{
+	if (monom == NULL) {
 		msg_error("couldn't allocate memory for the monom!");
 		return NULL;
 	}
@@ -55,12 +52,12 @@ static int __poly_add_empty(Polynom *poly, int coef, int degree)
 {
 	Monom *monom = __monom_alloc(coef, degree);
 	return_val_if_fail(monom != NULL, -2);
-	
+
 	list_append(&poly->monoms, &monom->entry);
-	
+
 	poly->count++;
 	poly->degree = degree;
-	
+
 	return 0;
 }
 
@@ -75,14 +72,12 @@ static int __poly_add_reverse(Polynom *poly, int coef, int degree, bool replace)
 	{
 		Monom *im = list_entry(iter, Monom, entry);
 
-		if (degree > im->degree)
-		{
+		if (degree > im->degree) {
 			list_insert_after(iter, &monom->entry);
 			break;
 		}
-		
-		if (degree == im->degree)
-		{
+
+		if (degree == im->degree) {
 			im->coef = (replace) ? coef : im->coef + coef;
 			return 0;
 		}
@@ -105,14 +100,12 @@ static int __poly_add(Polynom *poly, int coef, int degree, bool replace)
 	{
 		Monom *im = list_entry(iter, Monom, entry);
 
-		if (degree < im->degree)
-		{
+		if (degree < im->degree) {
 			list_insert_before(iter, &monom->entry);
 			break;
 		}
 
-		if (degree == im->degree)
-		{
+		if (degree == im->degree) {
 			im->coef = (replace) ? coef : im->coef + coef;
 			return 0;
 		}
@@ -150,12 +143,11 @@ int poly_add_monom(Polynom *poly, int coef, int degree)
 	return __poly_add_monom(poly, coef, degree, FALSE);
 }
 
-static void* __monom_copy(const void *_src)
+static void *__monom_copy(const void *_src)
 {
 	Monom *res = talloc(Monom, 1);
 
-	if (res == NULL)
-	{
+	if (res == NULL) {
 		msg_error("couldn't allocate memory for the copy of the monom!");
 		return NULL;
 	}
@@ -169,16 +161,14 @@ static void* __monom_copy(const void *_src)
 	return &res->entry;
 }
 
-Polynom* poly_copy(Polynom *dst, const Polynom *src)
+Polynom *poly_copy(Polynom *dst, const Polynom *src)
 {
 	return_val_if_fail(src != NULL, NULL);
 
-	if (dst == NULL)
-	{
+	if (dst == NULL) {
 		dst = talloc(Polynom, 1);
 
-		if (dst == NULL)
-		{
+		if (dst == NULL) {
 			msg_error("couldn't allocate memory for the copy of the polynom!");
 			return NULL;
 		}
@@ -209,15 +199,14 @@ static int __poly_append(Polynom *poly, int coef, int degree)
 	return 0;
 }
 
-Polynom* poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
+Polynom *poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
 {
 	return_val_if_fail(a != NULL, NULL);
 	return_val_if_fail(b != NULL, NULL);
 
 	ret = poly_init(ret);
 
-	if (ret == NULL)
-	{
+	if (ret == NULL) {
 		msg_error("couldn't allocate memory for the result of the sum!");
 		return NULL;
 	}
@@ -228,18 +217,15 @@ Polynom* poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
 	List *a_iter = am->next;
 	List *b_iter = bm->next;
 
-	while (1) 
-	{
+	while (1) {
 		if (a_iter == am && b_iter == bm)
 			break;
 
-		if (a_iter != am && b_iter != bm)
-		{
+		if (a_iter != am && b_iter != bm) {
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
-			
-			if (a_monom->degree == b_monom->degree)
-			{
+
+			if (a_monom->degree == b_monom->degree) {
 				int coef_sum = a_monom->coef + b_monom->coef;
 
 				int err = __poly_append(ret, coef_sum, a_monom->degree);
@@ -248,36 +234,28 @@ Polynom* poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
 
 				a_iter = a_iter->next;
 				b_iter = b_iter->next;
-			}
-			else if (a_monom->degree < b_monom->degree)
-			{
+			} else if (a_monom->degree < b_monom->degree) {
 				int err = __poly_append(ret, a_monom->coef, a_monom->degree);
 				if (err != 0)
 					break;
 
 				a_iter = a_iter->next;
-			}
-			else
-			{
+			} else {
 				int err = __poly_append(ret, b_monom->coef, b_monom->degree);
-				if (err != 0) 
+				if (err != 0)
 					break;
 
 				b_iter = b_iter->next;
 			}
-		}
-		else if (a_iter != am)
-		{
+		} else if (a_iter != am) {
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
-			
+
 			int err = __poly_append(ret, a_monom->coef, a_monom->degree);
 			if (err != 0)
 				break;
 
 			a_iter = a_iter->next;
-		}
-		else
-		{
+		} else {
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
 			int err = __poly_append(ret, b_monom->coef, b_monom->degree);
@@ -291,15 +269,14 @@ Polynom* poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
 	return ret;
 }
 
-Polynom* poly_product(Polynom *ret, const Polynom *a, const Polynom *b)
+Polynom *poly_product(Polynom *ret, const Polynom *a, const Polynom *b)
 {
 	return_val_if_fail(a != NULL, NULL);
 	return_val_if_fail(b != NULL, NULL);
 
 	ret = poly_init(ret);
 
-	if (ret == NULL)
-	{
+	if (ret == NULL) {
 		msg_error("couldn't allocate memory for the result of the sum!");
 		return NULL;
 	}
@@ -316,7 +293,7 @@ Polynom* poly_product(Polynom *ret, const Polynom *a, const Polynom *b)
 		{
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
-			
+
 			int coef = a_monom->coef * b_monom->coef;
 			int degree = a_monom->degree + b_monom->degree;
 
@@ -329,15 +306,14 @@ Polynom* poly_product(Polynom *ret, const Polynom *a, const Polynom *b)
 	return ret;
 }
 
-Polynom* poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
+Polynom *poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
 {
 	return_val_if_fail(a != NULL, NULL);
 	return_val_if_fail(b != NULL, NULL);
 
 	ret = poly_init(ret);
 
-	if (ret == NULL)
-	{
+	if (ret == NULL) {
 		msg_error("couldn't allocate memory for the result of the sum!");
 		return NULL;
 	}
@@ -348,18 +324,15 @@ Polynom* poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
 	List *a_iter = am->next;
 	List *b_iter = bm->next;
 
-	while (1) 
-	{
+	while (1) {
 		if (a_iter == am && b_iter == bm)
 			break;
 
-		if (a_iter != am && b_iter != bm)
-		{
+		if (a_iter != am && b_iter != bm) {
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
-			if (a_monom->degree == b_monom->degree)
-			{
+			if (a_monom->degree == b_monom->degree) {
 				int coef_sub = a_monom->coef - b_monom->coef;
 
 				int err = __poly_append(ret, coef_sub, a_monom->degree);
@@ -368,26 +341,20 @@ Polynom* poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
 
 				a_iter = a_iter->next;
 				b_iter = b_iter->next;
-			}
-			else if (a_monom->degree < b_monom->degree)
-			{
+			} else if (a_monom->degree < b_monom->degree) {
 				int err = __poly_append(ret, a_monom->coef * -1, a_monom->degree);
 				if (err != 0)
 					break;
 
 				a_iter = a_iter->next;
-			}
-			else
-			{
+			} else {
 				int err = __poly_append(ret, b_monom->coef * -1, b_monom->degree);
-				if (err != 0) 
+				if (err != 0)
 					break;
 
 				b_iter = b_iter->next;
 			}
-		}
-		else if (a_iter != am)
-		{
+		} else if (a_iter != am) {
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 
 			int err = __poly_append(ret, a_monom->coef * -1, a_monom->degree);
@@ -395,9 +362,7 @@ Polynom* poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
 				break;
 
 			a_iter = a_iter->next;
-		}
-		else
-		{
+		} else {
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
 			int err = __poly_append(ret, b_monom->coef * -1, b_monom->degree);
@@ -421,7 +386,7 @@ void poly_add(Polynom *poly, const Polynom *add)
 	list_foreach(iter, &add->monoms)
 	{
 		Monom *im = list_entry(iter, Monom, entry);
-		
+
 		int err = __poly_add_monom(poly, im->coef, im->degree, FALSE);
 		if (err != 0)
 			break;
@@ -455,8 +420,7 @@ void poly_print(Polynom *poly)
 {
 	return_if_fail(poly != NULL);
 
-	if (list_empty(&poly->monoms))
-	{
+	if (list_empty(&poly->monoms)) {
 		printf("0\n");
 		return;
 	}

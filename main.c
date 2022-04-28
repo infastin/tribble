@@ -1,10 +1,10 @@
+#include "Macros.h"
+#include "Polynom.h"
+
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "Polynom.h"
-#include "Macros.h"
+#include <time.h>
 
 int main(int argc, char *argv[])
 {
@@ -13,8 +13,7 @@ int main(int argc, char *argv[])
 	Polynom poly;
 	poly_init(&poly);
 
-	for (int i = 0; i < 5; ++i) 
-	{
+	for (int i = 0; i < 5; ++i) {
 		poly_set(&poly, rand() % 100, i);
 	}
 
@@ -24,8 +23,7 @@ int main(int argc, char *argv[])
 	Polynom pol;
 	poly_init(&pol);
 
-	for (int i = 0; i < 7; ++i) 
-	{
+	for (int i = 0; i < 7; ++i) {
 		poly_set(&pol, rand() % 100, i);
 	}
 

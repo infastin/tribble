@@ -1,50 +1,51 @@
+#include "Messages.h"
+
+#include "Utils.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "Messages.h"
-#include "Utils.h"
-
-static const char* message_flag_to_color(MessageFlags flag)
+static const char *message_flag_to_color(MessageFlags flag)
 {
 	switch (flag) {
-		case MESSAGE_ERROR:
-			return "\033[1;31m";
-		case MESSAGE_CRITICAL:
-			return "\033[1;35m";
-		case MESSAGE_WARNING:
-			return "\033[1;33m";
-		case MESSAGE_PRINT:
-			return "\033[1;32m";
-		case MESSAGE_INFO:
-			return "\033[1;36m";
-		case MESSAGE_DEBUG:
-			return "\033[1;34m";
+	case MESSAGE_ERROR:
+		return "\033[1;31m";
+	case MESSAGE_CRITICAL:
+		return "\033[1;35m";
+	case MESSAGE_WARNING:
+		return "\033[1;33m";
+	case MESSAGE_PRINT:
+		return "\033[1;32m";
+	case MESSAGE_INFO:
+		return "\033[1;36m";
+	case MESSAGE_DEBUG:
+		return "\033[1;34m";
 	}
 
 	return "";
 }
 
-static const char* message_flag_to_prefix(MessageFlags flag, bool *to_stdout)
+static const char *message_flag_to_prefix(MessageFlags flag, bool *to_stdout)
 {
 	*to_stdout = true;
 
 	switch (flag) {
-		case MESSAGE_ERROR:
-			*to_stdout = false;
-			return "ERROR";
-		case MESSAGE_CRITICAL:
-			*to_stdout = false;
-			return "CRITICAL";
-		case MESSAGE_WARNING:
-			*to_stdout = false;
-			return "WARNING";
-		case MESSAGE_PRINT:
-			return "MESSAGE";
-		case MESSAGE_INFO:
-			return "INFO";
-		case MESSAGE_DEBUG:
-			return "DEBUG";
+	case MESSAGE_ERROR:
+		*to_stdout = false;
+		return "ERROR";
+	case MESSAGE_CRITICAL:
+		*to_stdout = false;
+		return "CRITICAL";
+	case MESSAGE_WARNING:
+		*to_stdout = false;
+		return "WARNING";
+	case MESSAGE_PRINT:
+		return "MESSAGE";
+	case MESSAGE_INFO:
+		return "INFO";
+	case MESSAGE_DEBUG:
+		return "DEBUG";
 	}
 
 	return "";
@@ -52,10 +53,10 @@ static const char* message_flag_to_prefix(MessageFlags flag, bool *to_stdout)
 
 #if ENABLE_MSG == 0
 
-void message(MessageFlags flag, const char *msg, ...) {};
-void message_func(MessageFlags flag, const char *func, const char *msg, ...) {};
-void return_if_fail_warning(const char* func, const char *expr) {};
-void exit_if_fail_critical(const char* func, const char *expr) {};
+void message(MessageFlags flag, const char *msg, ...){};
+void message_func(MessageFlags flag, const char *func, const char *msg, ...){};
+void return_if_fail_warning(const char *func, const char *expr){};
+void exit_if_fail_critical(const char *func, const char *expr){};
 
 #else
 
@@ -100,7 +101,7 @@ void message_func(MessageFlags flag, const char *func, const char *msg, ...)
 	free(parsed);
 }
 
-void return_if_fail_warning(const char* func, const char *expr)
+void return_if_fail_warning(const char *func, const char *expr)
 {
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
@@ -108,7 +109,7 @@ void return_if_fail_warning(const char* func, const char *expr)
 	message(MESSAGE_WARNING, "%s%s%s: assertion '%s' is failed!", white, func, reset, expr);
 }
 
-void exit_if_fail_critical(const char* func, const char *expr)
+void exit_if_fail_critical(const char *func, const char *expr)
 {
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";

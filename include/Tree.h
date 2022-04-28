@@ -1,14 +1,13 @@
 #ifndef TREE_H_HI5LCNKY
 #define TREE_H_HI5LCNKY
 
-#include "Types.h"
 #include "Macros.h"
+#include "Types.h"
 
 typedef struct _TreeNode TreeNode;
 typedef struct _Tree Tree;
 
-struct _TreeNode
-{
+struct _TreeNode {
 	/* Public */
 	TreeNode *parent;
 	TreeNode *left;
@@ -18,8 +17,7 @@ struct _TreeNode
 	uint color : 1;
 };
 
-struct _Tree
-{
+struct _Tree {
 	TreeNode *root;
 	CmpFunc cmpf;
 	CopyFunc cpyf;
@@ -34,7 +32,7 @@ struct _Tree
  *
  * @return new tree
  */
-Tree* tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func);
+Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func);
 
 /**
  * @brief Inserts node into a tree
@@ -71,7 +69,7 @@ void tree_remove(Tree *tree, TreeNode *node);
  *
  * @return pointer to the similar node if found, NULL if not
  */
-TreeNode* tree_lookup(const Tree *tree, const TreeNode *node);
+TreeNode *tree_lookup(const Tree *tree, const TreeNode *node);
 
 /**
  * @brief Traverses a tree
@@ -91,7 +89,7 @@ void tree_traverse(Tree *tree, UserFunc func, void *userdata);
  *
  * @return copy of a tree
  */
-Tree* tree_copy(Tree *dst, const Tree *src, int *err);
+Tree *tree_copy(Tree *dst, const Tree *src, int *err);
 
 /**
  * @brief Frees all nodes in a tree
@@ -102,12 +100,13 @@ Tree* tree_copy(Tree *dst, const Tree *src, int *err);
 void tree_purge(Tree *tree, FreeFunc free_func);
 
 /* Inits node */
-#define tree_node_init(node) do { \
-		(node)->parent = NULL;    \
-		(node)->left = NULL;      \
-		(node)->right = NULL;     \
-		(node)->color = 1;        \
-	} while(0)
+#define tree_node_init(node)   \
+	do {                       \
+		(node)->parent = NULL; \
+		(node)->left = NULL;   \
+		(node)->right = NULL;  \
+		(node)->color = 1;     \
+	} while (0)
 
 /* Gets the struct for this entry */
 #define tree_node_entry(node, type, member) \

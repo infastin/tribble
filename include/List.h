@@ -1,13 +1,12 @@
 #ifndef LIST_H_L7SVYUA4
 #define LIST_H_L7SVYUA4
 
-#include "Types.h"
 #include "Macros.h"
+#include "Types.h"
 
 typedef struct _List List;
 
-struct _List
-{
+struct _List {
 	List *next;
 	List *prev;
 };
@@ -81,7 +80,7 @@ void list_remove(List *node);
  *
  * @return node that was removed
  */
-List* list_pop(List *list);
+List *list_pop(List *list);
 
 /**
  * @brief Checks whether list is empty or not
@@ -120,8 +119,10 @@ int list_copy(List *dst, const List *src, CopyFunc copy_func);
 void list_purge(List *list, FreeFunc free_func);
 
 /* Inits node */
-#define list_node_init(node) do {                     \
-		(node)->next = (node); (node)->prev = (node); \
+#define list_node_init(node)   \
+	do {                       \
+		(node)->next = (node); \
+		(node)->prev = (node); \
 	} while (0)
 
 /* Inits head */

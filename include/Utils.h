@@ -1,12 +1,12 @@
 #ifndef UTILS_H_ATMQZMHO
 #define UTILS_H_ATMQZMHO
 
-#include <stdarg.h>
-
 #include "Types.h"
 
-char* strdup_printf(const char *fmt, ...);
-char* strdup_vprintf(const char *fmt, va_list *ap);
+#include <stdarg.h>
+
+char *strdup_printf(const char *fmt, ...);
+char *strdup_vprintf(const char *fmt, va_list *ap);
 
 uint pow2(uint value);
 ulong pow2l(ulong value);

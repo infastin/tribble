@@ -1,8 +1,8 @@
-#include <stddef.h>
-
 #include "List.h"
+
 #include "Messages.h"
 
+#include <stddef.h>
 
 void list_append(List *list, List *node)
 {
@@ -10,7 +10,7 @@ void list_append(List *list, List *node)
 	return_if_fail(node != NULL);
 
 	List *end = list->prev;
-	
+
 	end->next = node;
 	node->prev = end;
 	node->next = list;
@@ -62,7 +62,7 @@ bool list_empty(const List *list)
 	return FALSE;
 }
 
-List* list_pop(List *list)
+List *list_pop(List *list)
 {
 	return_val_if_fail(list != NULL, NULL);
 
@@ -83,8 +83,7 @@ void list_reverse(List *list)
 
 	List *current = list->next;
 
-	while (current != list) 
-	{
+	while (current != list) {
 		List *tmp = current->next;
 		current->next = current->prev;
 		current->prev = tmp;
@@ -115,7 +114,7 @@ void list_splice(List *list, List *node)
 	at->prev = end;
 }
 
-static List* __list_merge(List *list, List *first, List *second, List **end, CmpFunc cmp_func)
+static List *__list_merge(List *list, List *first, List *second, List **end, CmpFunc cmp_func)
 {
 	List *result = NULL;
 	List *prev = list;
@@ -124,13 +123,11 @@ static List* __list_merge(List *list, List *first, List *second, List **end, Cmp
 	List *f = first;
 	List *s = second;
 
-	while (1) 
-	{
+	while (1) {
 		if (f == list && s == list)
 			break;
 
-		if (f == list || f == NULL)
-		{
+		if (f == list || f == NULL) {
 			s->prev = prev;
 			*linkp = s;
 
@@ -140,8 +137,7 @@ static List* __list_merge(List *list, List *first, List *second, List **end, Cmp
 			break;
 		}
 
-		if (s == list)
-		{
+		if (s == list) {
 			f->prev = prev;
 			*linkp = f;
 
@@ -151,15 +147,12 @@ static List* __list_merge(List *list, List *first, List *second, List **end, Cmp
 			break;
 		}
 
-		if (cmp_func(f, s) <= 0)
-		{
+		if (cmp_func(f, s) <= 0) {
 			f->prev = prev;
 			prev = *linkp = f;
 			linkp = &f->next;
 			f = f->next;
-		}
-		else
-		{
+		} else {
 			s->prev = prev;
 			prev = *linkp = s;
 			linkp = &s->next;
@@ -178,22 +171,20 @@ void list_sort(List *list, CmpFunc cmp_func)
 	if (list->next == list)
 		return;
 
-	List *array[32] = {0};
+	List *array[32] = { 0 };
 	List *result;
 	int max_i = 0;
 	int i;
 
 	result = list->next;
 
-	while (result != list) 
-	{
+	while (result != list) {
 		List *next;
 
 		next = result->next;
 		result->next = list;
 
-		for (i = 0; (i < 32) && (array[i] != NULL); ++i) 
-		{
+		for (i = 0; (i < 32) && (array[i] != NULL); ++i) {
 			result = __list_merge(list, array[i], result, NULL, cmp_func);
 			array[i] = NULL;
 		}
@@ -210,13 +201,14 @@ void list_sort(List *list, CmpFunc cmp_func)
 
 	List *end;
 
-	for (int j = 0; j < max_i + 1; ++j) 
+	for (int j = 0; j < max_i + 1; ++j)
 		result = __list_merge(list, array[j], result, &end, cmp_func);
 
 	list->next = result;
 
 	if (end->next != list)
-		for (; end->next != list; end = end->next);
+		for (; end->next != list; end = end->next)
+			;
 
 	list->prev = end;
 }
@@ -297,8 +289,7 @@ int list_copy(List *dst, const List *src, CopyFunc copy_func)
 	List *slow = dst;
 	List *copy = NULL;
 
-	while (fast != src) 
-	{
+	while (fast != src) {
 		copy = copy_func(fast);
 
 		if (copy == NULL)
@@ -306,7 +297,7 @@ int list_copy(List *dst, const List *src, CopyFunc copy_func)
 
 		slow->next = copy;
 		copy->prev = slow;
-		
+
 		slow = slow->next;
 		fast = fast->next;
 	}
@@ -334,8 +325,7 @@ void list_purge(List *list, FreeFunc free_func)
 
 	List *current = list->next;
 
-	while (current != list) 
-	{
+	while (current != list) {
 		List *next = current->next;
 		free_func(current);
 		current = next;

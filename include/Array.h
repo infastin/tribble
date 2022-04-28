@@ -1,14 +1,13 @@
 #ifndef ARRAY_H_KSABYJ3T
 #define ARRAY_H_KSABYJ3T
 
-#include <stdint.h>
-
 #include "Types.h"
+
+#include <stdint.h>
 
 typedef struct _Array Array;
 
-struct _Array
-{
+struct _Array {
 	/* Public */
 	void *mass;
 	uint len;
@@ -27,7 +26,7 @@ struct _Array
  *
  * @return new array
  */
-Array* array_init(Array *arr, bool clear, bool zero_terminated, uint elemsize);
+Array *array_init(Array *arr, bool clear, bool zero_terminated, uint elemsize);
 
 /**
  * @brief Creates copy of an array
@@ -37,7 +36,7 @@ Array* array_init(Array *arr, bool clear, bool zero_terminated, uint elemsize);
  *
  * @return copy of an array
  */
-Array* array_copy(Array *dst, const Array *src);
+Array *array_copy(Array *dst, const Array *src);
 
 /**
  * @brief Adds element onto the end of an array
@@ -180,7 +179,7 @@ int array_get(const Array *arr, uint index, void *ret);
  * @param arr array to steal buffer
  * @param ret pointer to retrieve buffer
  * @param len pointer to retrieve number of elements in array (can be NULL)
- * @param to_copy if true, array buffer will be copied to ret and then recreated, 
+ * @param to_copy if true, array buffer will be copied to ret and then recreated,
  *                otherwise pointer to the buffer will be returned
  *
  * @return 0 on success
@@ -193,7 +192,7 @@ int array_steal(Array *arr, void *ret, uint *len, bool to_copy);
  * @param arr array to steal buffer
  * @param ret pointer to retrieve buffer
  * @param len pointer to retrieve number of elements in array (can be NULL)
- * @param to_copy if true, array buffer will be copied to ret and then recreated, 
+ * @param to_copy if true, array buffer will be copied to ret and then recreated,
  *                otherwise pointer to the buffer will be returned
  *
  * @return 0 on success

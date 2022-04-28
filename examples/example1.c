@@ -1,16 +1,15 @@
+#include "List.h"
+#include "Macros.h"
+#include "Messages.h"
+
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "List.h"
-#include "Messages.h"
-#include "Macros.h"
+#include <time.h>
 
 typedef struct _IntList IntList;
 
-struct _IntList
-{
+struct _IntList {
 	int value;
 	List entry;
 };
@@ -39,8 +38,7 @@ int main(int argc, char *argv[])
 
 	list_init(list);
 
-	for (int i = 0; i < 10; ++i)
-	{
+	for (int i = 0; i < 10; ++i) {
 		int_list_append(&list, rand() % 100);
 	}
 

@@ -1,16 +1,15 @@
+#include "Macros.h"
+#include "Messages.h"
+#include "Tree.h"
+
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "Tree.h"
-#include "Messages.h"
-#include "Macros.h"
+#include <time.h>
 
 typedef struct _IntTreeNode IntTreeNode;
 
-struct _IntTreeNode
-{
+struct _IntTreeNode {
 	int value;
 	TreeNode entry;
 };
@@ -23,7 +22,7 @@ int int_tree_cmp(const void *a, const void *b)
 	return ia->value - ib->value;
 }
 
-Tree* int_tree_init(Tree *tree)
+Tree *int_tree_init(Tree *tree)
 {
 	return tree_init(tree, int_tree_cmp, NULL);
 }
@@ -61,9 +60,9 @@ void int_tree_insert(Tree *tree, int value)
 		free(node);
 }
 
-IntTreeNode* int_tree_lookup(const Tree *tree, int value)
+IntTreeNode *int_tree_lookup(const Tree *tree, int value)
 {
-	IntTreeNode node = {0};
+	IntTreeNode node = { 0 };
 	node.value = value;
 
 	TreeNode *entry = tree_lookup(tree, &node.entry);
@@ -93,8 +92,7 @@ int main(int argc, char *argv[])
 	Tree tree;
 	int_tree_init(&tree);
 
-	for (int i = 0; i < 100; ++i) 
-	{
+	for (int i = 0; i < 100; ++i) {
 		int_tree_insert(&tree, rand() % 100);
 	}
 
