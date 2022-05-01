@@ -22,7 +22,7 @@ struct _Array {
  * @param arr pointer to the array to init (can be NULL)
  * @param clear TRUE if elements should be cleared to 0 when allocated
  * @param zero_terminated TRUE if array should have terminating zero
- * @param elemsize size of each elemets in bytes
+ * @param elemsize size of each elements in bytes
  *
  * @return new array
  */

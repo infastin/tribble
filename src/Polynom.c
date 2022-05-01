@@ -53,7 +53,7 @@ static int __poly_add_empty(Polynom *poly, int coef, int degree)
 	Monom *monom = __monom_alloc(coef, degree);
 	return_val_if_fail(monom != NULL, -2);
 
-	list_append(&poly->monoms, &monom->entry);
+	list_push_back(&poly->monoms, &monom->entry);
 
 	poly->count++;
 	poly->degree = degree;
@@ -191,7 +191,7 @@ static int __poly_append(Polynom *poly, int coef, int degree)
 	Monom *monom = __monom_alloc(coef, degree);
 	return_val_if_fail(monom != NULL, -2);
 
-	list_append(&poly->monoms, &monom->entry);
+	list_push_back(&poly->monoms, &monom->entry);
 
 	poly->count++;
 	poly->degree = (poly->degree < degree) ? degree : poly->degree;

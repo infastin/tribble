@@ -2,9 +2,7 @@
 
 #include "Messages.h"
 
-#include <stddef.h>
-
-void list_append(List *list, List *node)
+void list_push_back(List *list, List *node)
 {
 	return_if_fail(list != NULL);
 	return_if_fail(node != NULL);
@@ -17,7 +15,7 @@ void list_append(List *list, List *node)
 	list->prev = node;
 }
 
-void list_prepend(List *list, List *node)
+void list_push_front(List *list, List *node)
 {
 	return_if_fail(list != NULL);
 	return_if_fail(node != NULL);
@@ -56,13 +54,26 @@ bool list_empty(const List *list)
 {
 	return_val_if_fail(list != NULL, FALSE);
 
-	if (list->next == list)
-		return TRUE;
-
-	return FALSE;
+	return list->next == list;
 }
 
-List *list_pop(List *list)
+uint list_len(const List *list)
+{
+	return_val_if_fail(list != NULL, 0);
+
+	if (list->next == list)
+		return 0;
+
+	uint len = 0;
+	List *iter;
+
+	list_foreach (iter, list)
+		len++;
+
+	return len;
+}
+
+List *list_pop_back(List *list)
 {
 	return_val_if_fail(list != NULL, NULL);
 
@@ -70,8 +81,30 @@ List *list_pop(List *list)
 		return NULL;
 
 	List *last = list->prev;
-	list_remove(last);
+
+	last->prev->next = last->next;
+	last->next->prev = last->prev;
+	last->next = last;
+	last->prev = last;
+
 	return last;
+}
+
+List *list_pop_front(List *list)
+{
+	return_val_if_fail(list != NULL, NULL);
+
+	if (list->prev == list)
+		return NULL;
+
+	List *first = list->next;
+
+	first->prev->next = first->next;
+	first->next->prev = first->prev;
+	first->next = first;
+	first->prev = first;
+
+	return first;
 }
 
 void list_reverse(List *list)
@@ -84,10 +117,10 @@ void list_reverse(List *list)
 	List *current = list->next;
 
 	while (current != list) {
-		List *tmp = current->next;
+		List *next = current->next;
 		current->next = current->prev;
-		current->prev = tmp;
-		current = tmp;
+		current->prev = next;
+		current = next;
 	}
 
 	List *oldstart = list->next;
@@ -112,9 +145,12 @@ void list_splice(List *list, List *node)
 
 	end->next = at;
 	at->prev = end;
+
+	list->next = list;
+	list->prev = list;
 }
 
-static List *__list_merge(List *list, List *first, List *second, List **end, CmpFunc cmp_func)
+static List *__list_merge(List *list, List *first, List *second, CmpFunc cmp_func)
 {
 	List *result = NULL;
 	List *prev = list;
@@ -131,18 +167,12 @@ static List *__list_merge(List *list, List *first, List *second, List **end, Cmp
 			s->prev = prev;
 			*linkp = s;
 
-			if (end != NULL)
-				*end = s;
-
 			break;
 		}
 
 		if (s == list) {
 			f->prev = prev;
 			*linkp = f;
-
-			if (end != NULL)
-				*end = f;
 
 			break;
 		}
@@ -185,7 +215,7 @@ void list_sort(List *list, CmpFunc cmp_func)
 		result->next = list;
 
 		for (i = 0; (i < 32) && (array[i] != NULL); ++i) {
-			result = __list_merge(list, array[i], result, NULL, cmp_func);
+			result = __list_merge(list, array[i], result, cmp_func);
 			array[i] = NULL;
 		}
 
@@ -199,18 +229,50 @@ void list_sort(List *list, CmpFunc cmp_func)
 		result = next;
 	}
 
-	List *end;
-
-	for (int j = 0; j < max_i + 1; ++j)
-		result = __list_merge(list, array[j], result, &end, cmp_func);
+	for (int j = 0; j <= max_i; ++j)
+		result = __list_merge(list, array[j], result, cmp_func);
 
 	list->next = result;
 
-	if (end->next != list)
-		for (; end->next != list; end = end->next)
-			;
+	List *end;
+	for (end = list->next; end->next != list; end = end->next)
+		continue;
 
 	list->prev = end;
+}
+
+List *list_nth(List *list, uint n)
+{
+	return_val_if_fail(list != NULL, NULL);
+
+	uint i = 0;
+	List *iter;
+
+	list_foreach (iter, list) {
+		if (i++ == n) {
+			return iter;
+		}
+	}
+
+	return NULL;
+}
+
+uint list_position(List *list, List *node)
+{
+	return_val_if_fail(list != NULL, -1);
+
+	uint i = 0;
+	List *iter;
+
+	list_foreach (iter, list) {
+		if (iter == node) {
+			return i;
+		}
+
+		i++;
+	}
+
+	return -1;
 }
 
 void list_remove(List *node)
@@ -222,58 +284,6 @@ void list_remove(List *node)
 
 	node->next = node;
 	node->prev = node;
-}
-
-static void __list_swap_case1(List *a, List *b)
-{
-	List *old_a_prev = a->prev;
-	List *old_b_next = b->next;
-
-	a->prev = b;
-	a->next = old_b_next;
-
-	b->next = a;
-	b->prev = old_a_prev;
-
-	old_a_prev->next = b;
-	old_b_next->prev = a;
-}
-
-static void __list_swap_case2(List *a, List *b)
-{
-	List *old_a_prev = a->prev;
-	List *old_a_next = a->next;
-
-	List *old_b_prev = b->prev;
-	List *old_b_next = b->next;
-
-	old_a_prev->next = b;
-	old_a_next->prev = b;
-
-	old_b_prev->next = a;
-	old_b_next->prev = a;
-
-	a->prev = old_b_prev;
-	a->next = old_b_next;
-
-	b->prev = old_a_prev;
-	b->next = old_a_next;
-}
-
-void list_swap(List *a, List *b)
-{
-	return_if_fail(a != NULL);
-	return_if_fail(b != NULL);
-
-	if (a == b)
-		return;
-
-	if (a->next == b)
-		__list_swap_case1(a, b);
-	else if (a->prev == b)
-		__list_swap_case1(b, a);
-	else
-		__list_swap_case2(a, b);
 }
 
 int list_copy(List *dst, const List *src, CopyFunc copy_func)
@@ -302,15 +312,11 @@ int list_copy(List *dst, const List *src, CopyFunc copy_func)
 		fast = fast->next;
 	}
 
-	do_if_fail(copy != NULL)
-	{
-		dst->prev = slow;
-		slow->next = dst;
-		return -2;
-	}
+	dst->prev = slow;
+	slow->next = dst;
 
-	dst->prev = copy;
-	copy->next = dst;
+	do_if_fail (copy != NULL)
+		return -2;
 
 	return 0;
 }

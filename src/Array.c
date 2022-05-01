@@ -102,7 +102,10 @@ static int __array_growcap(ArrayReal *arr, uint add)
 	arr->mass = mass;
 
 	if (arr->clear)
-		memset(arr_cell(arr, arr->capacity), 0, (mincap - arr->capacity) * arr->elemsize);
+		memset(
+			arr_cell(arr, arr->capacity), 0,
+			(mincap - arr->capacity) * arr->elemsize
+		);
 
 	arr->capacity = mincap;
 
@@ -132,7 +135,10 @@ static int __array_insert(ArrayReal *arr, uint index, const void *data)
 		if (zt)
 			memset(arr_cell(arr, index + 1), 0, arr->elemsize);
 	} else {
-		memmove(arr_cell(arr, index + 1), arr_cell(arr, index), ((arr->len + zt) - index) * arr->elemsize);
+		memmove(
+			arr_cell(arr, index + 1), arr_cell(arr, index),
+			((arr->len + zt) - index) * arr->elemsize
+		);
 		arr->len++;
 	}
 
@@ -146,14 +152,19 @@ static int __array_insert(ArrayReal *arr, uint index, const void *data)
 	return 0;
 }
 
-static int __array_insert_many(ArrayReal *arr, uint index, const void *data, uint len)
+static int
+__array_insert_many(ArrayReal *arr, uint index, const void *data, uint len)
 {
 	if (len == 0)
 		return 0;
 
 	uint zt = arr->zero_terminated;
 
-	if (index > UINT_MAX - len || index + len > UINT_MAX - zt || arr->len > UINT_MAX - len || arr->len + len > UINT_MAX - zt) {
+	if (index > UINT_MAX - len ||
+		index + len > UINT_MAX - zt ||
+		arr->len > UINT_MAX - len ||
+		arr->len + len > UINT_MAX - zt)
+	{
 		msg_error("array capacity overflow!");
 		return -1;
 	}
@@ -172,7 +183,10 @@ static int __array_insert_many(ArrayReal *arr, uint index, const void *data, uin
 		if (zt)
 			memset(arr_cell(arr, index + len), 0, arr->elemsize);
 	} else {
-		memmove(arr_cell(arr, index + len), arr_cell(arr, index), ((arr->len + zt) - index) * arr->elemsize);
+		memmove(
+			arr_cell(arr, index + len), arr_cell(arr, index),
+			((arr->len + zt) - index) * arr->elemsize
+		);
 		arr->len += len;
 	}
 
@@ -294,7 +308,10 @@ static int __array_remove_range(Array *_arr, uint index, uint len, void *ret)
 	uint zt = arr->zero_terminated;
 
 	if (index + len < arr->len)
-		memmove(arr_cell(arr, index), arr_cell(arr, index + len), ((arr->len + zt) - len - index) * arr->elemsize);
+		memmove(
+			arr_cell(arr, index), arr_cell(arr, index + len),
+			((arr->len + zt) - len - index) * arr->elemsize
+		);
 	else if (zt)
 		memset(arr_cell(arr, index), 0, arr->elemsize);
 
@@ -438,7 +455,9 @@ void array_free(Array *arr)
 	free(arr);
 }
 
-bool array_search(Array *_arr, const void *target, CmpFunc cmp_func, uint *index)
+bool array_search(
+	Array *_arr, const void *target, CmpFunc cmp_func, uint *index
+)
 {
 	return_val_if_fail(_arr != NULL, FALSE);
 	return_val_if_fail(cmp_func != NULL, FALSE);
@@ -449,14 +468,18 @@ bool array_search(Array *_arr, const void *target, CmpFunc cmp_func, uint *index
 		return FALSE;
 
 	if (arr->len < BINARY_SEARCH_LEN_THRESHOLD)
-		return linear_search(arr->mass, target, arr->len, arr->elemsize, cmp_func, index);
+		return linear_search(
+			arr->mass, target, arr->len, arr->elemsize, cmp_func, index
+		);
 
 	if (arr->sorted == 0) {
 		quicksort(arr->mass, arr->len, arr->elemsize, cmp_func);
 		arr->sorted = 1;
 	}
 
-	return binary_search(arr->mass, target, arr->len, arr->elemsize, cmp_func, index);
+	return binary_search(
+		arr->mass, target, arr->len, arr->elemsize, cmp_func, index
+	);
 }
 
 Array *array_copy(Array *_dst, const Array *_src)
@@ -488,7 +511,9 @@ Array *array_copy(Array *_dst, const Array *_src)
 		if (was_allocated)
 			free(dst);
 
-		msg_error("couldn't allocate memory for a buffer of the copy of the array!");
+		msg_error(
+			"couldn't allocate memory for a buffer of the copy of the array!"
+		);
 		return NULL;
 	}
 

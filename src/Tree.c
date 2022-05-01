@@ -451,7 +451,7 @@ static TreeNode *__tree_prepare_remove(Tree *tree, TreeNode *node)
 	if (node->left != NULL && node->right != NULL) {
 		TreeNode *s = node->right;
 		for (; s->left != NULL; s = s->left)
-			;
+			continue;
 
 		__tree_swap(node, s);
 
@@ -506,9 +506,8 @@ static void __tree_remove(Tree *tree, TreeNode *node)
 			s->color = RED;
 			n = p;
 			continue;
-		}
-		/* case 4 */
-		else if (n == n->parent->left && s->color == BLACK && color(s->left) == RED && color(s->right) == BLACK) {
+		} else if (n == n->parent->left && s->color == BLACK && color(s->left) == RED && color(s->right) == BLACK) {
+			/* case 4 */
 			s->color = RED;
 			p->color = BLACK;
 		} else {
