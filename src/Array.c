@@ -108,11 +108,11 @@ static bool __array_insert(Array *arr, u32 index, const void *data)
 	}
 
 	if (index + zt >= arr->capacity) {
-		u32 err = __array_growcap(arr, (index + zt) - (arr->capacity - 1));
-		return_val_if_fail(err == 0, err);
+		if (__array_growcap(arr, (index + zt) - (arr->capacity - 1)) == FALSE)
+			return FALSE;
 	} else if (arr->len + zt + 1 > arr->capacity) {
-		u32 err = __array_growcap(arr, 1);
-		return_val_if_fail(err == 0, err);
+		if (__array_growcap(arr, 1) == FALSE)
+			return FALSE;
 	}
 
 	if (index >= arr->len) {
@@ -156,11 +156,11 @@ static bool __array_insert_many(Array *arr, u32 index, const void *data, u32 len
 	}
 
 	if (index + zt + len > arr->capacity) {
-		u32 err = __array_growcap(arr, (index + zt + len) - arr->capacity);
-		return_val_if_fail(err == 0, err);
+		if (__array_growcap(arr, (index + zt + len) - arr->capacity) == FALSE)
+			return FALSE;
 	} else if (arr->len + zt + len > arr->capacity) {
-		u32 err = __array_growcap(arr, (arr->len + zt + len) - arr->capacity);
-		return_val_if_fail(err == 0, err);
+		if (__array_growcap(arr, (arr->len + zt + len) - arr->capacity) == FALSE)
+			return FALSE;
 	}
 
 	if (index >= arr->len) {
@@ -234,8 +234,8 @@ bool array_set(Array *arr, u32 index, const void *data)
 	}
 
 	if (index + zt >= arr->capacity) {
-		u32 err = __array_growcap(arr, (index + zt + 1) - arr->capacity);
-		return_val_if_fail(err != 0, err);
+		if (__array_growcap(arr, (index + zt + 1) - arr->capacity) == FALSE)
+			return FALSE;
 	}
 
 	if (data == NULL)
