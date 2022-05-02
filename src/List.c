@@ -57,14 +57,14 @@ bool list_empty(const List *list)
 	return list->next == list;
 }
 
-uint list_len(const List *list)
+uint32_t list_len(const List *list)
 {
 	return_val_if_fail(list != NULL, 0);
 
 	if (list->next == list)
 		return 0;
 
-	uint len = 0;
+	uint32_t len = 0;
 	List *iter;
 
 	list_foreach (iter, list)
@@ -203,8 +203,8 @@ void list_sort(List *list, CmpFunc cmp_func)
 
 	List *array[32] = { 0 };
 	List *result;
-	int max_i = 0;
-	int i;
+	int32_t max_i = 0;
+	int32_t i;
 
 	result = list->next;
 
@@ -229,7 +229,7 @@ void list_sort(List *list, CmpFunc cmp_func)
 		result = next;
 	}
 
-	for (int j = 0; j <= max_i; ++j)
+	for (int32_t j = 0; j <= max_i; ++j)
 		result = __list_merge(list, array[j], result, cmp_func);
 
 	list->next = result;
@@ -241,11 +241,11 @@ void list_sort(List *list, CmpFunc cmp_func)
 	list->prev = end;
 }
 
-List *list_nth(List *list, uint n)
+List *list_nth(List *list, uint32_t n)
 {
 	return_val_if_fail(list != NULL, NULL);
 
-	uint i = 0;
+	uint32_t i = 0;
 	List *iter;
 
 	list_foreach (iter, list) {
@@ -257,11 +257,11 @@ List *list_nth(List *list, uint n)
 	return NULL;
 }
 
-uint list_position(List *list, List *node)
+uint32_t list_position(List *list, List *node)
 {
 	return_val_if_fail(list != NULL, -1);
 
-	uint i = 0;
+	uint32_t i = 0;
 	List *iter;
 
 	list_foreach (iter, list) {
@@ -286,7 +286,7 @@ void list_remove(List *node)
 	node->prev = node;
 }
 
-int list_copy(List *dst, const List *src, CopyFunc copy_func)
+int32_t list_copy(List *dst, const List *src, CopyFunc copy_func)
 {
 	return_val_if_fail(dst != NULL, -1);
 	return_val_if_fail(src != NULL, -1);

@@ -9,6 +9,7 @@
 #define talloc0(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (calloc(n_structs, sizeof(struct_type))) : (NULL)))
 
 #define GET_PTR(type, ...) ((type *) &((type){ __VA_ARGS__ }))
+#define GET_ARR(type, len, ...) ((type[len]){ __VA_ARGS__ })
 
 #define INT_TO_PTR(v) ((void *) (long) (v))
 #define PTR_TO_INT(v) ((int) (long) (v))

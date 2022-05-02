@@ -10,219 +10,248 @@ typedef struct _Array Array;
 struct _Array {
 	/* Public */
 	void *mass;
-	uint len;
+	uint32_t len;
 
 	/* Private */
-	uint private[3];
+	uint32_t capacity;
+	uint32_t elemsize;
+	uint32_t zero_terminated : 1;
+	uint32_t sorted : 1;
+	uint32_t clear : 1;
 };
 
 /**
  * @brief Creates a new array
  *
- * @param arr pointer to the array to init (can be NULL)
+ * @param arr The pointer to the array to be initialized (can be NULL)
  * @param clear TRUE if elements should be cleared to 0 when allocated
  * @param zero_terminated TRUE if array should have terminating zero
- * @param elemsize size of each elements in bytes
+ * @param elemsize The size of each element in bytes
  *
- * @return new array
+ * @return A new array
  */
-Array *array_init(Array *arr, bool clear, bool zero_terminated, uint elemsize);
+Array *array_init(Array *arr, bool clear, bool zero_terminated, uint32_t elemsize);
 
 /**
- * @brief Creates copy of an array
+ * @brief Creates the copy of the array
  *
- * @param dst pointer to the array to copy (can be NULL)
- * @param src array to be copied
+ * @param dst The pointer to the array to copy (can be NULL)
+ * @param src The array to be copied
  *
- * @return copy of an array
+ * @return The copy of the array
  */
 Array *array_copy(Array *dst, const Array *src);
 
 /**
- * @brief Adds element onto the end of an array
+ * @brief Adds the element onto the end of the array
  *
- * @param arr array to add
- * @param data pointer to the data to add
+ * @param arr The array where to add the element
+ * @param data The pointer to the data to be added
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_append(Array *arr, const void *data);
+bool array_push_back(Array *arr, const void *data);
 
 /**
- * @brief Adds elements onto the end of an array
+ * @brief Adds elements onto the end of the array
  *
- * @param arr array to add
- * @param data pointer to the elements to add
- * @param len number of elements to add
+ * @param arr The array where to add elements
+ * @param data The pointer to the elements to be added
+ * @param len The number of elements to be added
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_append_many(Array *arr, const void *data, uint len);
+bool array_push_back_many(Array *arr, const void *data, uint32_t len);
 
 /**
- * @brief Adds element onto the start of an array
+ * @brief Adds the element onto the start of the array
  *
- * @param arr array to add
- * @param data pointer to data to add
+ * @param arr The array where to add the element
+ * @param data The pointer to the data to be added
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_prepend(Array *arr, const void *data);
+bool array_push_front(Array *arr, const void *data);
 
 /**
- * @brief Adds elements onto the start of an array
+ * @brief Adds elements onto the start of the array
  *
- * @param arr array to add
- * @param data pointer to the elements to add
- * @param len number of elements to add
+ * @param arr The array where to add elements
+ * @param data The pointer to elements to be added
+ * @param len The number of elements to be added
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_prepend_many(Array *arr, const void *data, uint len);
+bool array_push_front_many(Array *arr, const void *data, uint32_t len);
 
 /**
- * @brief Inserts element to array at the given index
+ * @brief Inserts the element to the array at the given index
  *
- * @param arr array to insert
- * @param index index to place element at
- * @param data pointer to the data to insert
+ * @param arr The array where to insert
+ * @param index The position to place the element at
+ * @param data The pointer to the data to be inserted
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_insert(Array *arr, uint index, const void *data);
+bool array_insert(Array *arr, uint32_t index, const void *data);
 
 /**
- * @brief Inserts elements to array at the given index
+ * @brief Inserts elements to the array at the given index
  *
- * @param arr array to insert
- * @param index index to place elements at
- * @param data pointer to the elements to insert
- * @param len number of elements to insert
+ * @param arr The array where to insert
+ * @param index The position to place elements at
+ * @param data The pointer to elements to be inserted
+ * @param len The number of elements to be inserted
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_insert_many(Array *arr, uint index, const void *data, uint len);
+bool array_insert_many(Array *arr, uint32_t index, const void *data, uint32_t len);
 
 /**
- * @brief Sets value of entry at the given index in array
+ * @brief Changes the value of the entry at the given index in the array
+ *        with the given data
  *
- * @param arr array to set
- * @param index index of the entry to set value
- * @param data data to be set
+ * @param arr The array where to change
+ * @param index The position of the entry in which to change the value
+ * @param data The data to be set
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_set(Array *arr, uint index, const void *data);
+bool array_set(Array *arr, uint32_t index, const void *data);
 
 /**
- * @brief Removes entry at the given index from array
+ * @brief Removes the entry at the given index from the array
  *
- * @param arr array to remove
- * @param index index of the entry to be removed
- * @param ret pointer to retrieve removed data (can be NULL)
+ * @param arr The array where to remove
+ * @param index The position of the entry to be removed
+ * @param ret The pointer to retrieve removed data (can be NULL)
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_remove_index(Array *arr, uint index, void *ret);
+bool array_remove_index(Array *arr, uint32_t index, void *ret);
 
 /**
- * @brief Removes last element from array
+ * @brief Removes the last element from the array
  *
- * @param arr array to remove
- * @param ret pointer to retrieve removed data (can be NULL)
+ * @param arr The array where to remove
+ * @param ret The pointer to retrieve removed data (can be NULL)
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_pop(Array *arr, void *ret);
+bool array_pop_back(Array *arr, void *ret);
 
 /**
- * @brief Reverses array
+ * @brief Removes the first element from the array
  *
- * @param arr array to be reversed
+ * @param arr The array where to remove
+ * @param ret The pointer to retrieve removed data (can be NULL)
+ *
+ * @return TRUE on success
+ */
+bool array_pop_front(Array *arr, void *ret);
+
+/**
+ * @brief Reverses the array
+ *
+ * @param arr The array to be reversed
  */
 void array_reverse(Array *arr);
 
 /**
- * @brief Removes range from array
+ * @brief Removes the range from the array
  *
- * @param arr arr to remove
- * @param index index of the first element to remove
- * @param len number of elements to remove
- * @param ret pointer to retrieve removed data (can be NULL)
+ * @param arr The arr where to remove
+ * @param index The index of the first element to be removed
+ * @param len The number of elements to be removed
+ * @param ret The pointer to retrieve removed data (can be NULL)
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_remove_range(Array *arr, uint index, uint len, void *ret);
+bool array_remove_range(Array *arr, uint32_t index, uint32_t len, void *ret);
 
 /**
- * @brief Sorts an array
+ * @brief Removes all elements from the array
  *
- * @param arr array to be sorted
- * @param cmp_func compare function for sorting entries
+ * @param arr The arr where to remove
+ * @param ret The pointer to retrieve removed data (can be NULL)
+ *
+ * @return TRUE on success
+ */
+bool array_remove_all(Array *arr, void *ret);
+
+/**
+ * @brief Sorts the array
+ *
+ * @param arr The array to be sorted
+ * @param cmp_func The compare function for sorting entries
  */
 void array_sort(Array *arr, CmpFunc cmp_func);
 
 /**
- * @brief Gets value of entry at the given index in array
+ * @brief Gets the value of the entry at the given index in array
  *
- * @param arr array to get
- * @param index index of the entry to be got
- * @param ret pointer to retrieve value of the entry
+ * @param arr The array where to get
+ * @param index The position of the entry which value is to be got
+ * @param ret The pointer to retrieve value of the entry
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_get(const Array *arr, uint index, void *ret);
+bool array_get(const Array *arr, uint32_t index, void *ret);
 
 /**
- * @brief Steals array buffer. Array creates new buffer.
+ * @brief Steals the array buffer.
+ *        Array creates a new buffer.
  *
- * @param arr array to steal buffer
- * @param ret pointer to retrieve buffer
- * @param len pointer to retrieve number of elements in array (can be NULL)
- * @param to_copy if true, array buffer will be copied to ret and then recreated,
+ * @param arr The array where to steal the buffer
+ * @param ret The pointer to retrieve the buffer
+ * @param len The pointer to retrieve the number of elements in the array (can be NULL)
+ * @param to_copy if TRUE, the array buffer will be copied to ret and then recreated,
  *                otherwise pointer to the buffer will be returned
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_steal(Array *arr, void *ret, uint *len, bool to_copy);
+bool array_steal(Array *arr, void *ret, uint32_t *len, bool to_copy);
 
 /**
- * @brief Steals array buffer. Array's buffer becomes NULL.
+ * @brief Steals the array buffer.
+ *        Array's buffer becomes NULL.
  *
- * @param arr array to steal buffer
- * @param ret pointer to retrieve buffer
- * @param len pointer to retrieve number of elements in array (can be NULL)
- * @param to_copy if true, array buffer will be copied to ret and then recreated,
+ * @param arr The array where to steal buffer
+ * @param ret The pointer to retrieve the buffer
+ * @param len The pointer to retrieve the number of the elements in the array (can be NULL)
+ * @param to_copy if TRUE, the array buffer will be copied to ret and then recreated,
  *                otherwise pointer to the buffer will be returned
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int array_steal0(Array *arr, void *ret, uint *len, bool to_copy);
+bool array_steal0(Array *arr, void *ret, uint32_t *len, bool to_copy);
 
 /**
- * @brief Frees buffer of an array
+ * @brief Frees the array buffer.
+ *        Elements itself won't be freed.
  *
- * @param arr array which buffer will be freed
+ * @param arr The array which buffer is to be freed
  */
 void array_purge(Array *arr);
 
 /**
- * @brief Frees array completely
+ * @brief Frees the array completely.
+ *        Elements itself won't be freed.
  *
- * @param arr array to be deleted
+ * @param arr The array to be deleted
  */
 void array_free(Array *arr);
 
 /**
- * @brief Finds entry in array
+ * @brief Finds the entry in the array
  *
- * @param arr array to find
- * @param target pointer to the data to find
- * @param cmp_func function for comparing values
- * @param index pointer to retrieve index of found value (can be NULL)
+ * @param arr The array where to search
+ * @param target The pointer to the data to be found
+ * @param cmp_func The function for comparing values
+ * @param index The pointer to retrieve the index of found value (can be NULL)
  *
- * @return true if found, false if not
+ * @return TRUE if found, FALSE if not
  */
-bool array_search(Array *arr, const void *target, CmpFunc cmp_func, uint *index);
+bool array_search(Array *arr, const void *target, CmpFunc cmp_func, uint32_t *index);
 
 #endif /* end of include guard: ARRAY_H_KSABYJ3T */

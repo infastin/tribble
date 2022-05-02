@@ -6,18 +6,8 @@
 
 /* Integers */
 
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-typedef unsigned long long ullong;
-
 typedef uintptr_t size_t;
 typedef uintptr_t word_t;
-
-#define UINT_BIT (sizeof(uint) * 8)
-#define ULONG_BIT (sizeof(ulong) * 8)
-#define ULLONG_BIT (sizeof(ullong) * 8)
 
 /* Boolean */
 
@@ -32,9 +22,10 @@ typedef _Bool bool;
 
 /* Functions */
 
-typedef int (*CmpFunc)(const void *a, const void *b);
+typedef int32_t (*CmpFunc)(const void *a, const void *b);
 typedef void *(*CopyFunc)(const void *src);
 typedef void (*FreeFunc)(void *ptr);
 typedef void (*UserFunc)(void *data, void *userdata);
+typedef uint32_t (*HashFunc)(const void *key, uint32_t keysize, uint32_t seed);
 
 #endif /* end of include guard: DEFINITIONS_H_N6TPGG3D */

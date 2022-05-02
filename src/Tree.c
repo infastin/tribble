@@ -49,7 +49,7 @@ Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func)
 	return tree;
 }
 
-Tree *tree_copy(Tree *dst, const Tree *src, int *err)
+Tree *tree_copy(Tree *dst, const Tree *src, int32_t *err)
 {
 	return_val_if_fail(src != NULL, NULL);
 	return_val_if_fail(src->cpyf != NULL, NULL);
@@ -282,21 +282,21 @@ static void __tree_recolor(Tree *tree, TreeNode *node)
 	}
 }
 
-int tree_insert(Tree *tree, TreeNode *node)
+bool tree_insert(Tree *tree, TreeNode *node)
 {
-	return_val_if_fail(tree != NULL, -1);
-	return_val_if_fail(node != NULL, -1);
+	return_val_if_fail(tree != NULL, FALSE);
+	return_val_if_fail(node != NULL, FALSE);
 
 	if (tree->root == NULL) {
 		tree->root = node;
 		tree->root->color = BLACK;
-		return 0;
+		return TRUE;
 	}
 
 	TreeNode *current = tree->root;
 
 	while (1) {
-		int cmp = tree->cmpf(current, node);
+		int32_t cmp = tree->cmpf(current, node);
 
 		if (cmp > 0) {
 			if (current->left == NULL) {
@@ -314,14 +314,14 @@ int tree_insert(Tree *tree, TreeNode *node)
 			current = current->right;
 		} else {
 			msg_warn("found the same entry in the tree!");
-			return -2;
+			return FALSE;
 		}
 	}
 
 	node->parent = current;
 	__tree_recolor(tree, node);
 
-	return 0;
+	return TRUE;
 }
 
 static void __tree_swap_case1(TreeNode *a, TreeNode *b)
@@ -574,7 +574,7 @@ TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
 	TreeNode *current = tree->root;
 
 	while (current != NULL) {
-		int cmp = tree->cmpf(current, node);
+		int32_t cmp = tree->cmpf(current, node);
 
 		if (cmp > 0)
 			current = current->left;

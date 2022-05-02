@@ -50,7 +50,7 @@ void list_sort(List *list, CmpFunc cmp_func);
  *
  * @return The element, or NULL if position is beyond the end of the list
  */
-List *list_nth(List *list, uint n);
+List *list_nth(List *list, uint32_t n);
 
 /**
  * @brief Gets the position of the element in the list
@@ -60,7 +60,7 @@ List *list_nth(List *list, uint n);
  *
  * @return The position of the element, or -1 if the element is not found
  */
-uint list_position(List *list, List *node);
+uint32_t list_position(List *list, List *node);
 
 /**
  * @brief Inserts one node after other node
@@ -108,7 +108,7 @@ List *list_pop_front(List *list);
  *
  * @param list The list to be checked
  *
- * @return true if empty, false if not
+ * @return TRUE if empty, FALSE if not
  */
 bool list_empty(const List *list);
 
@@ -119,7 +119,7 @@ bool list_empty(const List *list);
  *
  * @return The number of elements in the list
  */
-uint list_len(const List *list);
+uint32_t list_len(const List *list);
 
 /**
  * @brief Transfers elements from one list to another
@@ -138,7 +138,7 @@ void list_splice(List *list, List *node);
  *
  * @return 0 on success
  */
-int list_copy(List *dst, const List *src, CopyFunc copy_func);
+int32_t list_copy(List *dst, const List *src, CopyFunc copy_func);
 
 /**
  * @brief Frees all nodes in the list

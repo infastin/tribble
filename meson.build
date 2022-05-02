@@ -24,6 +24,10 @@ add_project_arguments(cxx.get_supported_arguments(cflags), language: 'c')
 subdir('src')
 subdir('test')
 
+executable('main', 'main.c',
+  dependencies: libtribble_dep
+)
+
 pkg_config = import('pkgconfig')
 pkg_config.generate(
   libraries: libtribble,

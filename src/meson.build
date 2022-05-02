@@ -1,5 +1,7 @@
 src_files = [
   'Array.c',
+  'Hash.c',
+  'HashTable.c',
   'List.c',
   'Messages.c',
   'Polynom.c',
@@ -10,6 +12,8 @@ src_files = [
 
 header_files = [
   'Array.h',
+  'Hash.h',
+  'HashTable.h',
   'List.h',
   'Macros.h',
   'Messages.h',

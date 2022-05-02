@@ -2,6 +2,7 @@
 #define MESSAGES_H_V1NHZAPH
 
 #include "Macros.h"
+#include "Types.h"
 
 /*
  *  ERROR: 		Something "serious" has gone wrong. But the program can recover from it.

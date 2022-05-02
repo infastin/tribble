@@ -6,13 +6,13 @@
 typedef struct _Polynom Polynom;
 
 struct _Polynom {
-	int degree;
-	uint count;
+	int32_t degree;
+	uint32_t count;
 	List monoms;
 };
 
 Polynom *poly_init(Polynom *poly);
-int poly_set(Polynom *poly, int coef, int degree);
+bool poly_set(Polynom *poly, int32_t coef, int32_t degree);
 Polynom *poly_copy(Polynom *dst, const Polynom *src);
 Polynom *poly_sum(Polynom *ret, const Polynom *a, const Polynom *b);
 void poly_add(Polynom *poly, const Polynom *add);

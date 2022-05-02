@@ -14,7 +14,7 @@ struct _TreeNode {
 	TreeNode *right;
 
 	/* Private */
-	uint color : 1;
+	uint32_t color : 1;
 };
 
 struct _Tree {
@@ -40,9 +40,9 @@ Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func);
  * @param tree tree to insert
  * @param node node to be inserted
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-int tree_insert(Tree *tree, TreeNode *node);
+bool tree_insert(Tree *tree, TreeNode *node);
 
 /**
  * @brief Swaps nodes in a tree
@@ -89,7 +89,7 @@ void tree_traverse(Tree *tree, UserFunc func, void *userdata);
  *
  * @return copy of a tree
  */
-Tree *tree_copy(Tree *dst, const Tree *src, int *err);
+Tree *tree_copy(Tree *dst, const Tree *src, int32_t *err);
 
 /**
  * @brief Frees all nodes in a tree
