@@ -16,16 +16,16 @@
 #define mass_cell(m, e, i) ((void *) &((char *) (m))[(i) * (e)])
 #define mass_get(m, t, i) ((t *) (mass_cell((m), sizeof(t), (i))))
 
-#define mass_swap(a, b, elemsize)   \
-	{                               \
+#define mass_swap(a, b, elemsize)  \
+	{                              \
 		usize __size = (elemsize); \
-		char *__a = (a);            \
-		char *__b = (b);            \
-		do {                        \
-			char __tmp = *__a;      \
-			*__a++ = *__b;          \
-			*__b++ = __tmp;         \
-		} while (--__size > 0);     \
+		char *__a = (a);           \
+		char *__b = (b);           \
+		do {                       \
+			char __tmp = *__a;     \
+			*__a++ = *__b;         \
+			*__b++ = __tmp;        \
+		} while (--__size > 0);    \
 	}
 
 /* Linux kernel vibes */
