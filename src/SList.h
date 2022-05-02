@@ -42,7 +42,7 @@ bool slist_empty(const SList *list);
  *
  * @return The number of elements in the list
  */
-uint32_t slist_len(const SList *list);
+u32 slist_len(const SList *list);
 
 /**
  * @brief Reverses the list
@@ -67,7 +67,7 @@ void slist_sort(SList *list, CmpFunc cmp_func);
  *
  * @return The element, or NULL if position is beyond the end of the list
  */
-SList *slist_nth(SList *list, uint32_t n);
+SList *slist_nth(SList *list, u32 n);
 
 /**
  * @brief Gets the position of the element in the list
@@ -77,7 +77,7 @@ SList *slist_nth(SList *list, uint32_t n);
  *
  * @return The position of the element, or -1 if the element is not found
  */
-uint32_t slist_position(SList *list, SList *node);
+u32 slist_position(SList *list, SList *node);
 
 /**
  * @brief Inserts one node after other node
@@ -139,7 +139,7 @@ void slist_splice(SList *list, SList *node);
  *
  * @return 0 on success
  */
-int32_t slist_copy(SList *dst, const SList *src, CopyFunc copy_func);
+i32 slist_copy(SList *dst, const SList *src, CopyFunc copy_func);
 
 /**
  * @brief Frees all nodes in the list

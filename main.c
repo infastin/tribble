@@ -74,7 +74,7 @@ void hexDump(void *addr, uint32_t len)
 int main(int argc, char *argv[])
 {
 	HashTable ht;
-	ht_init(&ht, 32, 4, MurmurHash3, (CmpFunc) strcmp);
+	ht_init(&ht, 32, 4, jhash, (CmpFunc) strcmp);
 
 	srand(time(0));
 

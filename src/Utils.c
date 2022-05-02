@@ -15,7 +15,7 @@ char *strdup_printf(const char *fmt, ...)
 	va_start(ap, fmt);
 	va_copy(ap_copy, ap);
 
-	int32_t len = vsnprintf(NULL, 0, fmt, ap_copy);
+	i32 len = vsnprintf(NULL, 0, fmt, ap_copy);
 	char *result = (char *) calloc(sizeof(char), len + 1);
 	vsnprintf(result, len + 1, fmt, ap);
 
@@ -30,7 +30,7 @@ char *strdup_vprintf(const char *fmt, va_list *ap)
 	va_list ap_copy;
 	va_copy(ap_copy, *ap);
 
-	int32_t len = vsnprintf(NULL, 0, fmt, ap_copy);
+	i32 len = vsnprintf(NULL, 0, fmt, ap_copy);
 	char *result = (char *) calloc(sizeof(char), len + 1);
 	vsnprintf(result, len + 1, fmt, *ap);
 
@@ -39,22 +39,22 @@ char *strdup_vprintf(const char *fmt, va_list *ap)
 	return result;
 }
 
-uint32_t pow2_32(uint32_t value)
+u32 pow2_32(u32 value)
 {
 	return (1 << (32 - __builtin_clz(value)));
 }
 
-uint64_t pow2_64(uint64_t value)
+u64 pow2_64(u64 value)
 {
 	return (1 << (64 - __builtin_clzl(value)));
 }
 
-void inssort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func)
+void inssort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
-	for (int32_t i = 1; i < len; ++i) {
-		uint32_t cur = i;
+	for (i32 i = 1; i < len; ++i) {
+		u32 cur = i;
 
-		for (uint32_t j = i - 1; j >= 0; --j) {
+		for (u32 j = i - 1; j >= 0; --j) {
 			if (cmp_func(mass_cell(mass, elemsize, j), mass_cell(mass, elemsize, cur)) <= 0)
 				break;
 
@@ -69,12 +69,12 @@ void inssort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func)
 }
 
 /* Heapsort */
-static inline void heap(void *mass, uint32_t start, uint32_t end, uint32_t elemsize, CmpFunc cmp_func)
+static inline void heap(void *mass, u32 start, u32 end, u32 elemsize, CmpFunc cmp_func)
 {
-	uint32_t root = start;
+	u32 root = start;
 
 	while ((root << 1) < end) {
-		uint32_t child = (root << 1) + 1;
+		u32 child = (root << 1) + 1;
 
 		if ((child < end) && cmp_func(mass_cell(mass, elemsize, child), mass_cell(mass, elemsize, child + 1)) < 0)
 			child++;
@@ -87,9 +87,9 @@ static inline void heap(void *mass, uint32_t start, uint32_t end, uint32_t elems
 	}
 }
 
-static inline void heapify(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func)
+static inline void heapify(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
-	uint32_t start = (len - 1) >> 1;
+	u32 start = (len - 1) >> 1;
 
 	while (start >= 0) {
 		heap(mass, start, len - 1, elemsize, cmp_func);
@@ -101,9 +101,9 @@ static inline void heapify(void *mass, uint32_t len, uint32_t elemsize, CmpFunc 
 	}
 }
 
-void heapsort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func)
+void heapsort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
-	uint32_t end = len - 1;
+	u32 end = len - 1;
 
 	if (len <= 1)
 		return;
@@ -118,10 +118,10 @@ void heapsort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func)
 }
 
 /* Based on Knuth vol. 3 */
-static inline uint32_t quicksort_partition(void *mass, uint32_t left, uint32_t right, uint32_t pivot, uint32_t elemsize, CmpFunc cmp_func)
+static inline u32 quicksort_partition(void *mass, u32 left, u32 right, u32 pivot, u32 elemsize, CmpFunc cmp_func)
 {
-	uint32_t i = left + 1;
-	uint32_t j = right;
+	u32 i = left + 1;
+	u32 j = right;
 
 	if (pivot != left)
 		mass_swap(mass_cell(mass, elemsize, left), mass_cell(mass, elemsize, pivot), elemsize);
@@ -147,7 +147,7 @@ static inline uint32_t quicksort_partition(void *mass, uint32_t left, uint32_t r
 	return 0;
 }
 
-static inline uint32_t find_median(void *mass, uint32_t a, uint32_t b, uint32_t c, uint32_t elemsize, CmpFunc cmp_func)
+static inline u32 find_median(void *mass, u32 a, u32 b, u32 c, u32 elemsize, CmpFunc cmp_func)
 {
 	if (cmp_func(mass_cell(mass, elemsize, a), mass_cell(mass, elemsize, b)) > 0) {
 		if (cmp_func(mass_cell(mass, elemsize, b), mass_cell(mass, elemsize, c)) > 0)
@@ -166,14 +166,14 @@ static inline uint32_t find_median(void *mass, uint32_t a, uint32_t b, uint32_t 
 	}
 }
 
-static inline void quicksort_recursive(void *mass, uint32_t left, uint32_t right, uint32_t elemsize, CmpFunc cmp_func)
+static inline void quicksort_recursive(void *mass, u32 left, u32 right, u32 elemsize, CmpFunc cmp_func)
 {
-	uint32_t mid;
-	uint32_t pivot;
-	uint32_t new_pivot;
+	u32 mid;
+	u32 pivot;
+	u32 new_pivot;
 
-	int32_t loop_count = 0;
-	int32_t max_loops = 32 - __builtin_clzl(right - left);
+	i32 loop_count = 0;
+	i32 max_loops = 32 - __builtin_clzl(right - left);
 
 	while (1) {
 		if (right <= left)
@@ -206,14 +206,14 @@ static inline void quicksort_recursive(void *mass, uint32_t left, uint32_t right
 	}
 }
 
-void quicksort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func)
+void quicksort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
 	quicksort_recursive(mass, 0, len - 1, elemsize, cmp_func);
 }
 
-bool linear_search(void *mass, const void *target, uint32_t len, uint32_t elemsize, CmpFunc cmp_func, uint32_t *index)
+bool linear_search(void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index)
 {
-	for (uint32_t i = 0; i < len; ++i) {
+	for (u32 i = 0; i < len; ++i) {
 		if (cmp_func(mass_cell(mass, elemsize, i), target) == 0) {
 			if (index != NULL)
 				*index = i;
@@ -225,16 +225,16 @@ bool linear_search(void *mass, const void *target, uint32_t len, uint32_t elemsi
 	return FALSE;
 }
 
-bool binary_search(void *mass, const void *target, uint32_t len, uint32_t elemsize, CmpFunc cmp_func, uint32_t *index)
+bool binary_search(void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index)
 {
 	if (len == 0)
 		return FALSE;
 
-	uint32_t left = 0;
-	uint32_t right = len - 1;
+	u32 left = 0;
+	u32 right = len - 1;
 
 	while (left <= right) {
-		uint32_t mid = left + ((right - left) >> 1);
+		u32 mid = left + ((right - left) >> 1);
 
 		if (cmp_func(mass_cell(mass, elemsize, mid), target) == 0) {
 			if (index != NULL)

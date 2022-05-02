@@ -14,7 +14,7 @@ struct _TreeNode {
 	TreeNode *right;
 
 	/* Private */
-	uint32_t color : 1;
+	u32 color : 1;
 };
 
 struct _Tree {
@@ -89,7 +89,7 @@ void tree_traverse(Tree *tree, UserFunc func, void *userdata);
  *
  * @return copy of a tree
  */
-Tree *tree_copy(Tree *dst, const Tree *src, int32_t *err);
+Tree *tree_copy(Tree *dst, const Tree *src, i32 *err);
 
 /**
  * @brief Frees all nodes in a tree

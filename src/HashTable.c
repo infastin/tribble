@@ -16,7 +16,7 @@
 #define ht_value(ht, i) (htb_value(ht, (ht)->buckets, i))
 #define ht_occupied(ht, i) (htb_occupied(ht, (ht)->buckets, i))
 
-HashTable *ht_init(HashTable *ht, uint32_t keysize, uint32_t valuesize, HashFunc hash_func, CmpFunc cmp_func)
+HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, HashFunc hash_func, CmpFunc cmp_func)
 {
 	return_val_if_fail(hash_func != NULL, NULL);
 	return_val_if_fail(cmp_func != NULL, NULL);
@@ -34,7 +34,7 @@ HashTable *ht_init(HashTable *ht, uint32_t keysize, uint32_t valuesize, HashFunc
 		was_allocated = TRUE;
 	}
 
-	uint32_t bucketsize = keysize + valuesize + 1;
+	u32 bucketsize = keysize + valuesize + 1;
 	ht->buckets = calloc(HT_INIT_SLOTS, bucketsize);
 
 	if (ht->buckets == NULL) {
@@ -57,17 +57,17 @@ HashTable *ht_init(HashTable *ht, uint32_t keysize, uint32_t valuesize, HashFunc
 	return ht;
 }
 
-static bool __ht_add(HashTable *ht, uint32_t slots, void *buckets, const void *key, void *value)
+static bool __ht_add(HashTable *ht, u32 slots, void *buckets, const void *key, void *value)
 {
-	uint32_t hash = ht->hash_func(key, ht->keysize, ht->seed);
-	uint32_t pos = hash & (slots - 1);
+	u32 hash = ht->hash_func(key, ht->keysize, ht->seed);
+	u32 pos = hash & (slots - 1);
 
 	if (*htb_occupied(ht, buckets, pos)) {
 		if (ht->cmp_func(key, htb_key(ht, buckets, pos)) == 0)
 			return FALSE;
 
-		uint32_t i = pos;
-		uint32_t slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
+		u32 i = pos;
+		u32 slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
 
 		while (1) {
 			if (*htb_occupied(ht, buckets, slot) == FALSE) {
@@ -97,7 +97,7 @@ static bool __ht_add(HashTable *ht, uint32_t slots, void *buckets, const void *k
 	return TRUE;
 }
 
-static bool ht_resize(HashTable *ht, uint32_t new_slots)
+static bool ht_resize(HashTable *ht, u32 new_slots)
 {
 	void *buckets = calloc(new_slots, ht->bucketsize);
 	if (buckets == NULL) {
@@ -105,7 +105,7 @@ static bool ht_resize(HashTable *ht, uint32_t new_slots)
 		return FALSE;
 	}
 
-	for (uint32_t i = 0; i < ht->slots; ++i) {
+	for (u32 i = 0; i < ht->slots; ++i) {
 		if (*ht_occupied(ht, i)) {
 			if (__ht_add(ht, new_slots, buckets, ht_key(ht, i), ht_value(ht, i)) == FALSE) {
 				free(buckets);
@@ -128,7 +128,7 @@ bool ht_insert(HashTable *ht, const void *key, void *value)
 
 	float load_factor = (float) ht->used / (float) ht->slots;
 	if (load_factor >= 0.6) {
-		uint32_t new_slots = ht->slots << 1;
+		u32 new_slots = ht->slots << 1;
 		if (ht->slots > new_slots)
 			return FALSE;
 
@@ -137,12 +137,12 @@ bool ht_insert(HashTable *ht, const void *key, void *value)
 	}
 
 	bool only_change_value = FALSE;
-	uint32_t hash = ht->hash_func(key, ht->keysize, ht->seed);
-	uint32_t pos = hash & (ht->slots - 1);
+	u32 hash = ht->hash_func(key, ht->keysize, ht->seed);
+	u32 pos = hash & (ht->slots - 1);
 
 	if (*ht_occupied(ht, pos) && ht->cmp_func(key, ht_key(ht, pos)) != 0) {
-		uint32_t i = pos;
-		uint32_t slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
+		u32 i = pos;
+		u32 slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
 
 		while (1) {
 			if (*ht_occupied(ht, slot) == FALSE) {
@@ -185,7 +185,7 @@ bool ht_add(HashTable *ht, const void *key, void *value)
 
 	float load_factor = (float) ht->used / (float) ht->slots;
 	if (load_factor >= 0.6) {
-		uint32_t new_slots = ht->slots << 1;
+		u32 new_slots = ht->slots << 1;
 		if (ht->slots > new_slots)
 			return FALSE;
 
@@ -212,15 +212,15 @@ bool ht_remove(HashTable *ht, const void *key, void *ret)
 			return FALSE;
 	}
 
-	uint32_t hash = ht->hash_func(key, ht->keysize, ht->seed);
-	uint32_t pos = hash & (ht->slots - 1);
+	u32 hash = ht->hash_func(key, ht->keysize, ht->seed);
+	u32 pos = hash & (ht->slots - 1);
 
 	if (*ht_occupied(ht, pos) == FALSE)
 		return FALSE;
 
 	if (ht->cmp_func(key, ht_key(ht, pos))) {
-		uint32_t i = pos;
-		uint32_t slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
+		u32 i = pos;
+		u32 slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
 
 		while (1) {
 			if (*ht_occupied(ht, slot) == FALSE)
@@ -253,15 +253,15 @@ bool ht_contains(HashTable *ht, const void *key)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 
-	uint32_t hash = ht->hash_func(key, ht->keysize, ht->seed);
-	uint32_t pos = hash & (ht->slots - 1);
+	u32 hash = ht->hash_func(key, ht->keysize, ht->seed);
+	u32 pos = hash & (ht->slots - 1);
 
 	if (*ht_occupied(ht, pos)) {
 		if (ht->cmp_func(key, ht_key(ht, pos)) == 0)
 			return TRUE;
 
-		uint32_t i = pos;
-		uint32_t slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
+		u32 i = pos;
+		u32 slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
 
 		while (1) {
 			if (*ht_occupied(ht, slot) == FALSE)
@@ -286,8 +286,8 @@ bool ht_lookup(HashTable *ht, const void *key, void *ret)
 	return_val_if_fail(key != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
 
-	uint32_t hash = ht->hash_func(key, ht->keysize, ht->seed);
-	uint32_t pos = hash & (ht->slots - 1);
+	u32 hash = ht->hash_func(key, ht->keysize, ht->seed);
+	u32 pos = hash & (ht->slots - 1);
 
 	if (*ht_occupied(ht, pos)) {
 		if (ht->cmp_func(key, ht_key(ht, pos)) == 0) {
@@ -295,8 +295,8 @@ bool ht_lookup(HashTable *ht, const void *key, void *ret)
 			return TRUE;
 		}
 
-		uint32_t i = pos;
-		uint32_t slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
+		u32 i = pos;
+		u32 slot = ((i >> 1) + ((i * i) >> 1)) & (ht->slots - 1);
 
 		while (1) {
 			if (*ht_occupied(ht, slot) == FALSE)
@@ -317,7 +317,7 @@ bool ht_lookup(HashTable *ht, const void *key, void *ret)
 	return FALSE;
 }
 
-void ht_remove_all(HashTable *ht, void *ret, uint32_t *len, bool to_copy)
+void ht_remove_all(HashTable *ht, void *ret, u32 *len, bool to_copy)
 {
 }
 

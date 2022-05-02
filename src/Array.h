@@ -10,14 +10,14 @@ typedef struct _Array Array;
 struct _Array {
 	/* Public */
 	void *mass;
-	uint32_t len;
+	u32 len;
 
 	/* Private */
-	uint32_t capacity;
-	uint32_t elemsize;
-	uint32_t zero_terminated : 1;
-	uint32_t sorted : 1;
-	uint32_t clear : 1;
+	u32 capacity;
+	u32 elemsize;
+	u32 zero_terminated : 1;
+	u32 sorted : 1;
+	u32 clear : 1;
 };
 
 /**
@@ -30,7 +30,7 @@ struct _Array {
  *
  * @return A new array
  */
-Array *array_init(Array *arr, bool clear, bool zero_terminated, uint32_t elemsize);
+Array *array_init(Array *arr, bool clear, bool zero_terminated, u32 elemsize);
 
 /**
  * @brief Creates the copy of the array
@@ -61,7 +61,7 @@ bool array_push_back(Array *arr, const void *data);
  *
  * @return TRUE on success
  */
-bool array_push_back_many(Array *arr, const void *data, uint32_t len);
+bool array_push_back_many(Array *arr, const void *data, u32 len);
 
 /**
  * @brief Adds the element onto the start of the array
@@ -82,7 +82,7 @@ bool array_push_front(Array *arr, const void *data);
  *
  * @return TRUE on success
  */
-bool array_push_front_many(Array *arr, const void *data, uint32_t len);
+bool array_push_front_many(Array *arr, const void *data, u32 len);
 
 /**
  * @brief Inserts the element to the array at the given index
@@ -93,7 +93,7 @@ bool array_push_front_many(Array *arr, const void *data, uint32_t len);
  *
  * @return TRUE on success
  */
-bool array_insert(Array *arr, uint32_t index, const void *data);
+bool array_insert(Array *arr, u32 index, const void *data);
 
 /**
  * @brief Inserts elements to the array at the given index
@@ -105,7 +105,7 @@ bool array_insert(Array *arr, uint32_t index, const void *data);
  *
  * @return TRUE on success
  */
-bool array_insert_many(Array *arr, uint32_t index, const void *data, uint32_t len);
+bool array_insert_many(Array *arr, u32 index, const void *data, u32 len);
 
 /**
  * @brief Changes the value of the entry at the given index in the array
@@ -117,7 +117,7 @@ bool array_insert_many(Array *arr, uint32_t index, const void *data, uint32_t le
  *
  * @return TRUE on success
  */
-bool array_set(Array *arr, uint32_t index, const void *data);
+bool array_set(Array *arr, u32 index, const void *data);
 
 /**
  * @brief Removes the entry at the given index from the array
@@ -128,7 +128,7 @@ bool array_set(Array *arr, uint32_t index, const void *data);
  *
  * @return TRUE on success
  */
-bool array_remove_index(Array *arr, uint32_t index, void *ret);
+bool array_remove_index(Array *arr, u32 index, void *ret);
 
 /**
  * @brief Removes the last element from the array
@@ -167,7 +167,7 @@ void array_reverse(Array *arr);
  *
  * @return TRUE on success
  */
-bool array_remove_range(Array *arr, uint32_t index, uint32_t len, void *ret);
+bool array_remove_range(Array *arr, u32 index, u32 len, void *ret);
 
 /**
  * @brief Removes all elements from the array
@@ -196,7 +196,7 @@ void array_sort(Array *arr, CmpFunc cmp_func);
  *
  * @return TRUE on success
  */
-bool array_get(const Array *arr, uint32_t index, void *ret);
+bool array_get(const Array *arr, u32 index, void *ret);
 
 /**
  * @brief Steals the array buffer.
@@ -210,7 +210,7 @@ bool array_get(const Array *arr, uint32_t index, void *ret);
  *
  * @return TRUE on success
  */
-bool array_steal(Array *arr, void *ret, uint32_t *len, bool to_copy);
+bool array_steal(Array *arr, void *ret, u32 *len, bool to_copy);
 
 /**
  * @brief Steals the array buffer.
@@ -224,7 +224,7 @@ bool array_steal(Array *arr, void *ret, uint32_t *len, bool to_copy);
  *
  * @return TRUE on success
  */
-bool array_steal0(Array *arr, void *ret, uint32_t *len, bool to_copy);
+bool array_steal0(Array *arr, void *ret, u32 *len, bool to_copy);
 
 /**
  * @brief Frees the array buffer.
@@ -252,6 +252,6 @@ void array_free(Array *arr);
  *
  * @return TRUE if found, FALSE if not
  */
-bool array_search(Array *arr, const void *target, CmpFunc cmp_func, uint32_t *index);
+bool array_search(Array *arr, const void *target, CmpFunc cmp_func, u32 *index);
 
 #endif /* end of include guard: ARRAY_H_KSABYJ3T */

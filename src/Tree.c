@@ -49,7 +49,7 @@ Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func)
 	return tree;
 }
 
-Tree *tree_copy(Tree *dst, const Tree *src, int32_t *err)
+Tree *tree_copy(Tree *dst, const Tree *src, i32 *err)
 {
 	return_val_if_fail(src != NULL, NULL);
 	return_val_if_fail(src->cpyf != NULL, NULL);
@@ -296,7 +296,7 @@ bool tree_insert(Tree *tree, TreeNode *node)
 	TreeNode *current = tree->root;
 
 	while (1) {
-		int32_t cmp = tree->cmpf(current, node);
+		i32 cmp = tree->cmpf(current, node);
 
 		if (cmp > 0) {
 			if (current->left == NULL) {
@@ -574,7 +574,7 @@ TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
 	TreeNode *current = tree->root;
 
 	while (current != NULL) {
-		int32_t cmp = tree->cmpf(current, node);
+		i32 cmp = tree->cmpf(current, node);
 
 		if (cmp > 0)
 			current = current->left;

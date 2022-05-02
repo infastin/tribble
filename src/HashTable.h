@@ -7,14 +7,14 @@ typedef struct _HashTable HashTable;
 
 struct _HashTable {
 	/* Public */
-	uint32_t slots;
-	uint32_t used;
+	u32 slots;
+	u32 used;
 
 	/* Private */
-	uint32_t keysize;
-	uint32_t valuesize;
-	uint32_t bucketsize;
-	uint32_t seed;
+	u32 keysize;
+	u32 valuesize;
+	u32 bucketsize;
+	u32 seed;
 	HashFunc hash_func;
 	CmpFunc cmp_func;
 	void *buckets;
@@ -31,7 +31,7 @@ struct _HashTable {
  *
  * @return A new HashTable
  */
-HashTable *ht_init(HashTable *ht, uint32_t keysize, uint32_t valuesize, HashFunc hash_func, CmpFunc cmp_func);
+HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, HashFunc hash_func, CmpFunc cmp_func);
 
 /**
  * @brief Adds a new entry to the hash table
@@ -74,7 +74,7 @@ bool ht_remove(HashTable *ht, const void *key, void *ret);
  * @param len
  * @param to_copy
  */
-void ht_remove_all(HashTable *ht, void *ret, uint32_t *len, bool to_copy);
+void ht_remove_all(HashTable *ht, void *ret, u32 *len, bool to_copy);
 
 /**
  * @brief

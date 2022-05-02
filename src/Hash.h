@@ -6,6 +6,11 @@
 /**
  * Reference: https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp#L94
  */
-uint32_t MurmurHash3(const void *key, uint32_t keysize, uint32_t seed);
+u32 murmur_hash3(const void *key, u32 keysize, u32 seed);
+
+/**
+ * Reference: http://burtleburtle.net/bob/hash/evahash.html
+ */
+u32 jhash(const void *key, u32 len, u32 seed);
 
 #endif /* end of include guard: HASH_H_RKAMEI83 */

@@ -10,7 +10,7 @@
 #define BINARY_SEARCH_LEN_THRESHOLD 32
 #define arr_cell(a, i) ((void *) &((char *) ((a)->mass))[(i) * (a)->elemsize])
 
-Array *array_init(Array *arr, bool clear, bool zero_terminated, uint32_t elemsize)
+Array *array_init(Array *arr, bool clear, bool zero_terminated, u32 elemsize)
 {
 	return_val_if_fail(elemsize != 0, NULL);
 
@@ -50,7 +50,7 @@ Array *array_init(Array *arr, bool clear, bool zero_terminated, uint32_t elemsiz
 	return arr;
 }
 
-static bool __array_growcap(Array *arr, uint32_t add)
+static bool __array_growcap(Array *arr, u32 add)
 {
 	if (add == 0)
 		return TRUE;
@@ -68,8 +68,8 @@ static bool __array_growcap(Array *arr, uint32_t add)
 		return FALSE;
 	}
 
-	uint32_t mincap = arr->capacity + add;
-	uint32_t new_allocated = (mincap >> 3) + (mincap < 9 ? 3 : 6);
+	u32 mincap = arr->capacity + add;
+	u32 new_allocated = (mincap >> 3) + (mincap < 9 ? 3 : 6);
 
 	if (mincap > UINT_MAX - new_allocated) {
 		msg_error("array capacity overflow!");
@@ -98,9 +98,9 @@ static bool __array_growcap(Array *arr, uint32_t add)
 	return TRUE;
 }
 
-static bool __array_insert(Array *arr, uint32_t index, const void *data)
+static bool __array_insert(Array *arr, u32 index, const void *data)
 {
-	uint32_t zt = arr->zero_terminated;
+	u32 zt = arr->zero_terminated;
 
 	if (index > UINT_MAX - zt || arr->len > UINT_MAX - zt - 1) {
 		msg_error("array capacity overflow!");
@@ -108,10 +108,10 @@ static bool __array_insert(Array *arr, uint32_t index, const void *data)
 	}
 
 	if (index + zt >= arr->capacity) {
-		int32_t err = __array_growcap(arr, (index + zt) - (arr->capacity - 1));
+		u32 err = __array_growcap(arr, (index + zt) - (arr->capacity - 1));
 		return_val_if_fail(err == 0, err);
 	} else if (arr->len + zt + 1 > arr->capacity) {
-		int32_t err = __array_growcap(arr, 1);
+		u32 err = __array_growcap(arr, 1);
 		return_val_if_fail(err == 0, err);
 	}
 
@@ -138,12 +138,12 @@ static bool __array_insert(Array *arr, uint32_t index, const void *data)
 	return TRUE;
 }
 
-static bool __array_insert_many(Array *arr, uint32_t index, const void *data, uint32_t len)
+static bool __array_insert_many(Array *arr, u32 index, const void *data, u32 len)
 {
 	if (len == 0)
 		return TRUE;
 
-	uint32_t zt = arr->zero_terminated;
+	u32 zt = arr->zero_terminated;
 
 	if (
 		index > UINT_MAX - len ||
@@ -156,10 +156,10 @@ static bool __array_insert_many(Array *arr, uint32_t index, const void *data, ui
 	}
 
 	if (index + zt + len > arr->capacity) {
-		int32_t err = __array_growcap(arr, (index + zt + len) - arr->capacity);
+		u32 err = __array_growcap(arr, (index + zt + len) - arr->capacity);
 		return_val_if_fail(err == 0, err);
 	} else if (arr->len + zt + len > arr->capacity) {
-		int32_t err = __array_growcap(arr, (arr->len + zt + len) - arr->capacity);
+		u32 err = __array_growcap(arr, (arr->len + zt + len) - arr->capacity);
 		return_val_if_fail(err == 0, err);
 	}
 
@@ -192,7 +192,7 @@ bool array_push_back(Array *arr, const void *data)
 	return __array_insert(arr, arr->len, data);
 }
 
-bool array_push_back_many(Array *arr, const void *data, uint32_t len)
+bool array_push_back_many(Array *arr, const void *data, u32 len)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return __array_insert_many(arr, arr->len, data, len);
@@ -204,29 +204,29 @@ bool array_push_front(Array *arr, const void *data)
 	return __array_insert(arr, 0, data);
 }
 
-bool array_push_front_many(Array *arr, const void *data, uint32_t len)
+bool array_push_front_many(Array *arr, const void *data, u32 len)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return __array_insert_many(arr, 0, data, len);
 }
 
-bool array_insert(Array *arr, uint32_t index, const void *data)
+bool array_insert(Array *arr, u32 index, const void *data)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return __array_insert(arr, index, data);
 }
 
-bool array_insert_many(Array *arr, uint32_t index, const void *data, uint32_t len)
+bool array_insert_many(Array *arr, u32 index, const void *data, u32 len)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return __array_insert_many(arr, index, data, len);
 }
 
-bool array_set(Array *arr, uint32_t index, const void *data)
+bool array_set(Array *arr, u32 index, const void *data)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 
-	uint32_t zt = arr->zero_terminated;
+	u32 zt = arr->zero_terminated;
 
 	if (index > UINT_MAX - zt) {
 		msg_error("array capacity overflow!");
@@ -234,7 +234,7 @@ bool array_set(Array *arr, uint32_t index, const void *data)
 	}
 
 	if (index + zt >= arr->capacity) {
-		int32_t err = __array_growcap(arr, (index + zt + 1) - arr->capacity);
+		u32 err = __array_growcap(arr, (index + zt + 1) - arr->capacity);
 		return_val_if_fail(err != 0, err);
 	}
 
@@ -255,7 +255,7 @@ bool array_set(Array *arr, uint32_t index, const void *data)
 	return TRUE;
 }
 
-bool array_get(const Array *arr, uint32_t index, void *ret)
+bool array_get(const Array *arr, u32 index, void *ret)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
@@ -270,7 +270,7 @@ bool array_get(const Array *arr, uint32_t index, void *ret)
 	return TRUE;
 }
 
-static bool __array_remove_range(Array *arr, uint32_t index, uint32_t len, void *ret)
+static bool __array_remove_range(Array *arr, u32 index, u32 len, void *ret)
 {
 	if (index + len - 1 >= arr->len) {
 		msg_warn("range [%lu:%lu] is out of bounds!", index, index + len - 1);
@@ -280,7 +280,7 @@ static bool __array_remove_range(Array *arr, uint32_t index, uint32_t len, void 
 	if (ret != NULL)
 		memcpy(ret, arr_cell(arr, index), len * arr->elemsize);
 
-	uint32_t zt = arr->zero_terminated;
+	u32 zt = arr->zero_terminated;
 
 	if (index + len < arr->len)
 		memmove(
@@ -295,7 +295,7 @@ static bool __array_remove_range(Array *arr, uint32_t index, uint32_t len, void 
 	return TRUE;
 }
 
-bool array_remove_index(Array *arr, uint32_t index, void *ret)
+bool array_remove_index(Array *arr, u32 index, void *ret)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return __array_remove_range(arr, index, 1, ret);
@@ -331,7 +331,7 @@ bool array_pop_front(Array *arr, void *ret)
 	return __array_remove_range(arr, 0, 1, ret);
 }
 
-bool array_remove_range(Array *arr, uint32_t index, uint32_t len, void *ret)
+bool array_remove_range(Array *arr, u32 index, u32 len, void *ret)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 
@@ -348,7 +348,7 @@ void array_reverse(Array *arr)
 	if (arr->len < 2)
 		return;
 
-	for (uint32_t lo = 0, hi = arr->len - 1; lo < hi; ++lo, --hi) {
+	for (u32 lo = 0, hi = arr->len - 1; lo < hi; ++lo, --hi) {
 		mass_swap(arr_cell(arr, lo), arr_cell(arr, hi), arr->elemsize);
 	}
 }
@@ -365,7 +365,7 @@ void array_sort(Array *arr, CmpFunc cmp_func)
 	arr->sorted = 1;
 }
 
-bool array_steal(Array *arr, void *ret, uint32_t *len, bool to_copy)
+bool array_steal(Array *arr, void *ret, u32 *len, bool to_copy)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
@@ -409,7 +409,7 @@ void array_purge(Array *arr)
 	}
 }
 
-bool array_steal0(Array *arr, void *ret, uint32_t *len, bool to_copy)
+bool array_steal0(Array *arr, void *ret, u32 *len, bool to_copy)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
@@ -438,7 +438,7 @@ void array_free(Array *arr)
 	free(arr);
 }
 
-bool array_search(Array *arr, const void *target, CmpFunc cmp_func, uint32_t *index)
+bool array_search(Array *arr, const void *target, CmpFunc cmp_func, u32 *index)
 {
 	return_val_if_fail(arr != NULL, FALSE);
 	return_val_if_fail(cmp_func != NULL, FALSE);
@@ -500,7 +500,7 @@ Array *array_copy(Array *dst, const Array *src)
 	dst->zero_terminated = src->zero_terminated;
 	dst->clear = src->clear;
 
-	uint32_t zt = dst->zero_terminated;
+	u32 zt = dst->zero_terminated;
 	memcpy(dst->mass, src->mass, (dst->len + zt) * dst->elemsize);
 
 	return dst;

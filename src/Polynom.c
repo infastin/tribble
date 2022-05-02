@@ -9,8 +9,8 @@
 typedef struct _Monom Monom;
 
 struct _Monom {
-	int32_t coef;
-	int32_t degree;
+	i32 coef;
+	i32 degree;
 	List entry;
 };
 
@@ -32,7 +32,7 @@ Polynom *poly_init(Polynom *poly)
 	return poly;
 }
 
-static Monom *__monom_alloc(int32_t coef, int32_t degree)
+static Monom *__monom_alloc(i32 coef, i32 degree)
 {
 	Monom *monom = talloc(Monom, 1);
 
@@ -48,7 +48,7 @@ static Monom *__monom_alloc(int32_t coef, int32_t degree)
 	return monom;
 }
 
-static bool __poly_add_empty(Polynom *poly, int32_t coef, int32_t degree)
+static bool __poly_add_empty(Polynom *poly, i32 coef, i32 degree)
 {
 	Monom *monom = __monom_alloc(coef, degree);
 	return_val_if_fail(monom != NULL, FALSE);
@@ -61,7 +61,7 @@ static bool __poly_add_empty(Polynom *poly, int32_t coef, int32_t degree)
 	return TRUE;
 }
 
-static bool __poly_add_reverse(Polynom *poly, int32_t coef, int32_t degree, bool replace)
+static bool __poly_add_reverse(Polynom *poly, i32 coef, i32 degree, bool replace)
 {
 	Monom *monom = __monom_alloc(coef, degree);
 	return_val_if_fail(monom != NULL, FALSE);
@@ -89,7 +89,7 @@ static bool __poly_add_reverse(Polynom *poly, int32_t coef, int32_t degree, bool
 	return TRUE;
 }
 
-static bool __poly_add(Polynom *poly, int32_t coef, int32_t degree, bool replace)
+static bool __poly_add(Polynom *poly, i32 coef, i32 degree, bool replace)
 {
 	Monom *monom = __monom_alloc(coef, degree);
 	return_val_if_fail(monom != NULL, FALSE);
@@ -117,7 +117,7 @@ static bool __poly_add(Polynom *poly, int32_t coef, int32_t degree, bool replace
 	return TRUE;
 }
 
-static bool __poly_add_monom(Polynom *poly, int32_t coef, int32_t degree, bool replace)
+static bool __poly_add_monom(Polynom *poly, i32 coef, i32 degree, bool replace)
 {
 	if (coef == 0)
 		return TRUE;
@@ -131,13 +131,13 @@ static bool __poly_add_monom(Polynom *poly, int32_t coef, int32_t degree, bool r
 	return __poly_add(poly, coef, degree, replace);
 }
 
-bool poly_set(Polynom *poly, int32_t coef, int32_t degree)
+bool poly_set(Polynom *poly, i32 coef, i32 degree)
 {
 	return_val_if_fail(poly != NULL, FALSE);
 	return __poly_add_monom(poly, coef, degree, TRUE);
 }
 
-bool poly_add_monom(Polynom *poly, int32_t coef, int32_t degree)
+bool poly_add_monom(Polynom *poly, i32 coef, i32 degree)
 {
 	return_val_if_fail(poly != NULL, FALSE);
 	return __poly_add_monom(poly, coef, degree, FALSE);
@@ -183,7 +183,7 @@ Polynom *poly_copy(Polynom *dst, const Polynom *src)
 	return dst;
 }
 
-static bool __poly_append(Polynom *poly, int32_t coef, int32_t degree)
+static bool __poly_append(Polynom *poly, i32 coef, i32 degree)
 {
 	if (coef == 0)
 		return TRUE;
@@ -226,7 +226,7 @@ Polynom *poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
 			if (a_monom->degree == b_monom->degree) {
-				int32_t coef_sum = a_monom->coef + b_monom->coef;
+				i32 coef_sum = a_monom->coef + b_monom->coef;
 
 				if (__poly_append(ret, coef_sum, a_monom->degree) == FALSE)
 					break;
@@ -289,8 +289,8 @@ Polynom *poly_product(Polynom *ret, const Polynom *a, const Polynom *b)
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
-			int32_t coef = a_monom->coef * b_monom->coef;
-			int32_t degree = a_monom->degree + b_monom->degree;
+			i32 coef = a_monom->coef * b_monom->coef;
+			i32 degree = a_monom->degree + b_monom->degree;
 
 			if(__poly_add_monom(ret, coef, degree, FALSE) == FALSE)
 				return ret;
@@ -327,7 +327,7 @@ Polynom *poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
 			if (a_monom->degree == b_monom->degree) {
-				int32_t coef_sub = a_monom->coef - b_monom->coef;
+				i32 coef_sub = a_monom->coef - b_monom->coef;
 
 				if(__poly_append(ret, coef_sub, a_monom->degree) == FALSE)
 					break;

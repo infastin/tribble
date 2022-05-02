@@ -8,14 +8,14 @@
 char *strdup_printf(const char *fmt, ...);
 char *strdup_vprintf(const char *fmt, va_list *ap);
 
-uint32_t pow2_32(uint32_t value);
-uint64_t pow2_64(uint64_t value);
+u32 pow2_32(u32 value);
+u64 pow2_64(u64 value);
 
-void inssort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func);
-void heapsort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func);
-void quicksort(void *mass, uint32_t len, uint32_t elemsize, CmpFunc cmp_func);
+void inssort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func);
+void heapsort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func);
+void quicksort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func);
 
-bool linear_search(void *mass, const void *target, uint32_t len, uint32_t elemsize, CmpFunc cmp_func, uint32_t *index);
-bool binary_search(void *mass, const void *target, uint32_t len, uint32_t elemsize, CmpFunc cmp_func, uint32_t *index);
+bool linear_search(void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index);
+bool binary_search(void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index);
 
 #endif /* end of include guard: UTILS_H_ATMQZMHO */
