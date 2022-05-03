@@ -126,7 +126,7 @@ bool ht_insert(HashTable *ht, const void *key, void *value)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 
-	float load_factor = (float) ht->used / (float) ht->slots;
+	f64 load_factor = (f64) ht->used / (f64) ht->slots;
 	if (load_factor >= 0.6) {
 		u32 new_slots = ht->slots << 1;
 		if (ht->slots > new_slots)
@@ -183,7 +183,7 @@ bool ht_add(HashTable *ht, const void *key, void *value)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 
-	float load_factor = (float) ht->used / (float) ht->slots;
+	f64 load_factor = (f64) ht->used / (f64) ht->slots;
 	if (load_factor >= 0.6) {
 		u32 new_slots = ht->slots << 1;
 		if (ht->slots > new_slots)
@@ -206,7 +206,7 @@ bool ht_remove(HashTable *ht, const void *key, void *ret)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 
-	float load_factor = (float) ht->used / (float) ht->slots;
+	f64 load_factor = (f64) ht->used / (f64) ht->slots;
 	if (load_factor <= 0.4) {
 		if (!ht_resize(ht, ht->slots >> 1))
 			return FALSE;

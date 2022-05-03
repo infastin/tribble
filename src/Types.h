@@ -5,7 +5,6 @@
 #include <stdint.h>
 
 /* Integers */
-
 typedef int8_t i8;
 typedef int16_t i16;
 typedef int32_t i32;
@@ -17,8 +16,12 @@ typedef uint64_t u64;
 typedef intptr_t isize;
 typedef uintptr_t usize;
 
-/* Boolean */
+/* Floating point numbers */
+typedef float f32;
+typedef double f64;
+typedef long double f128;
 
+/* Boolean */
 #ifdef bool
 	#undef bool
 #endif
@@ -29,7 +32,6 @@ typedef _Bool bool;
 #define FALSE 0
 
 /* Functions */
-
 typedef i32 (*CmpFunc)(const void *a, const void *b);
 typedef void *(*CopyFunc)(const void *src);
 typedef void (*FreeFunc)(void *ptr);
