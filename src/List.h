@@ -136,9 +136,9 @@ void list_splice(List *list, List *node);
  * @param src The source list
  * @param copy_func The function for copying nodes
  *
- * @return 0 on success
+ * @return TRUE on success
  */
-i32 list_copy(List *dst, const List *src, CopyFunc copy_func);
+bool list_copy(List *dst, const List *src, CopyFunc copy_func);
 
 /**
  * @brief Frees all nodes in the list

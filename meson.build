@@ -32,6 +32,6 @@ pkg_config = import('pkgconfig')
 pkg_config.generate(
   libraries: libtribble,
   version: '0.0.1',
-  name: 'Tribble',
+  name: 'tribble',
   description: 'Some C library',
 )

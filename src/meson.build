@@ -21,6 +21,7 @@ header_files = [
   'SList.h',
   'Tribble.h',
   'Tree.h',
+  'Types.h',
   'Utils.h',
 ]
 

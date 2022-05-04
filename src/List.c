@@ -286,14 +286,14 @@ void list_remove(List *node)
 	node->prev = node;
 }
 
-i32 list_copy(List *dst, const List *src, CopyFunc copy_func)
+bool list_copy(List *dst, const List *src, CopyFunc copy_func)
 {
-	return_val_if_fail(dst != NULL, -1);
-	return_val_if_fail(src != NULL, -1);
-	return_val_if_fail(copy_func != NULL, -1);
+	return_val_if_fail(dst != NULL, FALSE);
+	return_val_if_fail(src != NULL, FALSE);
+	return_val_if_fail(copy_func != NULL, FALSE);
 
 	if (src->next == src)
-		return 0;
+		return TRUE;
 
 	List *fast = src->next;
 	List *slow = dst;
@@ -316,9 +316,9 @@ i32 list_copy(List *dst, const List *src, CopyFunc copy_func)
 	slow->next = dst;
 
 	do_if_fail (copy != NULL)
-		return -2;
+		return FALSE;
 
-	return 0;
+	return TRUE;
 }
 
 void list_purge(List *list, FreeFunc free_func)

@@ -96,8 +96,7 @@ static bool __poly_add(Polynom *poly, i32 coef, i32 degree, bool replace)
 
 	List *iter;
 
-	list_foreach(iter, &poly->monoms)
-	{
+	list_foreach (iter, &poly->monoms) {
 		Monom *im = list_entry(iter, Monom, entry);
 
 		if (degree < im->degree) {
@@ -125,7 +124,7 @@ static bool __poly_add_monom(Polynom *poly, i32 coef, i32 degree, bool replace)
 	if (list_empty(&poly->monoms))
 		return __poly_add_empty(poly, coef, degree);
 
-	if (degree >= poly->degree / 2)
+	if (degree >= (poly->degree >> 1))
 		return __poly_add_reverse(poly, coef, degree, replace);
 
 	return __poly_add(poly, coef, degree, replace);
@@ -234,12 +233,12 @@ Polynom *poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
 				a_iter = a_iter->next;
 				b_iter = b_iter->next;
 			} else if (a_monom->degree < b_monom->degree) {
-				if(__poly_append(ret, a_monom->coef, a_monom->degree) == FALSE)
+				if (__poly_append(ret, a_monom->coef, a_monom->degree) == FALSE)
 					break;
 
 				a_iter = a_iter->next;
 			} else {
-				if(__poly_append(ret, b_monom->coef, b_monom->degree) == FALSE)
+				if (__poly_append(ret, b_monom->coef, b_monom->degree) == FALSE)
 					break;
 
 				b_iter = b_iter->next;
@@ -247,14 +246,14 @@ Polynom *poly_sum(Polynom *ret, const Polynom *a, const Polynom *b)
 		} else if (a_iter != am) {
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 
-			if(__poly_append(ret, a_monom->coef, a_monom->degree) == FALSE)
+			if (__poly_append(ret, a_monom->coef, a_monom->degree) == FALSE)
 				break;
 
 			a_iter = a_iter->next;
 		} else {
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
-			if(__poly_append(ret, b_monom->coef, b_monom->degree) == FALSE)
+			if (__poly_append(ret, b_monom->coef, b_monom->degree) == FALSE)
 				break;
 
 			b_iter = b_iter->next;
@@ -282,17 +281,15 @@ Polynom *poly_product(Polynom *ret, const Polynom *a, const Polynom *b)
 	List *a_iter;
 	List *b_iter;
 
-	list_foreach(a_iter, am)
-	{
-		list_foreach(b_iter, bm)
-		{
+	list_foreach (a_iter, am) {
+		list_foreach (b_iter, bm) {
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
 			i32 coef = a_monom->coef * b_monom->coef;
 			i32 degree = a_monom->degree + b_monom->degree;
 
-			if(__poly_add_monom(ret, coef, degree, FALSE) == FALSE)
+			if (__poly_add_monom(ret, coef, degree, FALSE) == FALSE)
 				return ret;
 		}
 	}
@@ -329,18 +326,18 @@ Polynom *poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
 			if (a_monom->degree == b_monom->degree) {
 				i32 coef_sub = a_monom->coef - b_monom->coef;
 
-				if(__poly_append(ret, coef_sub, a_monom->degree) == FALSE)
+				if (__poly_append(ret, coef_sub, a_monom->degree) == FALSE)
 					break;
 
 				a_iter = a_iter->next;
 				b_iter = b_iter->next;
 			} else if (a_monom->degree < b_monom->degree) {
-				if(__poly_append(ret, a_monom->coef * -1, a_monom->degree) == FALSE)
+				if (__poly_append(ret, a_monom->coef * -1, a_monom->degree) == FALSE)
 					break;
 
 				a_iter = a_iter->next;
 			} else {
-				if(__poly_append(ret, b_monom->coef * -1, b_monom->degree) == FALSE)
+				if (__poly_append(ret, b_monom->coef * -1, b_monom->degree) == FALSE)
 					break;
 
 				b_iter = b_iter->next;
@@ -348,14 +345,14 @@ Polynom *poly_subtract(Polynom *ret, const Polynom *a, const Polynom *b)
 		} else if (a_iter != am) {
 			Monom *a_monom = list_entry(a_iter, Monom, entry);
 
-			if(__poly_append(ret, a_monom->coef * -1, a_monom->degree) == FALSE)
+			if (__poly_append(ret, a_monom->coef * -1, a_monom->degree) == FALSE)
 				break;
 
 			a_iter = a_iter->next;
 		} else {
 			Monom *b_monom = list_entry(b_iter, Monom, entry);
 
-			if(__poly_append(ret, b_monom->coef * -1, b_monom->degree) == FALSE)
+			if (__poly_append(ret, b_monom->coef * -1, b_monom->degree) == FALSE)
 				break;
 
 			b_iter = b_iter->next;
@@ -372,11 +369,10 @@ void poly_add(Polynom *poly, const Polynom *add)
 
 	List *iter;
 
-	list_foreach(iter, &add->monoms)
-	{
+	list_foreach (iter, &add->monoms) {
 		Monom *im = list_entry(iter, Monom, entry);
 
-		if(__poly_add_monom(poly, im->coef, im->degree, FALSE) == FALSE)
+		if (__poly_add_monom(poly, im->coef, im->degree, FALSE) == FALSE)
 			break;
 	}
 }
@@ -388,11 +384,10 @@ void poly_sub(Polynom *poly, const Polynom *sub)
 
 	List *iter;
 
-	list_foreach(iter, &sub->monoms)
-	{
+	list_foreach (iter, &sub->monoms) {
 		Monom *im = list_entry(iter, Monom, entry);
 
-		if(__poly_add_monom(poly, im->coef * -1, im->degree, FALSE) == FALSE)
+		if (__poly_add_monom(poly, im->coef * -1, im->degree, FALSE) == FALSE)
 			break;
 	}
 }
@@ -414,8 +409,7 @@ void poly_print(Polynom *poly)
 
 	List *iter;
 
-	list_foreach(iter, &poly->monoms)
-	{
+	list_foreach (iter, &poly->monoms) {
 		Monom *im = list_entry(iter, Monom, entry);
 		printf("%dx^%d ", im->coef, im->degree);
 	}

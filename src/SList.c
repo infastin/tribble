@@ -103,8 +103,7 @@ void slist_insert_before(SList *list, SList *sibling, SList *node)
 	SList *iter;
 	SList *prev = list;
 
-	for (iter = list->next; iter != list; iter = iter->next)
-	{
+	for (iter = list->next; iter != list; iter = iter->next) {
 		if (iter == sibling) {
 			prev->next = node;
 			node->next = sibling;
@@ -279,14 +278,14 @@ SList *slist_pop_front(SList *list)
 	return first;
 }
 
-i32 slist_copy(SList *dst, const SList *src, CopyFunc copy_func)
+bool slist_copy(SList *dst, const SList *src, CopyFunc copy_func)
 {
-	return_val_if_fail(dst != NULL, -1);
-	return_val_if_fail(src != NULL, -1);
-	return_val_if_fail(copy_func != NULL, -1);
+	return_val_if_fail(dst != NULL, FALSE);
+	return_val_if_fail(src != NULL, FALSE);
+	return_val_if_fail(copy_func != NULL, FALSE);
 
 	if (src->next == src)
-		return 0;
+		return TRUE;
 
 	SList *fast = src->next;
 	SList *slow = dst;
@@ -307,9 +306,9 @@ i32 slist_copy(SList *dst, const SList *src, CopyFunc copy_func)
 	slow->next = dst;
 
 	do_if_fail (copy != NULL)
-		return -2;
+		return FALSE;
 
-	return 0;
+	return TRUE;
 }
 
 void slist_purge(SList *list, FreeFunc free_func)
