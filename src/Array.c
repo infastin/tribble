@@ -273,7 +273,12 @@ bool array_get(const Array *arr, u32 index, void *ret)
 static bool __array_remove_range(Array *arr, u32 index, u32 len, void *ret)
 {
 	if (index + len - 1 >= arr->len) {
-		msg_warn("range [%lu:%lu] is out of bounds!", index, index + len - 1);
+		if (len == 1) {
+			msg_warn("element at [%u] is out of bounds!", index);
+		} else {
+			msg_warn("range [%lu:%lu] is out of bounds!", index, index + len - 1);
+		}
+
 		return FALSE;
 	}
 
@@ -433,7 +438,6 @@ bool array_steal0(Array *arr, void *ret, u32 *len, bool to_copy)
 void array_free(Array *arr)
 {
 	return_if_fail(arr != NULL);
-
 	array_purge(arr);
 	free(arr);
 }
@@ -487,9 +491,7 @@ Array *array_copy(Array *dst, const Array *src)
 		if (was_allocated)
 			free(dst);
 
-		msg_error(
-			"couldn't allocate memory for a buffer of the copy of the array!"
-		);
+		msg_error("couldn't allocate memory for a buffer of the copy of the array!");
 		return NULL;
 	}
 

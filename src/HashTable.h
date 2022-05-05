@@ -31,7 +31,7 @@ struct _HashTable {
  *
  * @return A new HashTable
  */
-HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, HashFunc hash_func, CmpFunc cmp_func);
+HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, u32 seed, HashFunc hash_func, CmpFunc cmp_func);
 
 /**
  * @brief Adds a new entry to the hash table
@@ -42,7 +42,7 @@ HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, HashFunc hash_func
  *
  * @return TRUE on success
  */
-bool ht_add(HashTable *ht, const void *key, void *value);
+bool ht_add(HashTable *ht, const void *key, const void *value);
 
 /**
  * @brief
@@ -53,7 +53,7 @@ bool ht_add(HashTable *ht, const void *key, void *value);
  *
  * @return TRUE on success
  */
-bool ht_insert(HashTable *ht, const void *key, void *value);
+bool ht_insert(HashTable *ht, const void *key, const void *value);
 
 /**
  * @brief
@@ -67,7 +67,7 @@ bool ht_insert(HashTable *ht, const void *key, void *value);
 bool ht_remove(HashTable *ht, const void *key, void *ret);
 
 /**
- * @brief 
+ * @brief
  *
  * @param ht
  * @param ret
@@ -84,7 +84,7 @@ void ht_remove_all(HashTable *ht, void *ret, u32 *len, bool to_copy);
  *
  * @return TRUE on success
  */
-bool ht_contains(HashTable *ht, const void *key);
+bool ht_contains(const HashTable *ht, const void *key);
 
 /**
  * @brief
@@ -95,7 +95,7 @@ bool ht_contains(HashTable *ht, const void *key);
  *
  * @return TRUE on success
  */
-bool ht_lookup(HashTable *ht, const void *key, void *ret);
+bool ht_lookup(const HashTable *ht, const void *key, void *ret);
 
 /**
  * @brief

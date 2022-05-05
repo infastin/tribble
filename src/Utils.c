@@ -1,6 +1,7 @@
 #include "Utils.h"
 
 #include "Macros.h"
+#include "Messages.h"
 #include "Types.h"
 
 #include <stdarg.h>
@@ -11,6 +12,8 @@
 
 char *strdup_printf(const char *fmt, ...)
 {
+	return_val_if_fail(fmt != NULL, NULL);
+
 	va_list ap, ap_copy;
 	va_start(ap, fmt);
 	va_copy(ap_copy, ap);
@@ -27,6 +30,9 @@ char *strdup_printf(const char *fmt, ...)
 
 char *strdup_vprintf(const char *fmt, va_list *ap)
 {
+	return_val_if_fail(fmt != NULL, NULL);
+	return_val_if_fail(ap != NULL, NULL);
+
 	va_list ap_copy;
 	va_copy(ap_copy, *ap);
 
@@ -49,7 +55,7 @@ u64 pow2_64(u64 value)
 	return (1 << (64 - __builtin_clzl(value)));
 }
 
-void inssort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
+static inline void __inssort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
 	for (i32 i = 1; i < len; ++i) {
 		u32 cur = i;
@@ -66,6 +72,15 @@ void inssort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 				break;
 		}
 	}
+}
+
+void inssort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
+{
+	return_if_fail(mass != NULL);
+	return_if_fail(elemsize != 0);
+	return_if_fail(cmp_func != NULL);
+
+	__inssort(mass, len, elemsize, cmp_func);
 }
 
 /* Heapsort */
@@ -87,7 +102,7 @@ static inline void heap(void *mass, u32 start, u32 end, u32 elemsize, CmpFunc cm
 	}
 }
 
-static inline void heapify(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
+static inline void __heapify(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
 	u32 start = (len - 1) >> 1;
 
@@ -101,20 +116,38 @@ static inline void heapify(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 	}
 }
 
-void heapsort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
+void heapify(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
+{
+	return_if_fail(mass != NULL);
+	return_if_fail(elemsize != 0);
+	return_if_fail(cmp_func != NULL);
+
+	__heapify(mass, len, elemsize, cmp_func);
+}
+
+static inline void __heapsort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
 	u32 end = len - 1;
 
 	if (len <= 1)
 		return;
 
-	heapify(mass, len, elemsize, cmp_func);
+	__heapify(mass, len, elemsize, cmp_func);
 
 	while (end > 0) {
 		mass_swap(mass_cell(mass, elemsize, 0), mass_cell(mass, elemsize, end), elemsize);
 		end--;
 		heap(mass, 0, end, elemsize, cmp_func);
 	}
+}
+
+void heapsort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
+{
+	return_if_fail(mass != NULL);
+	return_if_fail(elemsize != 0);
+	return_if_fail(cmp_func != NULL);
+
+	__heapsort(mass, len, elemsize, cmp_func);
 }
 
 /* Based on Knuth vol. 3 */
@@ -180,12 +213,12 @@ static inline void quicksort_recursive(void *mass, u32 left, u32 right, u32 elem
 			return;
 
 		if ((right - left + 1) <= SORT_LEN_THRESHOLD) {
-			inssort(mass_cell(mass, elemsize, left), right - left + 1, elemsize, cmp_func);
+			__inssort(mass_cell(mass, elemsize, left), right - left + 1, elemsize, cmp_func);
 			return;
 		}
 
 		if (++loop_count >= max_loops) {
-			heapsort(mass_cell(mass, elemsize, left), right - left + 1, elemsize, cmp_func);
+			__heapsort(mass_cell(mass, elemsize, left), right - left + 1, elemsize, cmp_func);
 			return;
 		}
 
@@ -208,11 +241,19 @@ static inline void quicksort_recursive(void *mass, u32 left, u32 right, u32 elem
 
 void quicksort(void *mass, u32 len, u32 elemsize, CmpFunc cmp_func)
 {
+	return_if_fail(mass != NULL);
+	return_if_fail(elemsize != 0);
+	return_if_fail(cmp_func != NULL);
+
 	quicksort_recursive(mass, 0, len - 1, elemsize, cmp_func);
 }
 
-bool linear_search(void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index)
+bool linear_search(const void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index)
 {
+	return_val_if_fail(mass != NULL, FALSE);
+	return_val_if_fail(elemsize != 0, FALSE);
+	return_val_if_fail(cmp_func != NULL, FALSE);
+
 	for (u32 i = 0; i < len; ++i) {
 		if (cmp_func(mass_cell(mass, elemsize, i), target) == 0) {
 			if (index != NULL)
@@ -225,8 +266,12 @@ bool linear_search(void *mass, const void *target, u32 len, u32 elemsize, CmpFun
 	return FALSE;
 }
 
-bool binary_search(void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index)
+bool binary_search(const void *mass, const void *target, u32 len, u32 elemsize, CmpFunc cmp_func, u32 *index)
 {
+	return_val_if_fail(mass != NULL, FALSE);
+	return_val_if_fail(elemsize != 0, FALSE);
+	return_val_if_fail(cmp_func != NULL, FALSE);
+
 	if (len == 0)
 		return FALSE;
 

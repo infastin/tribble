@@ -85,11 +85,11 @@ void tree_traverse(Tree *tree, UserFunc func, void *userdata);
  *
  * @param dst pointer to the tree to copy (can be NULL)
  * @param src tree to be copied
- * @param err pointer to retrieve error codes (0 for success)
+ * @param status pointer to retrieve status (TRUE for success)
  *
  * @return copy of a tree
  */
-Tree *tree_copy(Tree *dst, const Tree *src, i32 *err);
+Tree *tree_copy(Tree *dst, const Tree *src, bool *status);
 
 /**
  * @brief Frees all nodes in a tree

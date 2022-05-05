@@ -16,7 +16,7 @@
 #define ht_value(ht, i) (htb_value(ht, (ht)->buckets, i))
 #define ht_occupied(ht, i) (htb_occupied(ht, (ht)->buckets, i))
 
-HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, HashFunc hash_func, CmpFunc cmp_func)
+HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, u32 seed, HashFunc hash_func, CmpFunc cmp_func)
 {
 	return_val_if_fail(hash_func != NULL, NULL);
 	return_val_if_fail(cmp_func != NULL, NULL);
@@ -50,14 +50,14 @@ HashTable *ht_init(HashTable *ht, u32 keysize, u32 valuesize, HashFunc hash_func
 	ht->keysize = keysize;
 	ht->valuesize = valuesize;
 	ht->bucketsize = bucketsize;
-	ht->seed = 0x31415926;
+	ht->seed = seed;
 	ht->hash_func = hash_func;
 	ht->cmp_func = cmp_func;
 
 	return ht;
 }
 
-static bool __ht_add(HashTable *ht, u32 slots, void *buckets, const void *key, void *value)
+static bool __ht_add(HashTable *ht, u32 slots, void *buckets, const void *key, const void *value)
 {
 	u32 hash = ht->hash_func(key, ht->keysize, ht->seed);
 	u32 pos = hash & (slots - 1);
@@ -121,7 +121,7 @@ static bool ht_resize(HashTable *ht, u32 new_slots)
 	return TRUE;
 }
 
-bool ht_insert(HashTable *ht, const void *key, void *value)
+bool ht_insert(HashTable *ht, const void *key, const void *value)
 {
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
@@ -178,7 +178,7 @@ bool ht_insert(HashTable *ht, const void *key, void *value)
 	return TRUE;
 }
 
-bool ht_add(HashTable *ht, const void *key, void *value)
+bool ht_add(HashTable *ht, const void *key, const void *value)
 {
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
@@ -248,7 +248,7 @@ bool ht_remove(HashTable *ht, const void *key, void *ret)
 	return TRUE;
 }
 
-bool ht_contains(HashTable *ht, const void *key)
+bool ht_contains(const HashTable *ht, const void *key)
 {
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
@@ -280,7 +280,7 @@ bool ht_contains(HashTable *ht, const void *key)
 	return FALSE;
 }
 
-bool ht_lookup(HashTable *ht, const void *key, void *ret)
+bool ht_lookup(const HashTable *ht, const void *key, void *ret)
 {
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);

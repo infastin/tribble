@@ -49,7 +49,7 @@ Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func)
 	return tree;
 }
 
-Tree *tree_copy(Tree *dst, const Tree *src, i32 *err)
+Tree *tree_copy(Tree *dst, const Tree *src, bool *status)
 {
 	return_val_if_fail(src != NULL, NULL);
 	return_val_if_fail(src->cpyf != NULL, NULL);
@@ -67,8 +67,8 @@ Tree *tree_copy(Tree *dst, const Tree *src, i32 *err)
 	dst->cpyf = src->cpyf;
 	dst->root = NULL;
 
-	if (err != NULL)
-		*err = 0;
+	if (status != NULL)
+		*status = TRUE;
 
 	if (src->root == NULL)
 		return dst;
@@ -78,8 +78,8 @@ Tree *tree_copy(Tree *dst, const Tree *src, i32 *err)
 	if (dst->root == NULL) {
 		msg_error("couldn't allocate memory for a node of the copy of the tree!");
 
-		if (err != NULL)
-			*err = -1;
+		if (status != NULL)
+			*status = FALSE;
 
 		return dst;
 	}
@@ -94,8 +94,8 @@ Tree *tree_copy(Tree *dst, const Tree *src, i32 *err)
 			if (copy->left == NULL) {
 				msg_error("couldn't allocate memory for a node of the copy of the tree!");
 
-				if (err != NULL)
-					*err = -1;
+				if (status != NULL)
+					*status = FALSE;
 
 				return dst;
 			}
@@ -110,8 +110,8 @@ Tree *tree_copy(Tree *dst, const Tree *src, i32 *err)
 			if (copy->right == NULL) {
 				msg_error("couldn't allocate memory for a node of the copy of the tree!");
 
-				if (err != NULL)
-					*err = -1;
+				if (status != NULL)
+					*status = FALSE;
 
 				return dst;
 			}

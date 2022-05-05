@@ -6,6 +6,8 @@
 #include <malloc.h>
 
 #define STRFUNC ((const char *) (__PRETTY_FUNCTION__))
+#define STRFILE ((const char *) (__FILE__))
+#define U32LINE ((u32) (__LINE__))
 
 #define talloc(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (malloc(sizeof(struct_type) * n_structs)) : (NULL)))
 #define talloc0(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (calloc(n_structs, sizeof(struct_type))) : (NULL)))

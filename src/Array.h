@@ -74,7 +74,7 @@ bool array_push_back_many(Array *arr, const void *data, u32 len);
 bool array_push_front(Array *arr, const void *data);
 
 /**
- * @brief Adds elements onto the start of the array
+ *@brief Adds elements onto the start of the array
  *
  * @param arr The array where to add elements
  * @param data The pointer to elements to be added
@@ -253,5 +253,14 @@ void array_free(Array *arr);
  * @return TRUE if found, FALSE if not
  */
 bool array_search(Array *arr, const void *target, CmpFunc cmp_func, u32 *index);
+
+/**
+ * @brief Unsafe version of array_get
+ * @param arr The array where to get
+ * @param type The type to be got
+ * @param index The position of the entry which value is to be got
+ * @return Value of the entry
+ */
+#define array_get_unsafe(arr, type, index) (*(type *) &((char *) ((arr)->mass))[(index) * (arr)->elemsize])
 
 #endif /* end of include guard: ARRAY_H_KSABYJ3T */
