@@ -28,6 +28,12 @@
 		} while (--__size > 0);    \
 	}
 
+#define ROTL32(x, r) (((x) << (r)) | ((x) >> (32 - (r))))
+#define ROTR32(x, r) (((x) >> (r)) | ((x) << (32 - (r))))
+
+#define ROTL64(x, r) (((x) << (r)) | ((x) >> (64 - (r))))
+#define ROTR64(x, r) (((x) >> (r)) | ((x) << (64 - (r))))
+
 /* Linux kernel vibes */
 
 #ifndef offsetof

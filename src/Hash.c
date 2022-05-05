@@ -2,9 +2,6 @@
 
 #include "Macros.h"
 
-#define ROTL32(x, r) (((x) << (r)) | ((x) >> (32 - (r))))
-#define ROTR32(x, r) (((x) >> (r)) | ((x) << (32 - (r))))
-
 u32 murmur_hash3(const void *key, u32 keysize, u32 seed)
 {
 	const u8 *data = (const u8 *) key;
