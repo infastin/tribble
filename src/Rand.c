@@ -66,7 +66,7 @@ u32 xs128ss_next(Xoshiro128StarStar *state)
 {
 	return_val_if_fail(state != NULL, 0);
 
-	u32 result = ROTL32(state->s[1] * 5, 7) * 9;
+	u32 result = rotl32(state->s[1] * 5, 7) * 9;
 	u32 t = state->s[1] << 9;
 
 	state->s[2] ^= state->s[0];
@@ -76,7 +76,7 @@ u32 xs128ss_next(Xoshiro128StarStar *state)
 
 	state->s[2] ^= t;
 
-	state->s[3] = ROTL32(state->s[3], 11);
+	state->s[3] = rotl32(state->s[3], 11);
 
 	return result;
 }
@@ -117,7 +117,7 @@ u32 xs128p_next_u32(Xoshiro128Plus *state)
 
 	state->s[2] ^= t;
 
-	state->s[3] = ROTL32(state->s[3], 11);
+	state->s[3] = rotl32(state->s[3], 11);
 
 	return result;
 }
@@ -159,7 +159,7 @@ u64 xs256ss_next(Xoshiro256StarStar *state)
 {
 	return_val_if_fail(state != NULL, 0);
 
-	u64 result = ROTL64(state->s[1] * 5, 7) * 9;
+	u64 result = rotl64(state->s[1] * 5, 7) * 9;
 	u64 t = state->s[1] << 17;
 
 	state->s[2] ^= state->s[0];
@@ -169,7 +169,7 @@ u64 xs256ss_next(Xoshiro256StarStar *state)
 
 	state->s[2] ^= t;
 
-	state->s[3] = ROTL64(state->s[3], 45);
+	state->s[3] = rotl64(state->s[3], 45);
 
 	return result;
 }
@@ -210,7 +210,7 @@ u64 xs256p_next_u64(Xoshiro256Plus *state)
 
 	state->s[2] ^= t;
 
-	state->s[3] = ROTL64(state->s[3], 45);
+	state->s[3] = rotl64(state->s[3], 45);
 
 	return result;
 }

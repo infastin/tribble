@@ -1,6 +1,5 @@
 #include "Tree.h"
 
-#include "List.h"
 #include "Macros.h"
 #include "Messages.h"
 #include "Types.h"
@@ -12,7 +11,6 @@ typedef enum {
 	RIGHT
 } dir_t;
 
-#define max(a, b) ((a) > (b) ? (a) : (b))
 #define height(n) ((n) == NULL ? 0 : (n)->height)
 #define update_height(n) ((n)->height = max(height((n)->left), height((n)->right)) + 1)
 #define balance(n) ((n) == NULL ? 0 : height((n)->right) - height((n)->left))

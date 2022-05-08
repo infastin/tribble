@@ -18,11 +18,11 @@ u32 murmurhash3_32(const void *key, u32 keysize, u32 seed)
 		u32 k = blocks[i];
 
 		k *= c1;
-		k = ROTL32(k, 15);
+		k = rotl32(k, 15);
 		k *= c2;
 
 		h ^= k;
-		h = ROTL32(h, 13);
+		h = rotl32(h, 13);
 		h = h * 5 + 0xe6546b64;
 	}
 
@@ -36,7 +36,7 @@ u32 murmurhash3_32(const void *key, u32 keysize, u32 seed)
 	case 1:
 		k ^= tail[0];
 		k *= c1;
-		k = ROTL32(k, 15);
+		k = rotl32(k, 15);
 		k *= c2;
 		h ^= k;
 	};
@@ -70,20 +70,20 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 		u64 k2 = blocks[i * 2 + 1];
 
 		k1 *= c1;
-		k1 = ROTL64(k1, 31);
+		k1 = rotl64(k1, 31);
 		k1 *= c2;
 		h1 ^= k1;
 
-		h1 = ROTL64(h1, 27);
+		h1 = rotl64(h1, 27);
 		h1 += h2;
 		h1 = h1 * 5 + 0x52dce729;
 
 		k2 *= c2;
-		k2 = ROTL64(k2, 33);
+		k2 = rotl64(k2, 33);
 		k2 *= c1;
 		h2 ^= k2;
 
-		h2 = ROTL64(h2, 31);
+		h2 = rotl64(h2, 31);
 		h2 += h1;
 		h2 = h2 * 5 + 0x38495ab5;
 	}
@@ -103,7 +103,7 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 	case 9:
 		k2 ^= ((u64) tail[8]) << 0;
 		k2 *= c2;
-		k2 = ROTL64(k2, 33);
+		k2 = rotl64(k2, 33);
 		k2 *= c1;
 		h2 ^= k2;
 	case 8: k1 ^= ((u64) tail[7]) << 56;
@@ -116,7 +116,7 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 	case 1:
 		k1 ^= ((u64) tail[0]) << 0;
 		k1 *= c1;
-		k1 = ROTL64(k1, 31);
+		k1 = rotl64(k1, 31);
 		k1 *= c2;
 		h1 ^= k1;
 	};
@@ -331,19 +331,19 @@ usize jhash(const void *key, usize keysize, usize seed)
 #define HALF_SIPROUND        \
 	do {                     \
 		v0 += v1;            \
-		v1 = ROTL32(v1, 5);  \
+		v1 = rotl32(v1, 5);  \
 		v1 ^= v0;            \
-		v0 = ROTL32(v0, 16); \
+		v0 = rotl32(v0, 16); \
 		v2 += v3;            \
-		v3 = ROTL32(v3, 8);  \
+		v3 = rotl32(v3, 8);  \
 		v3 ^= v2;            \
 		v0 += v3;            \
-		v3 = ROTL32(v3, 7);  \
+		v3 = rotl32(v3, 7);  \
 		v3 ^= v0;            \
 		v2 += v1;            \
-		v1 = ROTL32(v1, 13); \
+		v1 = rotl32(v1, 13); \
 		v1 ^= v2;            \
-		v2 = ROTL32(v2, 16); \
+		v2 = rotl32(v2, 16); \
 	} while (0)
 
 u32 siphash32(const void *key, u32 keysize, u32 seed)
@@ -410,19 +410,19 @@ u32 siphash32(const void *key, u32 keysize, u32 seed)
 #define SIPROUND             \
 	do {                     \
 		v0 += v1;            \
-		v1 = ROTL64(v1, 13); \
+		v1 = rotl64(v1, 13); \
 		v1 ^= v0;            \
-		v0 = ROTL64(v0, 32); \
+		v0 = rotl64(v0, 32); \
 		v2 += v3;            \
-		v3 = ROTL64(v3, 16); \
+		v3 = rotl64(v3, 16); \
 		v3 ^= v2;            \
 		v0 += v3;            \
-		v3 = ROTL64(v3, 21); \
+		v3 = rotl64(v3, 21); \
 		v3 ^= v0;            \
 		v2 += v1;            \
-		v1 = ROTL64(v1, 17); \
+		v1 = rotl64(v1, 17); \
 		v1 ^= v2;            \
-		v2 = ROTL64(v2, 32); \
+		v2 = rotl64(v2, 32); \
 	} while (0)
 
 u64 siphash64(const void *key, u64 keysize, u64 seed)

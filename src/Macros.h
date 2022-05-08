@@ -12,8 +12,8 @@
 #define talloc(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (malloc(sizeof(struct_type) * n_structs)) : (NULL)))
 #define talloc0(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (calloc(n_structs, sizeof(struct_type))) : (NULL)))
 
-#define GET_PTR(type, ...) ((type *) &((type){ __VA_ARGS__ }))
-#define GET_ARR(type, len, ...) ((type[len]){ __VA_ARGS__ })
+#define get_ptr(type, ...) ((type *) &((type){ __VA_ARGS__ }))
+#define get_arr(type, len, ...) ((type[len]){ __VA_ARGS__ })
 
 #define array_cell(m, e, i) ((void *) &((char *) (m))[(i) * (e)])
 #define array_get(m, t, i) ((t *) (array_cell((m), sizeof(t), (i))))
@@ -30,11 +30,14 @@
 		} while (--__size > 0);    \
 	}
 
-#define ROTL32(x, r) (((x) << (r)) | ((x) >> (32 - (r))))
-#define ROTR32(x, r) (((x) >> (r)) | ((x) << (32 - (r))))
+#define rotl32(x, r) (((x) << (r)) | ((x) >> (32 - (r))))
+#define rotr32(x, r) (((x) >> (r)) | ((x) << (32 - (r))))
 
-#define ROTL64(x, r) (((x) << (r)) | ((x) >> (64 - (r))))
-#define ROTR64(x, r) (((x) >> (r)) | ((x) << (64 - (r))))
+#define rotl64(x, r) (((x) << (r)) | ((x) >> (64 - (r))))
+#define rotr64(x, r) (((x) >> (r)) | ((x) << (64 - (r))))
+
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
 
 /* Linux kernel vibes */
 
