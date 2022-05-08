@@ -51,15 +51,6 @@ static const char *message_flag_to_prefix(MessageFlags flag, bool *to_stdout)
 	return "";
 }
 
-#if ENABLE_MSG == 0
-
-void message(MessageFlags flag, const char *msg, ...){};
-void message_func(MessageFlags flag, const char *func, const char *msg, ...){};
-void return_if_fail_warning(const char *func, const char *expr){};
-void exit_if_fail_critical(const char *func, const char *expr){};
-
-#else
-
 void message(MessageFlags flag, const char *msg, ...)
 {
 	const char *color;
@@ -116,5 +107,3 @@ void exit_if_fail_critical(const char *file, usize line, const char *func, const
 
 	message(MESSAGE_CRITICAL, "%s%s:%llu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
 }
-
-#endif

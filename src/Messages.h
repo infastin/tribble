@@ -13,8 +13,6 @@
  *  DEBUG: 		DEBUG.
  */
 
-#define ENABLE_MSG 1
-
 typedef enum {
 	MESSAGE_ERROR,
 	MESSAGE_CRITICAL,
