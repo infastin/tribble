@@ -11,141 +11,162 @@ struct _SList {
 };
 
 /**
- * @brief Adds a new entry onto the end of the list
+ * @brief Creates a new singly-linked list
  *
- * @param list The list where to add the node
- * @param node The entry to be added
+ * @param list The pointer to the list to be initialized (can be NULL)
+ *
+ * @return A new singly-linked list
+ */
+SList *slist_init(SList *list);
+
+/**
+ * @brief Adds a new entry onto the end of the list.
+ *
+ * @param list The list where to add the node.
+ * @param node The entry to be added.
  */
 void slist_push_back(SList *list, SList *node);
 
 /**
- * @brief Adds a new entry onto the start of the list
+ * @brief Adds a new entry onto the start of the list.
  *
- * @param list The list to add the node
- * @param node The entry to be added
+ * @param list The list to add the node.
+ * @param node The entry to be added.
  */
 void slist_push_front(SList *list, SList *node);
 
 /**
- * @brief Checks whether the list is empty or not
+ * @brief Checks whether the list is empty or not.
  *
- * @param list The list to be checked
+ * @param list The list to be checked.
  *
- * @return TRUE if empty, FALSE if not
+ * @return TRUE if empty, FALSE if not.
  */
 bool slist_empty(const SList *list);
 
 /**
- * @brief Returns the number of elements in the list
+ * @brief Returns the number of elements in the list.
  *
- * @param list The list with some/none elements
+ * @param list The list with some/none elements.
  *
- * @return The number of elements in the list
+ * @return The number of elements in the list.
  */
-u32 slist_len(const SList *list);
+usize slist_len(const SList *list);
 
 /**
- * @brief Reverses the list
+ * @brief Reverses the list.
  *
- * @param list The list to be reversed
+ * @param list The list to be reversed.
  */
 void slist_reverse(SList *list);
 
 /**
- * @brief Sorts the list
+ * @brief Sorts the list.
  *
- * @param list The list to be sorted
- * @param cmp_func The compare function to sort entries
+ * @param list The list to be sorted.
+ * @param cmp_func The compare function for sorting entries.
  */
 void slist_sort(SList *list, CmpFunc cmp_func);
 
 /**
- * @brief Gets the element at the given position
+ * @brief Gets the element at the given position.
  *
- * @param list The list with the element
- * @param n The position of the element
+ * @param list The list with the element.
+ * @param n The position of the element.
  *
- * @return The element, or NULL if position is beyond the end of the list
+ * @return The element, or NULL if position is beyond the end of the list.
  */
-SList *slist_nth(SList *list, u32 n);
+SList *slist_nth(SList *list, usize n);
 
 /**
- * @brief Gets the position of the element in the list
+ * @brief Gets the position of the element in the list.
  *
- * @param list The list with the element
- * @param node The element in the list
+ * @param list The list with the element.
+ * @param node The element in the list.
  *
- * @return The position of the element, or -1 if the element is not found
+ * @return The position of the element, or -1 if the element is not found.
  */
-u32 slist_position(SList *list, SList *node);
+usize slist_position(SList *list, SList *node);
 
 /**
- * @brief Inserts one node after other node
+ * @brief Finds the element in the list.
  *
- * @param sibling The node where to insert the other node after
- * @param node The node to be inserted
+ * @param list The list with the element.
+ * @param node The similar node for comparison.
+ * @param cmp_func The function for comparing elements.
+ * @param index The pointer to retrieve the position of the element (can be NULL).
+ *
+ * @return The element, or NULL if it isn't in the list.
+ */
+SList *slist_lookup(SList *list, const SList *node, CmpFunc cmp_func, usize *index);
+
+/**
+ * @brief Inserts one node after other node.
+ *
+ * @param sibling The node where to insert the other node after.
+ * @param node The node to be inserted.
  */
 void slist_insert_after(SList *sibling, SList *node);
 
 /**
- * @brief Inserts one node after other node
+ * @brief Inserts one node after other node.
  *
- * @param list The list where the node is to be inserted
- * @param sibling The node before which the other is to be inserted
- * @param node The node to be inserted
+ * @param list The list where the node is to be inserted.
+ * @param sibling The node before which the other is to be inserted.
+ * @param node The node to be inserted.
  */
 void slist_insert_before(SList *list, SList *sibling, SList *node);
 
 /**
- * @brief Removes the node from the list
+ * @brief Removes the node from the list.
  *
- * @param list The list with the node
- * @param node The node to be removed
+ * @param list The list with the node.
+ * @param node The node to be removed.
  */
 void slist_remove(SList *list, SList *node);
 
 /**
- * @brief Removes the last node from the list
+ * @brief Removes the last node from the list.
  *
- * @param list The list that will lose its last node
+ * @param list The list that will lose its last node.
  *
- * @return The node that was removed
+ * @return The node that was removed.
  */
 SList *slist_pop_back(SList *list);
 
 /**
- * @brief Removes the first node from the list
+ * @brief Removes the first node from the list.
  *
- * @param list The list that will lose its first node
+ * @param list The list that will lose its first node.
  *
- * @return The node that was removed
+ * @return The node that was removed.
  */
 SList *slist_pop_front(SList *list);
 
 /**
- * @brief Transfers elements from one list to another
+ * @brief Transfers elements from one list to another.
  *
- * @param list The list to be transfered
- * @param node The node after which the list will be inserted
+ * @param list The list to be transfered.
+ * @param node The node after which the list will be inserted.
  */
 void slist_splice(SList *list, SList *node);
 
 /**
- * @brief Copies the list
+ * @brief Copies the list.
  *
- * @param dst The destination list
- * @param src The source list
- * @param copy_func The function for copying nodes
+ * @param dst The destination list.
+ * @param src The source list.
+ * @param copy_func The function for copying nodes.
  *
- * @return TRUE on success
+ * @return TRUE on success.
  */
 bool slist_copy(SList *dst, const SList *src, CopyFunc copy_func);
 
 /**
- * @brief Frees all nodes in the list
+ * @brief Frees all nodes in the list.
  *
- * @param list The list to free
- * @param free_func The function to free nodes
+ * @param list The list to free.
+ * @param free_func The function for freeing nodes.
  */
 void slist_purge(SList *list, FreeFunc free_func);
 
@@ -154,13 +175,6 @@ void slist_purge(SList *list, FreeFunc free_func);
 	do {                       \
 		(node)->next = (node); \
 	} while (0)
-
-/* Inits a head */
-#define slist_head_init(head) slist_node_init(head)
-
-/* Inits a list */
-#define slist_init(name) \
-	SList name = { &(name) }
 
 /* Gets the struct for this entry */
 #define slist_entry(node, type, member) \

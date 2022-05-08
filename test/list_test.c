@@ -73,8 +73,11 @@ void *int_list_copy(const void *ptr)
 
 void test_push_purge()
 {
-	list_init(list1);
-	list_init(list2);
+	List list1;
+	list_init(&list1);
+
+	List list2;
+	list_init(&list2);
 
 	List *node1 = int_list_new_node(10);
 	List *node2 = int_list_new_node(20);
@@ -117,8 +120,11 @@ void test_push_purge()
 
 void test_reverse()
 {
-	list_init(list1);
-	list_init(list2);
+	List list1;
+	list_init(&list1);
+
+	List list2;
+	list_init(&list2);
 
 	int_list_push_back(&list1, 10);
 	int_list_push_front(&list1, 20);
@@ -165,8 +171,11 @@ void test_reverse()
 
 void test_sort()
 {
-	list_init(list1);
-	list_init(list2);
+	List list1;
+	list_init(&list1);
+
+	List list2;
+	list_init(&list2);
 
 	int_list_push_back(&list1, 30);
 	int_list_push_back(&list1, 1);
@@ -203,8 +212,11 @@ void test_sort()
 
 void test_copy()
 {
-	list_init(list1);
-	list_init(list2);
+	List list1;
+	list_init(&list1);
+
+	List list2;
+	list_init(&list2);
 
 	int_list_push_back(&list1, 1);
 	int_list_push_back(&list1, 2);
@@ -234,7 +246,8 @@ void test_copy()
 
 void test_len_empty()
 {
-	list_init(list);
+	List list;
+	list_init(&list);
 
 	int_list_push_back(&list, 1);
 	int_list_push_back(&list, 2);
@@ -252,7 +265,8 @@ void test_len_empty()
 
 void test_nth_position()
 {
-	list_init(list);
+	List list;
+	list_init(&list);
 
 	List *node1 = int_list_new_node(1);
 	List *node2 = int_list_new_node(2);
@@ -276,8 +290,11 @@ void test_nth_position()
 
 void test_insert()
 {
-	list_init(list1);
-	list_init(list2);
+	List list1;
+	list_init(&list1);
+
+	List list2;
+	list_init(&list2);
 
 	List *node1 = int_list_new_node(1);
 	List *node2 = int_list_new_node(2);
@@ -317,8 +334,11 @@ void test_insert()
 
 void test_remove_pop()
 {
-	list_init(list1);
-	list_init(list2);
+	List list1;
+	list_init(&list1);
+
+	List list2;
+	list_init(&list2);
 
 	List *node1 = int_list_new_node(1);
 	List *node2 = int_list_new_node(2);
@@ -359,9 +379,14 @@ void test_remove_pop()
 
 void test_splice()
 {
-	list_init(list1);
-	list_init(list2);
-	list_init(list3);
+	List list1;
+	list_init(&list1);
+
+	List list2;
+	list_init(&list2);
+
+	List list3;
+	list_init(&list3);
 
 	int_list_push_back(&list1, 1);
 	int_list_push_back(&list1, 2);

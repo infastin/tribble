@@ -2,6 +2,23 @@
 
 #include "Messages.h"
 
+List *list_init(List *list)
+{
+	if (list == NULL) {
+		list = talloc(List, 1);
+
+		if (list == NULL) {
+			msg_error("couldn't allocate memory for the list!");
+			return NULL;
+		}
+	}
+
+	list->next = list;
+	list->prev = list;
+
+	return list;
+}
+
 void list_push_back(List *list, List *node)
 {
 	return_if_fail(list != NULL);
@@ -57,14 +74,14 @@ bool list_empty(const List *list)
 	return list->next == list;
 }
 
-u32 list_len(const List *list)
+usize list_len(const List *list)
 {
 	return_val_if_fail(list != NULL, 0);
 
 	if (list->next == list)
 		return 0;
 
-	u32 len = 0;
+	usize len = 0;
 	List *iter;
 
 	list_foreach (iter, list)
@@ -241,11 +258,11 @@ void list_sort(List *list, CmpFunc cmp_func)
 	list->prev = end;
 }
 
-List *list_nth(List *list, u32 n)
+List *list_nth(List *list, usize n)
 {
 	return_val_if_fail(list != NULL, NULL);
 
-	u32 i = 0;
+	usize i = 0;
 	List *iter;
 
 	list_foreach (iter, list) {
@@ -257,11 +274,11 @@ List *list_nth(List *list, u32 n)
 	return NULL;
 }
 
-u32 list_position(List *list, List *node)
+usize list_position(List *list, List *node)
 {
 	return_val_if_fail(list != NULL, -1);
 
-	u32 i = 0;
+	usize i = 0;
 	List *iter;
 
 	list_foreach (iter, list) {
@@ -273,6 +290,27 @@ u32 list_position(List *list, List *node)
 	}
 
 	return -1;
+}
+
+List *list_lookup(List *list, const List *node, CmpFunc cmp_func, usize *index)
+{
+	return_val_if_fail(list != NULL, NULL);
+	return_val_if_fail(cmp_func != NULL, NULL);
+
+	usize i = 0;
+	List *iter;
+
+	list_foreach (iter, list) {
+		if (cmp_func(iter, node) == 0) {
+			if (index != NULL)
+				*index = i;
+			return iter;
+		}
+
+		i++;
+	}
+
+	return NULL;
 }
 
 void list_remove(List *node)

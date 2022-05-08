@@ -86,7 +86,7 @@ void message(MessageFlags flag, const char *msg, ...)
 	free(parsed);
 }
 
-void message_func(MessageFlags flag, const char *file, u32 line, const char *func, const char *msg, ...)
+void message_func(MessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...)
 {
 	va_list ap;
 	va_start(ap, msg);
@@ -96,25 +96,25 @@ void message_func(MessageFlags flag, const char *file, u32 line, const char *fun
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(flag, "%s%s:%u:%s%s: %s", white, file, line, func, reset, parsed);
+	message(flag, "%s%s:%llu:%s%s: %s", white, file, line, func, reset, parsed);
 
 	free(parsed);
 }
 
-void return_if_fail_warning(const char *file, u32 line, const char *func, const char *expr)
+void return_if_fail_warning(const char *file, usize line, const char *func, const char *expr)
 {
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(MESSAGE_WARNING, "%s%s:%u:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
+	message(MESSAGE_WARNING, "%s%s:%llu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
 }
 
-void exit_if_fail_critical(const char *file, u32 line, const char *func, const char *expr)
+void exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr)
 {
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(MESSAGE_CRITICAL, "%s%s:%u:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
+	message(MESSAGE_CRITICAL, "%s%s:%llu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
 }
 
 #endif

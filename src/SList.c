@@ -2,6 +2,22 @@
 
 #include "Messages.h"
 
+SList *slist_init(SList *list)
+{
+	if (list == NULL) {
+		list = talloc(SList, 1);
+
+		if (list == NULL) {
+			msg_error("couldn't allocate memory for the list!");
+			return NULL;
+		}
+	}
+
+	list->next = list;
+
+	return list;
+}
+
 void slist_push_back(SList *list, SList *node)
 {
 	return_if_fail(list != NULL);
@@ -32,14 +48,14 @@ bool slist_empty(const SList *list)
 	return list->next == list;
 }
 
-u32 slist_len(const SList *list)
+usize slist_len(const SList *list)
 {
 	return_val_if_fail(list != NULL, 0);
 
 	if (list->next == list)
 		return 0;
 
-	u32 len = 0;
+	usize len = 0;
 	SList *iter;
 
 	slist_foreach (iter, list)
@@ -191,11 +207,11 @@ void slist_sort(SList *list, CmpFunc cmp_func)
 	list->next = result;
 }
 
-SList *slist_nth(SList *list, u32 n)
+SList *slist_nth(SList *list, usize n)
 {
 	return_val_if_fail(list != NULL, NULL);
 
-	u32 i = 0;
+	usize i = 0;
 	SList *iter;
 
 	slist_foreach (iter, list) {
@@ -207,11 +223,11 @@ SList *slist_nth(SList *list, u32 n)
 	return NULL;
 }
 
-u32 slist_position(SList *list, SList *node)
+usize slist_position(SList *list, SList *node)
 {
 	return_val_if_fail(list != NULL, -1);
 
-	u32 i = 0;
+	usize i = 0;
 	SList *iter;
 
 	slist_foreach (iter, list) {
@@ -223,6 +239,27 @@ u32 slist_position(SList *list, SList *node)
 	}
 
 	return -1;
+}
+
+SList *slist_lookup(SList *list, const SList *node, CmpFunc cmp_func, usize *index)
+{
+	return_val_if_fail(list != NULL, NULL);
+	return_val_if_fail(cmp_func != NULL, NULL);
+
+	usize i = 0;
+	SList *iter;
+
+	slist_foreach (iter, list) {
+		if (cmp_func(iter, node) == 0) {
+			if (index != NULL)
+				*index = i;
+			return iter;
+		}
+
+		i++;
+	}
+
+	return NULL;
 }
 
 void slist_remove(SList *list, SList *node)

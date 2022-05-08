@@ -1,5 +1,4 @@
 src_files = [
-  'Array.c',
   'Hash.c',
   'HashTable.c',
   'Heap.c',
@@ -10,10 +9,10 @@ src_files = [
   'SList.c',
   'Tree.c',
   'Utils.c',
+  'Vector.c',
 ]
 
 header_files = [
-  'Array.h',
   'Hash.h',
   'HashTable.h',
   'Heap.h',
@@ -27,6 +26,7 @@ header_files = [
   'Tree.h',
   'Types.h',
   'Utils.h',
+  'Vector.h',
 ]
 
 libtribble = both_libraries('tribble', src_files, install: true)

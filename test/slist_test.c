@@ -73,8 +73,11 @@ void *int_slist_copy(const void *ptr)
 
 void test_push_purge()
 {
-	slist_init(list1);
-	slist_init(list2);
+	SList list1;
+	slist_init(&list1);
+
+	SList list2;
+	slist_init(&list2);
 
 	SList *node1 = int_slist_new_node(10);
 	SList *node2 = int_slist_new_node(20);
@@ -125,8 +128,11 @@ void test_push_purge()
 
 void test_reverse()
 {
-	slist_init(list1);
-	slist_init(list2);
+	SList list1;
+	slist_init(&list1);
+
+	SList list2;
+	slist_init(&list2);
 
 	int_slist_push_back(&list1, 10);
 	int_slist_push_front(&list1, 20);
@@ -173,8 +179,11 @@ void test_reverse()
 
 void test_sort()
 {
-	slist_init(list1);
-	slist_init(list2);
+	SList list1;
+	slist_init(&list1);
+
+	SList list2;
+	slist_init(&list2);
 
 	int_slist_push_front(&list1, 30);
 	int_slist_push_front(&list1, 1);
@@ -212,8 +221,11 @@ void test_sort()
 
 void test_copy()
 {
-	slist_init(list1);
-	slist_init(list2);
+	SList list1;
+	slist_init(&list1);
+
+	SList list2;
+	slist_init(&list2);
 
 	int_slist_push_front(&list1, 1);
 	int_slist_push_front(&list1, 2);
@@ -243,7 +255,8 @@ void test_copy()
 
 void test_len_empty()
 {
-	slist_init(list);
+	SList list;
+	slist_init(&list);
 
 	int_slist_push_front(&list, 1);
 	int_slist_push_front(&list, 2);
@@ -261,7 +274,8 @@ void test_len_empty()
 
 void test_nth_position()
 {
-	slist_init(list);
+	SList list;
+	slist_init(&list);
 
 	SList *node1 = int_slist_new_node(1);
 	SList *node2 = int_slist_new_node(2);
@@ -285,8 +299,11 @@ void test_nth_position()
 
 void test_insert()
 {
-	slist_init(list1);
-	slist_init(list2);
+	SList list1;
+	slist_init(&list1);
+
+	SList list2;
+	slist_init(&list2);
 
 	SList *node1 = int_slist_new_node(1);
 	SList *node2 = int_slist_new_node(2);
@@ -326,8 +343,11 @@ void test_insert()
 
 void test_remove_pop()
 {
-	slist_init(list1);
-	slist_init(list2);
+	SList list1;
+	slist_init(&list1);
+
+	SList list2;
+	slist_init(&list2);
 
 	SList *node1 = int_slist_new_node(1);
 	SList *node2 = int_slist_new_node(2);
@@ -368,9 +388,14 @@ void test_remove_pop()
 
 void test_splice()
 {
-	slist_init(list1);
-	slist_init(list2);
-	slist_init(list3);
+	SList list1;
+	slist_init(&list1);
+
+	SList list2;
+	slist_init(&list2);
+
+	SList list3;
+	slist_init(&list3);
 
 	int_slist_push_front(&list1, 1);
 	int_slist_push_front(&list1, 2);

@@ -1,30 +1,34 @@
 #ifndef HEAP_H_MGLIJUQF
 #define HEAP_H_MGLIJUQF
 
-#include "Array.h"
 #include "Types.h"
+#include "Vector.h"
 
 typedef struct _Heap Heap;
 
 struct _Heap {
-	Array array;
+	Vector vector;
 	CmpFunc cmp_func;
 };
 
-Heap *heap_init(Heap *heap, u32 elemsize, CmpFunc cmp_func);
+Heap *heap_init(Heap *heap, usize elemsize, CmpFunc cmp_func);
 
 bool heap_insert(Heap *heap, const void *data);
 
-bool heap_remove(Heap *heap, u32 index, void *ret);
+bool heap_remove(Heap *heap, usize index, void *ret);
 
-bool heap_get(const Heap *heap, u32 index, void *ret);
+bool heap_pop_back(Heap *heap, void *ret);
 
-bool heap_search(Heap *heap, const void *target, u32 *index);
+bool heap_pop_front(Heap *heap, void *ret);
 
-void heap_purge(Heap *heap);
+bool heap_get(const Heap *heap, usize index, void *ret);
 
-void heap_free(Heap *heap);
+bool heap_search(Heap *heap, const void *target, usize *index);
 
-#define heap_get_unsafe(heap, type, index) (array_get_unsafe(&(heap)->array, type, index))
+void heap_purge(Heap *heap, FreeFunc free_func);
+
+void heap_free(Heap *heap, FreeFunc free_func);
+
+#define heap_get_unsafe(heap, type, index) (vector_get_unsafe(&(heap)->vector, type, index))
 
 #endif /* end of include guard: HEAP_H_MGLIJUQF */

@@ -25,42 +25,42 @@ typedef enum {
 } MessageFlags;
 
 void message(MessageFlags flag, const char *msg, ...);
-void message_func(MessageFlags flag, const char *file, u32 line, const char *func, const char *msg, ...);
-void return_if_fail_warning(const char *file, u32 line, const char *func, const char *expr);
-void exit_if_fail_critical(const char *file, u32 line, const char *func, const char *expr);
+void message_func(MessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...);
+void return_if_fail_warning(const char *file, usize line, const char *func, const char *expr);
+void exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr);
 
-#define return_if_fail(expr)                                      \
-	if (!(expr)) {                                                \
-		return_if_fail_warning(STRFILE, U32LINE, STRFUNC, #expr); \
-		return;                                                   \
+#define return_if_fail(expr)                                        \
+	if (!(expr)) {                                                  \
+		return_if_fail_warning(STRFILE, USIZELINE, STRFUNC, #expr); \
+		return;                                                     \
 	}
 
-#define return_val_if_fail(expr, val)                             \
-	if (!(expr)) {                                                \
-		return_if_fail_warning(STRFILE, U32LINE, STRFUNC, #expr); \
-		return (val);                                             \
+#define return_val_if_fail(expr, val)                               \
+	if (!(expr)) {                                                  \
+		return_if_fail_warning(STRFILE, USIZELINE, STRFUNC, #expr); \
+		return (val);                                               \
 	}
 
 #define do_if_fail(expr) \
-	if (!(expr) && (return_if_fail_warning(STRFILE, U32LINE, STRFUNC, #expr), 1))
+	if (!(expr) && (return_if_fail_warning(STRFILE, USIZELINE, STRFUNC, #expr), 1))
 
-#define exit_if_fail(expr)                                       \
-	if (!(expr)) {                                               \
-		exit_if_fail_critical(STRFILE, U32LINE, STRFUNC, #expr); \
-		exit(EXIT_FAILURE);                                      \
+#define exit_if_fail(expr)                                         \
+	if (!(expr)) {                                                 \
+		exit_if_fail_critical(STRFILE, USIZELINE, STRFUNC, #expr); \
+		exit(EXIT_FAILURE);                                        \
 	}
 
-#define exit_with_code_if_fail(expr, code)                       \
-	if (!(expr)) {                                               \
-		exit_if_fail_critical(STRFILE, U32LINE, STRFUNC, #expr); \
-		exit(code);                                              \
+#define exit_with_code_if_fail(expr, code)                         \
+	if (!(expr)) {                                                 \
+		exit_if_fail_critical(STRFILE, USIZELINE, STRFUNC, #expr); \
+		exit(code);                                                \
 	}
 
-#define msg_error(...) (message_func(MESSAGE_ERROR, STRFILE, U32LINE, STRFUNC, __VA_ARGS__))
-#define msg_warn(...) (message_func(MESSAGE_WARNING, STRFILE, U32LINE, STRFUNC, __VA_ARGS__))
-#define msg_critical(...) (message_func(MESSAGE_CRITICAL, STRFILE, U32LINE, STRFUNC, __VA_ARGS__))
-#define msg_info(...) (message_func(MESSAGE_INFO, STRFILE, U32LINE, STRFUNC, __VA_ARGS__))
-#define msg_debug(...) (message_func(MESSAGE_DEBUG, STRFILE, U32LINE, STRFUNC, __VA_ARGS__))
-#define msg_print(...) (message_func(MESSAGE_PRINT, STRFILE, U32LINE, STRFUNC, __VA_ARGS__))
+#define msg_error(...) (message_func(MESSAGE_ERROR, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
+#define msg_warn(...) (message_func(MESSAGE_WARNING, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
+#define msg_critical(...) (message_func(MESSAGE_CRITICAL, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
+#define msg_info(...) (message_func(MESSAGE_INFO, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
+#define msg_debug(...) (message_func(MESSAGE_DEBUG, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
+#define msg_print(...) (message_func(MESSAGE_PRINT, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
 
 #endif /* end of include guard: MESSAGES_H_V1NHZAPH */

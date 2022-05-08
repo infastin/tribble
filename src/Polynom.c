@@ -27,7 +27,7 @@ Polynom *poly_init(Polynom *poly)
 
 	poly->count = 0;
 	poly->degree = 0;
-	list_head_init(&poly->monoms);
+	list_init(&poly->monoms);
 
 	return poly;
 }
@@ -175,7 +175,7 @@ Polynom *poly_copy(Polynom *dst, const Polynom *src)
 
 	dst->degree = src->degree;
 	dst->count = src->count;
-	list_head_init(&dst->monoms);
+	list_init(&dst->monoms);
 
 	list_copy(&dst->monoms, &src->monoms, __monom_copy);
 

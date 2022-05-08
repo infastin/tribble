@@ -13,30 +13,30 @@ struct _SplitMix64 {
 };
 
 /**
- * @brief Initializes the state of SplitMix64 with the given seed
+ * @brief Initializes the state of SplitMix64 with the given seed.
  *
- * @param state The pointer to the state to be initialized (can be NULL)
- * @param seed The seed to initialize with
+ * @param state The pointer to the state to be initialized (can be NULL).
+ * @param seed The seed to initialize with.
  *
- * @return A new state
+ * @return A new state.
  */
 SplitMix64 *sm64_init(SplitMix64 *state, u64 seed);
 
 /**
- * @brief Generates a random number with the given state
+ * @brief Generates a random number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, U32_MAX]
+ * @return A random number in the range [0, U32_MAX].
  */
 u32 sm64_next_u32(SplitMix64 *state);
 
 /**
- * @brief Generates a random number with the given state
+ * @brief Generates a random number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, U64_MAX]
+ * @return A random number in the range [0, U64_MAX].
  */
 u64 sm64_next_u64(SplitMix64 *state);
 
@@ -51,21 +51,21 @@ struct _Xoshiro128StarStar {
 };
 
 /**
- * @brief Initializes the state of xoshiro128** with the given seed
+ * @brief Initializes the state of xoshiro128** with the given seed.
  *
- * @param state The pointer to the state to be initialized (can be NULL)
- * @param seed The seed to initialize with
+ * @param state The pointer to the state to be initialized (can be NULL).
+ * @param seed The seed to initialize with.
  *
- * @return A new state
+ * @return A new state.
  */
 Xoshiro128StarStar *xs128ss_init(Xoshiro128StarStar *state, u64 seed);
 
 /**
- * @brief Generates a random number with the given state
+ * @brief Generates a random number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, U32_MAX]
+ * @return A random number in the range [0, U32_MAX].
  */
 u32 xs128ss_next(Xoshiro128StarStar *state);
 
@@ -83,30 +83,30 @@ struct _Xoshiro128Plus {
 };
 
 /**
- * @brief Initializes the state of xoshiro128+ with the given seed
+ * @brief Initializes the state of xoshiro128+ with the given seed.
  *
- * @param state The pointer to the state to be initialized (can be NULL)
- * @param seed The seed to initialize with
+ * @param state The pointer to the state to be initialized (can be NULL).
+ * @param seed The seed to initialize with.
  *
- * @return A new state
+ * @return A new state.
  */
 Xoshiro128Plus *xs128p_init(Xoshiro128Plus *state, u64 seed);
 
 /**
- * @brief Generates a random number with the given state
+ * @brief Generates a random number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, U32_MAX]
+ * @return A random number in the range [0, U32_MAX].
  */
 u32 xs128p_next_u32(Xoshiro128Plus *state);
 
 /**
- * @brief Generates a random floating-point number with the given state
+ * @brief Generates a random floating-point number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, 1]
+ * @return A random number in the range [0, 1].
  */
 f32 xs128p_next_f32(Xoshiro128Plus *state);
 
@@ -121,21 +121,21 @@ struct _Xoshiro256StarStar {
 };
 
 /**
- * @brief Initializes the state of xoshiro256** with the given seed
+ * @brief Initializes the state of xoshiro256** with the given seed.
  *
- * @param state The pointer to the state to be initialized (can be NULL)
- * @param seed The seed to initialize with
+ * @param state The pointer to the state to be initialized (can be NULL).
+ * @param seed The seed to initialize with.
  *
- * @return A new state
+ * @return A new state.
  */
 Xoshiro256StarStar *xs256ss_init(Xoshiro256StarStar *state, u64 seed);
 
 /**
- * @brief Generates a random number with the given state
+ * @brief Generates a random number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, U64_MAX]
+ * @return A random number in the range [0, U64_MAX].
  */
 u64 xs256ss_next(Xoshiro256StarStar *state);
 
@@ -153,30 +153,30 @@ struct _Xoshiro256Plus {
 };
 
 /**
- * @brief Initializes the state of xoshiro256+ with the given seed
+ * @brief Initializes the state of xoshiro256+ with the given seed.
  *
- * @param state The pointer to the state to be initialized (can be NULL)
- * @param seed The seed to initialize with
+ * @param state The pointer to the state to be initialized (can be NULL).
+ * @param seed The seed to initialize with.
  *
- * @return A new state
+ * @return A new state.
  */
 Xoshiro256Plus *xs256p_init(Xoshiro256Plus *state, u64 seed);
 
 /**
- * @brief Generates a random number with the given state
+ * @brief Generates a random number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, U64_MAX]
+ * @return A random number in the range [0, U64_MAX].
  */
 u64 xs256p_next_u64(Xoshiro256Plus *state);
 
 /**
- * @brief Generates a random floating-point number with the given state
+ * @brief Generates a random floating-point number with the given state.
  *
- * @param state The pointer to the state
+ * @param state The pointer to the state.
  *
- * @return A random number in the range [0, 1]
+ * @return A random number in the range [0, 1].
  */
 f64 xs256p_next_f64(Xoshiro256Plus *state);
 

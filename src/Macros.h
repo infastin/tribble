@@ -7,7 +7,7 @@
 
 #define STRFUNC ((const char *) (__PRETTY_FUNCTION__))
 #define STRFILE ((const char *) (__FILE__))
-#define U32LINE ((u32) (__LINE__))
+#define USIZELINE ((usize) (__LINE__))
 
 #define talloc(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (malloc(sizeof(struct_type) * n_structs)) : (NULL)))
 #define talloc0(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (calloc(n_structs, sizeof(struct_type))) : (NULL)))
@@ -15,10 +15,10 @@
 #define GET_PTR(type, ...) ((type *) &((type){ __VA_ARGS__ }))
 #define GET_ARR(type, len, ...) ((type[len]){ __VA_ARGS__ })
 
-#define mass_cell(m, e, i) ((void *) &((char *) (m))[(i) * (e)])
-#define mass_get(m, t, i) ((t *) (mass_cell((m), sizeof(t), (i))))
+#define array_cell(m, e, i) ((void *) &((char *) (m))[(i) * (e)])
+#define array_get(m, t, i) ((t *) (array_cell((m), sizeof(t), (i))))
 
-#define mass_swap(a, b, elemsize)  \
+#define array_swap(a, b, elemsize) \
 	{                              \
 		usize __size = (elemsize); \
 		char *__a = (a);           \

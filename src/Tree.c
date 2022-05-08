@@ -1,5 +1,6 @@
 #include "Tree.h"
 
+#include "List.h"
 #include "Macros.h"
 #include "Messages.h"
 #include "Types.h"
@@ -7,29 +8,16 @@
 #include <malloc.h>
 
 typedef enum {
-	BLACK = 0,
-	RED
-} tn_color;
-
-typedef enum {
 	LEFT,
 	RIGHT
-} r_dir;
+} dir_t;
 
-#define color(n) (((n) == NULL) ? BLACK : (n)->color)
+#define max(a, b) ((a) > (b) ? (a) : (b))
+#define height(n) ((n) == NULL ? 0 : (n)->height)
+#define update_height(n) ((n)->height = max(height((n)->left), height((n)->right)) + 1)
+#define balance(n) ((n) == NULL ? 0 : height((n)->right) - height((n)->left))
 
-#define uncle(n) ({                              \
-	TreeNode *__p = (n)->parent;                 \
-	TreeNode *__g = __p->parent;                 \
-	(__p == __g->left) ? __g->right : __g->left; \
-})
-
-#define sibling(n) ({                            \
-	TreeNode *__p = (n)->parent;                 \
-	((n) == __p->left) ? __p->right : __p->left; \
-})
-
-Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func)
+Tree *tree_init(Tree *tree, CmpFunc cmp_func)
 {
 	return_val_if_fail(cmp_func != NULL, NULL);
 
@@ -43,16 +31,220 @@ Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func)
 	}
 
 	tree->root = NULL;
-	tree->cmpf = cmp_func;
-	tree->cpyf = copy_func;
+	tree->cmp_func = cmp_func;
 
 	return tree;
 }
 
-Tree *tree_copy(Tree *dst, const Tree *src, bool *status)
+static void __tree_rotate(Tree *tree, TreeNode *n, dir_t dir)
+{
+	TreeNode *c;
+	TreeNode *p = n->parent;
+
+	if (dir == LEFT) {
+		c = n->right;
+
+		n->right = c->left;
+		c->left = n;
+		c->parent = p;
+		n->parent = c;
+
+		if (n->right != NULL)
+			n->right->parent = n;
+	} else {
+		c = n->left;
+
+		n->left = c->right;
+		c->right = n;
+		c->parent = p;
+		n->parent = c;
+
+		if (n->left != NULL)
+			n->left->parent = n;
+	}
+
+	if (p != NULL) {
+		if (n == p->left)
+			p->left = c;
+		else
+			p->right = c;
+	} else {
+		tree->root = c;
+	}
+}
+
+static void __tree_rebalance(Tree *tree, TreeNode *pivot, TreeNode *node)
+{
+	TreeNode *current = node;
+	TreeNode *pivot_parent = (pivot == NULL) ? NULL : pivot->parent;
+
+	while (current != pivot_parent) {
+		current->height = max(height(current->left), height(current->right)) + 1;
+		current = current->parent;
+	}
+
+	if (pivot == NULL || (balance(pivot) > -2 && balance(pivot) < 2))
+		return;
+
+	dir_t dir;      // the direction of the imbalance
+	TreeNode *bad;  // the child of the pivot node in the direction of the imbalance
+
+	if (balance(pivot) == -2) {
+		dir = LEFT;
+		bad = pivot->left;
+	} else {
+		dir = RIGHT;
+		bad = pivot->right;
+	}
+
+	if ((balance(bad) < 0) != dir) {
+		__tree_rotate(tree, pivot, RIGHT - dir);
+	} else {
+		__tree_rotate(tree, bad, dir);
+		update_height(bad);
+		__tree_rotate(tree, pivot, RIGHT - dir);
+	}
+
+	update_height(pivot);
+	update_height(pivot->parent);
+}
+
+bool tree_insert(Tree *tree, TreeNode *node)
+{
+	return_val_if_fail(tree != NULL, FALSE);
+	return_val_if_fail(node != NULL, FALSE);
+
+	if (tree->root == NULL) {
+		tree->root = node;
+		return TRUE;
+	}
+
+	TreeNode *current = tree->root;
+	TreeNode *pivot = NULL;
+
+	while (1) {
+		i32 cmp = tree->cmp_func(current, node);
+
+		if (balance(current) != 0)
+			pivot = current;
+
+		if (cmp > 0) {
+			if (current->left == NULL) {
+				current->left = node;
+				break;
+			}
+
+			current = current->left;
+			continue;
+		}
+
+		if (cmp < 0) {
+			if (current->right == NULL) {
+				current->right = node;
+				break;
+			}
+
+			current = current->right;
+			continue;
+		}
+
+		msg_warn("found the same entry in the tree!");
+		return FALSE;
+	}
+
+	node->parent = current;
+	__tree_rebalance(tree, pivot, node->parent);
+
+	return TRUE;
+}
+
+static TreeNode *__tree_remove_prepare(Tree *tree, TreeNode *node)
+{
+	if (node->left == NULL && node->right == NULL)
+		return node;
+
+	if (node->left == NULL)
+		return node->right;
+
+	if (node->right == NULL)
+		return node->left;
+
+	for (node = node->right; node->left != NULL; node = node->left)
+		continue;
+
+	return node;
+}
+
+void tree_remove(Tree *tree, TreeNode *node)
+{
+	return_if_fail(tree != NULL);
+	return_if_fail(node != NULL);
+
+	TreeNode *s = __tree_remove_prepare(tree, node);
+	TreeNode *current = s->parent;
+	TreeNode *pivot = NULL;
+
+	while (current != NULL) {
+		if (balance(current) != 0) {
+			pivot = current;
+			break;
+		}
+
+		current = current->parent;
+	}
+
+	if (pivot == node)
+		pivot = s;
+
+	TreeNode *a;
+
+	if (node == s) {
+		s = NULL;
+		a = node->parent;
+	} else if (
+		(node->left == s && node->right == NULL) ||
+		(node->right == s && node->left == NULL)
+	) {
+		s->parent = node->parent;
+		a = s;
+	} else {
+		if (s->parent == node) {
+			s->parent = node->parent;
+			s->left = node->left;
+			s->left->parent = s;
+			a = s;
+		} else {
+			s->parent->left = s->right;
+			if (s->right != NULL)
+				s->right->parent = s->parent->left;
+			a = s->parent;
+			s->parent = node->parent;
+			s->left = node->left;
+			s->left->parent = s;
+			s->right = node->right;
+			s->right->parent = s;
+		}
+	}
+
+	if (tree->root == node)
+		tree->root = s;
+	else if (node->parent->left == node)
+		node->parent->left = s;
+	else if (node->parent->right == node)
+		node->parent->right = s;
+
+	__tree_rebalance(tree, pivot, a);
+
+	node->left = NULL;
+	node->right = NULL;
+	node->parent = NULL;
+	node->height = 1;
+}
+
+Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 {
 	return_val_if_fail(src != NULL, NULL);
-	return_val_if_fail(src->cpyf != NULL, NULL);
+	return_val_if_fail(copy_func != NULL, NULL);
 
 	if (dst == NULL) {
 		dst = talloc(Tree, 1);
@@ -63,8 +255,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, bool *status)
 		}
 	}
 
-	dst->cmpf = src->cmpf;
-	dst->cpyf = src->cpyf;
+	dst->cmp_func = src->cmp_func;
 	dst->root = NULL;
 
 	if (status != NULL)
@@ -73,7 +264,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, bool *status)
 	if (src->root == NULL)
 		return dst;
 
-	dst->root = dst->cpyf(src->root);
+	dst->root = copy_func(src->root);
 
 	if (dst->root == NULL) {
 		msg_error("couldn't allocate memory for a node of the copy of the tree!");
@@ -89,7 +280,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, bool *status)
 
 	while (orig != NULL) {
 		if (orig->left != NULL && copy->left == NULL) {
-			copy->left = dst->cpyf(orig->left);
+			copy->left = copy_func(orig->left);
 
 			if (copy->left == NULL) {
 				msg_error("couldn't allocate memory for a node of the copy of the tree!");
@@ -105,7 +296,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, bool *status)
 			orig = orig->left;
 			copy = copy->left;
 		} else if (orig->right != NULL && copy->right == NULL) {
-			copy->right = dst->cpyf(orig->right);
+			copy->right = copy_func(orig->right);
 
 			if (copy->right == NULL) {
 				msg_error("couldn't allocate memory for a node of the copy of the tree!");
@@ -129,7 +320,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, bool *status)
 	return dst;
 }
 
-void tree_traverse(Tree *tree, UserFunc func, void *userdata)
+void tree_inorder(Tree *tree, UserFunc func, void *userdata)
 {
 	return_if_fail(tree != NULL);
 	return_if_fail(func != NULL);
@@ -154,6 +345,102 @@ void tree_traverse(Tree *tree, UserFunc func, void *userdata)
 		if (pre->right == current) {
 			pre->right = NULL;
 			func(current, userdata);
+			current = current->right;
+		} else {
+			pre->right = current;
+			current = current->left;
+		}
+	}
+}
+
+void tree_preorder(Tree *tree, UserFunc func, void *userdata)
+{
+	return_if_fail(tree != NULL);
+	return_if_fail(func != NULL);
+
+	if (tree->root == NULL)
+		return;
+
+	TreeNode *current = tree->root;
+
+	while (current != NULL) {
+		if (current->left == NULL) {
+			func(current, userdata);
+			current = current->right;
+			continue;
+		}
+
+		TreeNode *pre = current->left;
+
+		while (pre->right != NULL && pre->right != current)
+			pre = pre->right;
+
+		if (pre->right == current) {
+			pre->right = NULL;
+			current = current->right;
+		} else {
+			pre->right = current;
+			func(current, userdata);
+			current = current->left;
+		}
+	}
+}
+
+static void __tree_postorder_reverse(TreeNode *from, TreeNode *to)
+{
+	if (from == to)
+		return;
+
+	TreeNode *prev = from;
+	TreeNode *node = from->right;
+
+	while (prev != to) {
+		TreeNode *next = node->right;
+		node->right = prev;
+		prev = node;
+		node = next;
+	}
+}
+
+void tree_postorder(Tree *tree, UserFunc func, void *userdata)
+{
+	return_if_fail(tree != NULL);
+	return_if_fail(func != NULL);
+
+	if (tree->root == NULL)
+		return;
+
+	TreeNode dummy;
+	tree_node_init(&dummy);
+	dummy.left = tree->root;
+
+	TreeNode *current = &dummy;
+
+	while (current != NULL) {
+		if (current->left == NULL) {
+			current = current->right;
+			continue;
+		}
+
+		TreeNode *pre = current->left;
+
+		while (pre->right != NULL && pre->right != current)
+			pre = pre->right;
+
+		if (pre->right == current) {
+			TreeNode *node = pre;
+
+			__tree_postorder_reverse(current->left, pre);
+
+			while (node != current->left) {
+				func(node, userdata);
+				node = node->right;
+			}
+
+			func(node, userdata);
+			__tree_postorder_reverse(pre, current->left);
+
+			pre->right = NULL;
 			current = current->right;
 		} else {
 			pre->right = current;
@@ -195,374 +482,6 @@ void tree_purge(Tree *tree, FreeFunc free_func)
 	tree->root = NULL;
 }
 
-static void __tree_rotate(Tree *tree, TreeNode *p, r_dir dir)
-{
-	TreeNode *n;
-	TreeNode *g = p->parent;
-
-	if (dir == LEFT) {
-		n = p->right;
-
-		p->right = n->left;
-		n->left = p;
-		n->parent = g;
-		p->parent = n;
-
-		if (p->right != NULL)
-			p->right->parent = p;
-	} else {
-		n = p->left;
-
-		p->left = n->right;
-		n->right = p;
-		n->parent = g;
-		p->parent = n;
-
-		if (p->left != NULL)
-			p->left->parent = p;
-	}
-
-	if (g != NULL) {
-		if (p == g->right)
-			g->right = n;
-		else
-			g->left = n;
-	} else
-		tree->root = n;
-}
-
-static void __tree_recolor(Tree *tree, TreeNode *node)
-{
-	TreeNode *p, *g, *u, *n;
-	n = node;
-
-	while (1) {
-		if (n->color == RED && tree->root == n)
-			n->color = BLACK;
-
-		if ((p = n->parent) == NULL)
-			return;
-
-		if (p->color == RED && tree->root == p)
-			p->color = BLACK;
-
-		if (p->color == BLACK)
-			return;
-
-		g = p->parent;
-		u = uncle(node);
-
-		if (p->color == RED && color(u) == RED) {
-			p->color = BLACK;
-			u->color = BLACK;
-			g->color = RED;
-
-			n = g;
-		} else if (color(u) == BLACK) {
-			if (n == p->right && p == g->left) {
-				__tree_rotate(tree, p, LEFT);
-				n = p;
-				p = g->left;
-			} else if (n == p->left && p == g->right) {
-				__tree_rotate(tree, p, RIGHT);
-				n = p;
-				p = g->right;
-			}
-
-			if (n == p->right && p == g->right)
-				__tree_rotate(tree, g, LEFT);
-			else
-				__tree_rotate(tree, g, RIGHT);
-
-			p->color = BLACK;
-			g->color = RED;
-
-			return;
-		}
-	}
-}
-
-bool tree_insert(Tree *tree, TreeNode *node)
-{
-	return_val_if_fail(tree != NULL, FALSE);
-	return_val_if_fail(node != NULL, FALSE);
-
-	if (tree->root == NULL) {
-		tree->root = node;
-		tree->root->color = BLACK;
-		return TRUE;
-	}
-
-	TreeNode *current = tree->root;
-
-	while (1) {
-		i32 cmp = tree->cmpf(current, node);
-
-		if (cmp > 0) {
-			if (current->left == NULL) {
-				current->left = node;
-				break;
-			}
-
-			current = current->left;
-		} else if (cmp < 0) {
-			if (current->right == NULL) {
-				current->right = node;
-				break;
-			}
-
-			current = current->right;
-		} else {
-			msg_warn("found the same entry in the tree!");
-			return FALSE;
-		}
-	}
-
-	node->parent = current;
-	__tree_recolor(tree, node);
-
-	return TRUE;
-}
-
-static void __tree_swap_case1(TreeNode *a, TreeNode *b)
-{
-	TreeNode *old_a_left = a->left;
-	TreeNode *old_a_right = a->right;
-
-	TreeNode *old_b_parent = b->parent;
-	TreeNode *old_b_left = b->left;
-	TreeNode *old_b_right = b->right;
-
-	b->parent = a;
-	a->parent = old_b_parent;
-
-	if (old_b_parent != NULL) {
-		if (old_b_parent->left == b)
-			old_b_parent->left = a;
-		else
-			old_b_parent->right = a;
-	}
-
-	b->left = old_a_left;
-	b->right = old_a_left;
-
-	if (old_a_left != NULL)
-		old_a_left->parent = b;
-
-	if (old_a_right != NULL)
-		old_a_right->parent = b;
-
-	if (old_b_left == a) {
-		a->left = b;
-		a->right = old_b_right;
-
-		if (old_b_right != NULL)
-			old_b_right->parent = a;
-	} else {
-		a->right = b;
-		a->left = old_b_left;
-
-		if (old_b_left != NULL)
-			old_b_left->parent = a;
-	}
-}
-
-static void __tree_swap_case2(TreeNode *a, TreeNode *b)
-{
-	TreeNode *old_a_parent = a->parent;
-	TreeNode *old_a_left = a->left;
-	TreeNode *old_a_right = a->right;
-
-	TreeNode *old_b_parent = b->parent;
-	TreeNode *old_b_left = b->left;
-	TreeNode *old_b_right = b->right;
-
-	a->parent = old_b_parent;
-
-	if (old_b_parent != NULL) {
-		if (old_b_parent->left == b)
-			old_b_parent->left = a;
-		else
-			old_b_parent->right = a;
-	}
-
-	b->parent = old_a_parent;
-
-	if (old_a_parent != NULL) {
-		if (old_a_parent->left == a)
-			old_a_parent->left = b;
-		else
-			old_a_parent->right = b;
-	}
-
-	a->left = old_b_left;
-	a->right = old_b_right;
-
-	if (old_b_left != NULL)
-		old_b_left->parent = a;
-
-	if (old_b_right != NULL)
-		old_b_right->parent = a;
-
-	b->left = old_a_left;
-	b->right = old_a_right;
-
-	if (old_a_left != NULL)
-		old_a_left->parent = b;
-
-	if (old_a_right != NULL)
-		old_a_right->parent = b;
-}
-
-static void __tree_swap(TreeNode *a, TreeNode *b)
-{
-	if (a->parent == b)
-		__tree_swap_case1(a, b);
-	else if (b->parent == a)
-		__tree_swap_case1(b, a);
-	else
-		__tree_swap_case2(a, b);
-
-	tn_color tmp = a->color;
-
-	a->color = b->color;
-	b->color = tmp;
-}
-
-void tree_swap(Tree *tree, TreeNode *a, TreeNode *b)
-{
-	return_if_fail(tree != NULL);
-	return_if_fail(a != NULL);
-	return_if_fail(b != NULL);
-
-	if (a == b)
-		return;
-
-	__tree_swap(a, b);
-
-	if (tree->root == a)
-		tree->root = b;
-	else if (tree->root == b)
-		tree->root = a;
-}
-
-static TreeNode *__tree_prepare_remove(Tree *tree, TreeNode *node)
-{
-	if (node->left != NULL && node->right != NULL) {
-		TreeNode *s = node->right;
-		for (; s->left != NULL; s = s->left)
-			continue;
-
-		__tree_swap(node, s);
-
-		if (tree->root == node)
-			tree->root = s;
-	}
-
-	if (node->left != NULL)
-		return node->left;
-
-	return node->right;
-}
-
-static void __tree_replace_child(Tree *tree, TreeNode *n, TreeNode *c)
-{
-	if (c != NULL)
-		c->parent = n->parent;
-
-	if (n->parent != NULL) {
-		if (n == n->parent->left)
-			n->parent->left = c;
-		else
-			n->parent->right = c;
-	} else
-		tree->root = c;
-}
-
-static void __tree_remove(Tree *tree, TreeNode *node)
-{
-	TreeNode *n, *p, *s;
-	n = node;
-
-	/* case 1 */
-	while ((p = n->parent) != NULL) {
-		/* case 2 */
-		s = sibling(n);
-
-		if (s->color == RED) {
-			n->parent->color = RED;
-			s->color = BLACK;
-
-			if (n == n->parent->left)
-				__tree_rotate(tree, p, LEFT);
-			else
-				__tree_rotate(tree, p, RIGHT);
-
-			s = sibling(n);
-		}
-
-		/* case 3 */
-		if (p->color == RED && s->color == BLACK && color(s->left) == BLACK && color(s->right) == BLACK) {
-			s->color = RED;
-			n = p;
-			continue;
-		} else if (n == n->parent->left && s->color == BLACK && color(s->left) == RED && color(s->right) == BLACK) {
-			/* case 4 */
-			s->color = RED;
-			p->color = BLACK;
-		} else {
-			/* case 5 */
-			if (n == n->parent->left && s->color == BLACK && color(s->left) == RED && color(s->right) == BLACK) {
-				s->color = RED;
-				s->left->color = BLACK;
-				__tree_rotate(tree, s, RIGHT);
-				s = sibling(n);
-			} else if (n == n->parent->right && s->color == BLACK && color(s->left) == BLACK && color(s->right) == RED) {
-				s->color = RED;
-				s->right->color = BLACK;
-				__tree_rotate(tree, s, LEFT);
-				s = sibling(n);
-			}
-
-			/* case 6 */
-			s->color = p->color;
-			p->color = BLACK;
-
-			if (n == p->left) {
-				s->right->color = BLACK;
-				__tree_rotate(tree, p, LEFT);
-			} else {
-				s->left->color = BLACK;
-				__tree_rotate(tree, p, RIGHT);
-			}
-		}
-	}
-}
-
-void tree_remove(Tree *tree, TreeNode *node)
-{
-	return_if_fail(tree != NULL);
-	return_if_fail(node != NULL);
-
-	TreeNode *n, *c;
-
-	n = node;
-	c = __tree_prepare_remove(tree, node);
-
-	if (n->color == BLACK) {
-		n->color = color(c);
-		__tree_remove(tree, n);
-	}
-
-	__tree_replace_child(tree, n, c);
-	if (n->parent == NULL && c != NULL)
-		c->color = BLACK;
-
-	n->parent = NULL;
-	n->left = NULL;
-	n->right = NULL;
-}
-
 TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
 {
 	return_val_if_fail(tree != NULL, NULL);
@@ -574,7 +493,7 @@ TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
 	TreeNode *current = tree->root;
 
 	while (current != NULL) {
-		i32 cmp = tree->cmpf(current, node);
+		i32 cmp = tree->cmp_func(current, node);
 
 		if (cmp > 0)
 			current = current->left;
@@ -585,4 +504,13 @@ TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
 	}
 
 	return NULL;
+}
+
+void tree_free(Tree *tree, FreeFunc free_func)
+{
+	return_if_fail(tree != NULL);
+	return_if_fail(free_func != NULL);
+
+	tree_purge(tree, free_func);
+	free(tree);
 }

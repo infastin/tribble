@@ -64,6 +64,6 @@ typedef i32 (*CmpFunc)(const void *a, const void *b);
 typedef void *(*CopyFunc)(const void *src);
 typedef void (*FreeFunc)(void *ptr);
 typedef void (*UserFunc)(void *data, void *userdata);
-typedef u32 (*HashFunc)(const void *key, u32 keysize, u32 seed);
+typedef u32 (*HashFunc)(const void *key, usize keysize, usize seed);
 
 #endif /* end of include guard: DEFINITIONS_H_N6TPGG3D */

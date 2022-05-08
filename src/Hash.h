@@ -4,21 +4,45 @@
 #include "Types.h"
 
 /**
- * MurmurHash3
- * Reference: https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp#L94
+ * @brief MurmurHash3 x86 32.
+ * @reference https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp#L94
  */
-u32 murmur_hash3(const void *key, u32 keysize, u32 seed);
+u32 murmurhash3_32(const void *key, u32 keysize, u32 seed);
 
 /**
- * Jenkins Hash
- * Reference: http://burtleburtle.net/bob/hash/evahash.html
+ * @brief MurmurHash3 x64 128, but we discard the upper 64 bits.
+ * @reference https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp#L94
  */
-u32 jhash(const void *key, u32 len, u32 seed);
+u64 murmurhash3_64(const void *key, u64 keysize, u64 seed);
+
+usize murmurhash3(const void *key, usize keysize, usize seed);
 
 /**
- * Half SipHash 1-3
- * Reference: https://github.com/veorq/SipHash/blob/master/halfsiphash.c
+ * @brief Jenkins Hash 32-bit.
+ * @reference http://burtleburtle.net/bob/c/lookup2.c
  */
-u32 half_siphash(const void *key, u32 len, u32 seed);
+u32 jhash32(const void *key, u32 keysize, u32 seed);
+
+/**
+ * @brief Jenkins Hash 64-bit.
+ * @reference http://burtleburtle.net/bob/c/lookup8.c
+ */
+u64 jhash64(const void *key, u64 keysize, u64 seed);
+
+usize jhash(const void *key, usize keysize, usize seed);
+
+/**
+ * @brief Half SipHash 1-3.
+ * @reference https://github.com/veorq/SipHash/blob/master/halfsiphash.c
+ */
+u32 siphash32(const void *key, u32 keysize, u32 seed);
+
+/**
+ * @brief SipHash 1-3.
+ * @reference https://github.com/veorq/SipHash/blob/master/siphash.c
+ */
+u64 siphash64(const void *key, u64 keysize, u64 seed);
+
+usize siphash(const void *key, usize keysize, usize seed);
 
 #endif /* end of include guard: HASH_H_RKAMEI83 */

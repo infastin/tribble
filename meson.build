@@ -25,7 +25,7 @@ subdir('src')
 subdir('test')
 
 executable('main', 'main.c',
-  dependencies: libtribble_dep
+  dependencies: libtribble_dep,
 )
 
 pkg_config = import('pkgconfig')

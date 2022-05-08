@@ -8,96 +8,109 @@ typedef struct _TreeNode TreeNode;
 typedef struct _Tree Tree;
 
 struct _TreeNode {
-	/* Public */
 	TreeNode *parent;
 	TreeNode *left;
 	TreeNode *right;
-
-	/* Private */
-	u32 color : 1;
+	isize height;
 };
 
 struct _Tree {
 	TreeNode *root;
-	CmpFunc cmpf;
-	CopyFunc cpyf;
+	CmpFunc cmp_func;
 };
 
 /**
- * @brief Creates a new tree
+ * @brief Creates a new tree.
  *
- * @param tree pointer to the tree to init (can be NULL)
- * @param cmp_func function for comparing nodes
- * @param copy_func function for copying nodes (can be NULL)
+ * @param tree The pointer to the tree to be initialized (can be NULL).
+ * @param cmp_func The function for comparing nodes.
  *
- * @return new tree
+ * @return A new tree.
  */
-Tree *tree_init(Tree *tree, CmpFunc cmp_func, CopyFunc copy_func);
+Tree *tree_init(Tree *tree, CmpFunc cmp_func);
 
 /**
- * @brief Inserts node into a tree
+ * @brief Inserts the node into the tree.
  *
- * @param tree tree to insert
- * @param node node to be inserted
+ * @param tree The tree where to insert the node.
+ * @param node The node to be inserted.
  *
- * @return TRUE on success
+ * @return TRUE on success.
  */
 bool tree_insert(Tree *tree, TreeNode *node);
 
 /**
- * @brief Swaps nodes in a tree
+ * @brief Removes the node from the tree.
  *
- * @param tree tree to swap
- * @param a first node to be swapped
- * @param b second node to be swapped
- */
-void tree_swap(Tree *tree, TreeNode *a, TreeNode *b);
-
-/**
- * @brief Removes node from a tree
- *
- * @param tree tree to remove
- * @param node node to be removed
+ * @param tree The tree where to remove the node.
+ * @param node The node to be removed.
  */
 void tree_remove(Tree *tree, TreeNode *node);
 
 /**
- * @brief Finds a similar node in a tree
+ * @brief Finds the element in the tree.
  *
- * @param tree tree to find
- * @param node node to be compared
+ * @param tree The tree where to search for the node.
+ * @param node The similar node for comparison.
  *
- * @return pointer to the similar node if found, NULL if not
+ * @return pointer The element, or NULL if it isn't in the tree.
  */
 TreeNode *tree_lookup(const Tree *tree, const TreeNode *node);
 
 /**
- * @brief Traverses a tree
+ * @brief Traverses the tree. It is inorder traversal.
  *
- * @param tree tree to be traversed
- * @param func function to call each visited node
- * @param userdata data to pass to the function
+ * @param tree The tree to be traversed.
+ * @param func The function to call for each visited node.
+ * @param userdata The data to pass to the function.
  */
-void tree_traverse(Tree *tree, UserFunc func, void *userdata);
+void tree_inorder(Tree *tree, UserFunc func, void *userdata);
 
 /**
- * @brief Creates copy of a tree
+ * @brief Traverses the tree. It is preoder traversal.
  *
- * @param dst pointer to the tree to copy (can be NULL)
- * @param src tree to be copied
- * @param status pointer to retrieve status (TRUE for success)
- *
- * @return copy of a tree
+ * @param tree The tree to be traversed.
+ * @param func The function to call for each visited node.
+ * @param userdata The data to pass to the function.
  */
-Tree *tree_copy(Tree *dst, const Tree *src, bool *status);
+void tree_preorder(Tree *tree, UserFunc func, void *userdata);
 
 /**
- * @brief Frees all nodes in a tree
+ * @brief Traverses the tree. It is postorder traversal.
  *
- * @param tree tree to free
- * @param free_func function to free nodes
+ * @param tree The tree to be traversed.
+ * @param func The function to call for each visited node.
+ * @param userdata The data to pass to the function.
+ */
+void tree_postorder(Tree *tree, UserFunc func, void *userdata);
+
+/**
+ * @brief Creates a copy of the tree.
+ *
+ * @param dst The pointer to the destination tree (can be NULL).
+ * @param src The pointer to the source tree.
+ * @param status The pointer to retrieve the status (TRUE for success).
+ * @param copy_func The function for copying nodes.
+ *
+ * @return A copy of the tree.
+ */
+Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status);
+
+/**
+ * @brief Frees all nodes in the tree.
+ *
+ * @param tree The tree which nodes are to be freed.
+ * @param free_func The function for freeing nodes.
  */
 void tree_purge(Tree *tree, FreeFunc free_func);
+
+/**
+ * @brief Frees all nodes in the tree and the tree itself.
+ *
+ * @param tree The tree to be freed.
+ * @param free_func The function for freeing nodes.
+ */
+void tree_free(Tree *tree, FreeFunc free_func);
 
 /* Inits node */
 #define tree_node_init(node)   \
@@ -105,7 +118,7 @@ void tree_purge(Tree *tree, FreeFunc free_func);
 		(node)->parent = NULL; \
 		(node)->left = NULL;   \
 		(node)->right = NULL;  \
-		(node)->color = 1;     \
+		(node)->height = 1;    \
 	} while (0)
 
 /* Gets the struct for this entry */
