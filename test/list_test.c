@@ -98,6 +98,9 @@ void test_push_purge()
 	node3->prev = node1;
 	node3->next = &list2;
 
+	list2.next = node4;
+	list2.prev = node3;
+
 	List *iter1, *iter2;
 
 	for (
@@ -372,6 +375,11 @@ void test_remove_pop()
 
 		assert(ii1->value == ii2->value);
 	}
+
+	int_list_free(node1);
+	int_list_free(node2);
+	int_list_free(node3);
+	int_list_free(node4);
 
 	list_purge(&list1, int_list_free);
 	list_purge(&list2, int_list_free);

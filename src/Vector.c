@@ -7,7 +7,7 @@
 #include <memory.h>
 #include <stdlib.h>
 
-#define BINARY_SEARCH_LEN_THRESHOLD 32
+#define BINARY_SEARCH_LEN_THRESHOLD 64
 #define vector_cell(a, i) ((void *) &((char *) ((a)->data))[(i) * (a)->elemsize])
 
 Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsize)
@@ -50,25 +50,9 @@ Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsiz
 	return vec;
 }
 
-static bool __vector_growcap(Vector *vec, usize add)
+static bool __vector_newcap(Vector *vec, usize newcap)
 {
-	if (add == 0)
-		return TRUE;
-
-	if (vec->len + add <= vec->capacity)
-		return TRUE;
-
-	if (vec->capacity == 0 || vec->data == NULL) {
-		msg_error("array buffer is NULL!");
-		return FALSE;
-	}
-
-	if (vec->capacity > USIZE_MAX - add) {
-		msg_error("array capacity overflow!");
-		return FALSE;
-	}
-
-	usize mincap = vec->capacity + add;
+	usize mincap = newcap;
 	usize new_allocated = (mincap >> 3) + (mincap < 9 ? 3 : 6);
 
 	if (mincap > USIZE_MAX - new_allocated) {
@@ -108,16 +92,16 @@ static bool __vector_insert(Vector *vec, usize index, const void *data)
 {
 	usize zt = vec->zero_terminated;
 
-	if (index > USIZE_MAX - zt || vec->len > USIZE_MAX - zt - 1) {
+	if (index > USIZE_MAX - zt - 1 || vec->len > USIZE_MAX - zt - 1) {
 		msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
-	if (index + zt >= vec->capacity) {
-		if (__vector_growcap(vec, (index + zt) - (vec->capacity - 1)) == FALSE)
+	if (index + zt + 1 > vec->capacity) {
+		if (__vector_newcap(vec, index + zt + 1) == FALSE)
 			return FALSE;
 	} else if (vec->len + zt + 1 > vec->capacity) {
-		if (__vector_growcap(vec, 1) == FALSE)
+		if (__vector_newcap(vec, vec->capacity + 1) == FALSE)
 			return FALSE;
 	}
 
@@ -129,9 +113,13 @@ static bool __vector_insert(Vector *vec, usize index, const void *data)
 	} else {
 		memmove(
 			vector_cell(vec, index + 1), vector_cell(vec, index),
-			((vec->len + zt) - index) * vec->elemsize
+			(vec->len - index) * vec->elemsize
 		);
+
 		vec->len++;
+
+		if (zt)
+			memset(vector_cell(vec, vec->len), 0, vec->elemsize);
 	}
 
 	if (data == NULL)
@@ -162,10 +150,10 @@ static bool __vector_insert_many(Vector *vec, usize index, const void *data, usi
 	}
 
 	if (index + zt + len > vec->capacity) {
-		if (__vector_growcap(vec, (index + zt + len) - vec->capacity) == FALSE)
+		if (__vector_newcap(vec, index + zt + len) == FALSE)
 			return FALSE;
 	} else if (vec->len + zt + len > vec->capacity) {
-		if (__vector_growcap(vec, (vec->len + zt + len) - vec->capacity) == FALSE)
+		if (__vector_newcap(vec, vec->len + zt + len) == FALSE)
 			return FALSE;
 	}
 
@@ -177,9 +165,13 @@ static bool __vector_insert_many(Vector *vec, usize index, const void *data, usi
 	} else {
 		memmove(
 			vector_cell(vec, index + len), vector_cell(vec, index),
-			((vec->len + zt) - index) * vec->elemsize
+			(vec->len - index) * vec->elemsize
 		);
+
 		vec->len += len;
+
+		if (zt)
+			memset(vector_cell(vec, vec->len), 0, vec->elemsize);
 	}
 
 	if (data == NULL)
@@ -234,13 +226,13 @@ bool vector_set(Vector *vec, usize index, const void *data)
 
 	usize zt = vec->zero_terminated;
 
-	if (index > USIZE_MAX - zt) {
+	if (index > USIZE_MAX - zt - 1) {
 		msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
-	if (index + zt >= vec->capacity) {
-		if (__vector_growcap(vec, (index + zt + 1) - vec->capacity) == FALSE)
+	if (index + zt + 1 > vec->capacity) {
+		if (__vector_newcap(vec, index + zt + 1) == FALSE)
 			return FALSE;
 	}
 
@@ -381,6 +373,11 @@ bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy)
 	return_val_if_fail(vec != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
 
+	if (vec->data == NULL) {
+		msg_warn("array buffer is NULL!");
+		return FALSE;
+	}
+
 	if (to_copy) {
 		memcpy(ret, vec->data, vec->len * vec->elemsize);
 		free(vec->data);
@@ -411,6 +408,9 @@ void vector_purge(Vector *vec, FreeFunc free_func)
 {
 	return_if_fail(vec != NULL);
 
+	if (vec->data == NULL)
+		return;
+
 	if (free_func != NULL) {
 		for (usize i = 0; i < vec->len; ++i) {
 			free_func(vector_cell(vec, i));
@@ -428,6 +428,11 @@ bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy)
 {
 	return_val_if_fail(vec != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
+
+	if (vec->data == NULL) {
+		msg_warn("array buffer is NULL!");
+		return FALSE;
+	}
 
 	if (to_copy) {
 		memcpy(ret, vec->data, vec->len * vec->elemsize);
@@ -477,6 +482,11 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 {
 	return_val_if_fail(src != NULL, NULL);
 
+	if (src->data == NULL) {
+		msg_warn("source array buffer is NULL!");
+		return FALSE;
+	}
+
 	bool was_allocated = FALSE;
 
 	if (dst == NULL) {
@@ -514,4 +524,33 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 	memcpy(dst->data, src->data, (dst->len + zt) * dst->elemsize);
 
 	return dst;
+}
+
+bool vector_reserve(Vector *vec, usize newcap)
+{
+	return_val_if_fail(vec != NULL, FALSE);
+
+	if (newcap <= vec->capacity)
+		return TRUE;
+
+	return __vector_newcap(vec, newcap);
+}
+
+bool vector_shrink(Vector *vec)
+{
+	return_val_if_fail(vec != NULL, FALSE);
+
+	usize zt = vec->zero_terminated;
+
+	void *data = (void *) realloc(vec->data, (vec->len + zt) * vec->elemsize);
+
+	if (data == NULL) {
+		msg_error("couldn't shrink memory of the array buffer!");
+		return FALSE;
+	}
+
+	vec->data = data;
+	vec->capacity = vec->len + zt;
+
+	return TRUE;
 }

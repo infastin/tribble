@@ -93,6 +93,7 @@ void test_push_purge()
 	node2->next = node1;
 	node1->next = node3;
 	node3->next = &list2;
+
 	list2.next = node4;
 
 	SList *iter1, *iter2;
@@ -381,6 +382,11 @@ void test_remove_pop()
 
 		assert(ii1->value == ii2->value);
 	}
+
+	int_slist_free(node1);
+	int_slist_free(node2);
+	int_slist_free(node3);
+	int_slist_free(node4);
 
 	slist_purge(&list1, int_slist_free);
 	slist_purge(&list2, int_slist_free);

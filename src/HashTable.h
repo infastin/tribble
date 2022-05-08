@@ -6,11 +6,8 @@
 typedef struct _HashTable HashTable;
 
 struct _HashTable {
-	/* Public */
 	usize slots;
 	usize used;
-
-	/* Private */
 	usize keysize;
 	usize valuesize;
 	usize bucketsize;

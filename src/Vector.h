@@ -8,11 +8,8 @@
 typedef struct _Vector Vector;
 
 struct _Vector {
-	/* Public */
 	void *data;
 	usize len;
-
-	/* Private */
 	usize capacity;
 	usize elemsize;
 	usize zero_terminated : 1;
@@ -225,6 +222,25 @@ bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy);
  * @return TRUE on success.
  */
 bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy);
+
+/**
+ * @brief Reserves memory in the array buffer.
+ *
+ * @param vec The array where memory is to be reserved.
+ * @param newcap A new capacity of the array.
+ *
+ * @return TRUE on success.
+ */
+bool vector_reserve(Vector *vec, usize newcap);
+
+/**
+ * @brief Frees unused memory of the array buffer.
+ *
+ * @param vec The array which buffer is to shrunk.
+ *
+ * @return TRUE on success.
+ */
+bool vector_shrink(Vector *vec);
 
 /**
  * @brief Frees the array buffer.

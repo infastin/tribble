@@ -204,7 +204,7 @@ u32 jhash32(const void *key, u32 keysize, u32 seed)
 	}
 
 	c += keysize;
-	switch (keysize) {
+	switch (len) {
 	case 11: c += (u32) k[10] << 24;
 	case 10: c += (u32) k[9] << 16;
 	case 9: c += (u32) k[8] << 8;
