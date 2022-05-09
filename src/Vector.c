@@ -52,22 +52,21 @@ Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsiz
 
 static bool __vector_newcap(Vector *vec, usize newcap)
 {
-	usize mincap = newcap;
-	usize new_allocated = (mincap >> 3) + (mincap < 9 ? 3 : 6);
+	usize new_allocated = (newcap >> 3) + (newcap < 9 ? 3 : 6);
 
-	if (mincap > USIZE_MAX - new_allocated) {
+	if (newcap > USIZE_MAX - new_allocated) {
 		msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
-	mincap += new_allocated;
+	newcap += new_allocated;
 
-	if (mincap > USIZE_MAX / vec->elemsize) {
+	if (newcap > USIZE_MAX / vec->elemsize) {
 		msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
-	void *data = (void *) realloc(vec->data, mincap * vec->elemsize);
+	void *data = (void *) realloc(vec->data, newcap * vec->elemsize);
 
 	if (data == NULL) {
 		msg_error("couldn't reallocate memory for the array buffer!");
@@ -79,11 +78,11 @@ static bool __vector_newcap(Vector *vec, usize newcap)
 	if (vec->clear) {
 		memset(
 			vector_cell(vec, vec->capacity), 0,
-			(mincap - vec->capacity) * vec->elemsize
+			(newcap - vec->capacity) * vec->elemsize
 		);
 	}
 
-	vec->capacity = mincap;
+	vec->capacity = newcap;
 
 	return TRUE;
 }
@@ -140,10 +139,10 @@ static bool __vector_insert_many(Vector *vec, usize index, const void *data, usi
 	usize zt = vec->zero_terminated;
 
 	if (
-		index > USIZE_MAX - len ||
-		index + len > USIZE_MAX - zt ||
-		vec->len > USIZE_MAX - len ||
-		vec->len + len > USIZE_MAX - zt
+		(index > USIZE_MAX - len) ||
+		(index + len > USIZE_MAX - zt) ||
+		(vec->len > USIZE_MAX - len) ||
+		(vec->len + len > USIZE_MAX - zt)
 	) {
 		msg_error("array capacity overflow!");
 		return FALSE;
@@ -236,17 +235,50 @@ bool vector_set(Vector *vec, usize index, const void *data)
 			return FALSE;
 	}
 
-	if (data == NULL)
-		memset(vector_cell(vec, index), 0, vec->elemsize);
-	else
-		memcpy(vector_cell(vec, index), data, vec->elemsize);
-
 	if (index >= vec->len) {
 		vec->len = index + 1;
 
 		if (zt)
 			memset(vector_cell(vec, index + 1), 0, vec->elemsize);
 	}
+
+	if (data == NULL)
+		memset(vector_cell(vec, index), 0, vec->elemsize);
+	else
+		memcpy(vector_cell(vec, index), data, vec->elemsize);
+
+	vec->sorted = 0;
+
+	return TRUE;
+}
+
+bool vector_overwrite(Vector *vec, usize index, const void *data, usize len)
+{
+	return_val_if_fail(vec != NULL, FALSE);
+
+	usize zt = vec->zero_terminated;
+
+	if ((index > USIZE_MAX - len) || (index + len > USIZE_MAX - zt)) {
+		msg_error("array capacity overflow!");
+		return FALSE;
+	}
+
+	if (index + zt + len > vec->capacity) {
+		if (__vector_newcap(vec, index + zt + len) == FALSE)
+			return FALSE;
+	}
+
+	if (index >= vec->len) {
+		vec->len = index + len;
+
+		if (zt)
+			memset(vector_cell(vec, index + len), 0, vec->elemsize);
+	}
+
+	if (data == NULL)
+		memset(vector_cell(vec, index), 0, len * vec->elemsize);
+	else
+		memcpy(vector_cell(vec, index), data, len * vec->elemsize);
 
 	vec->sorted = 0;
 

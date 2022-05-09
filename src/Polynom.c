@@ -177,7 +177,7 @@ Polynom *poly_copy(Polynom *dst, const Polynom *src)
 	dst->count = src->count;
 	list_init(&dst->monoms);
 
-	list_copy(&dst->monoms, &src->monoms, __monom_copy);
+	list_copy(&dst->monoms, &src->monoms, __monom_copy, NULL);
 
 	return dst;
 }

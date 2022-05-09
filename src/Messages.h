@@ -4,14 +4,17 @@
 #include "Macros.h"
 #include "Types.h"
 
-/*
- *  ERROR: 		Something "serious" has gone wrong. But the program can recover from it.
- *  CRITICAL: 	Same as "ERROR", but program can't recover from it.
- *  WARN: 		Something has not worked as it should.
- *  INFO: 		The text is of a purely informative nature.
- *  PRINT: 		Print some message.
- *  DEBUG: 		DEBUG.
- */
+/**
+ * SECTION: Messages
+ *
+ * Message levels:
+ * * ERROR - Something "serious" has gone wrong. But the program can recover from it.
+ * * CRITICAL - Same as "ERROR", but program can't recover from it.
+ * * WARN - Something has not worked as it should.
+ * * INFO - The text is of a purely informative nature.
+ * * PRINT - Print some message.
+ * * DEBUG - Debug.
+ **/
 
 typedef enum {
 	MESSAGE_ERROR,

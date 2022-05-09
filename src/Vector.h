@@ -18,265 +18,306 @@ struct _Vector {
 };
 
 /**
- * @brief Creates a new dynamic size array.
+ * vector_init:
+ * @vec: The pointer to the `Vector` to be initialized (can be `NULL`).
+ * @clear: `TRUE` if elements should be cleared to 0 when allocated.
+ * @zero_terminated: `TRUE` if the array should have terminating zero.
+ * @elemsize: The size of each element in bytes.
  *
- * @param vec The pointer to the array to be initialized (can be NULL).
- * @param clear TRUE if elements should be cleared to 0 when allocated.
- * @param zero_terminated TRUE if the array should have terminating zero.
- * @param elemsize The size of each element in bytes.
+ * Creates a new dynamic size array.
  *
- * @return A new dynamic size array.
- */
+ * Returns: A new dynamic size array.
+ **/
 Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsize);
 
 /**
- * @brief Creates the copy of the array.
+ * vector_copy:
+ * @dst: The pointer to the array to copy (can be `NULL`).
+ * @src: The array to be copied.
  *
- * @param dst The pointer to the array to copy (can be NULL).
- * @param src The array to be copied.
+ * Creates the copy of the array.
  *
- * @return The copy of the array.
- */
+ * Returns: The copy of the array.
+ **/
 Vector *vector_copy(Vector *dst, const Vector *src);
 
 /**
- * @brief Adds the element onto the end of the array.
+ * vector_push_back:
+ * @vec: The array where to add the element.
+ * @data: The pointer to the data to be added (can be `NULL`).
  *
- * @param vec The array where to add the element.
- * @param data The pointer to the data to be added.
+ * Adds the element onto the end of the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_push_back(Vector *vec, const void *data);
 
 /**
- * @brief Adds elements onto the end of the array.
+ * vector_push_back_many:
+ * @vec: The array where to add elements.
+ * @data: The pointer to the elements to be added (can be `NULL`).
+ * @len: The number of elements to be added.
  *
- * @param vec The array where to add elements.
- * @param data The pointer to the elements to be added.
- * @param len The number of elements to be added.
+ * Adds elements onto the end of the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_push_back_many(Vector *vec, const void *data, usize len);
 
 /**
- * @brief Adds the element onto the start of the array.
+ * vector_push_front:
+ * @vec: The array where to add the element.
+ * @data: The pointer to the data to be added (can be `NULL`).
  *
- * @param vec The array where to add the element.
- * @param data The pointer to the data to be added.
+ * Adds the element onto the beginning of the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_push_front(Vector *vec, const void *data);
 
 /**
- * @brief Adds elements onto the start of the array.
+ * vector_push_front_many:
+ * @vec: The array where to add elements.
+ * @data: The pointer to elements to be added (can be `NULL`).
+ * @len: The number of elements to be added.
  *
- * @param vec The array where to add elements.
- * @param data The pointer to elements to be added.
- * @param len The number of elements to be added.
+ * Adds elements onto the beginning of the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_push_front_many(Vector *vec, const void *data, usize len);
 
 /**
- * @brief Inserts the element to the array at the given index.
+ * vector_insert:
+ * @vec: The array where to insert.
+ * @index: The position to place the element at.
+ * @data: The pointer to the data to be inserted (can be `NULL`).
  *
- * @param vec The array where to insert.
- * @param index The position to place the element at.
- * @param data The pointer to the data to be inserted.
+ * Inserts the element to the array at the given index.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_insert(Vector *vec, usize index, const void *data);
 
 /**
- * @brief Inserts elements to the array at the given index.
+ * vector_insert:
+ * @vec: The array where to insert.
+ * @index: The position to place elements at.
+ * @data: The pointer to elements to be inserted (can be `NULL`).
+ * @len: The number of elements to be inserted.
  *
- * @param vec The array where to insert.
- * @param index The position to place elements at.
- * @param data The pointer to elements to be inserted.
- * @param len The number of elements to be inserted.
+ * Inserts elements to the array at the given index.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_insert_many(Vector *vec, usize index, const void *data, usize len);
 
 /**
- * @brief Changes the value of the entry at the given index in the array
- *        with the given data.
+ * vector_set:
+ * @vec: The array where to change.
+ * @index: The position of the entry in which to change the value.
+ * @data: The data to be set (can be `NULL`).
  *
- * @param vec The array where to change.
- * @param index The position of the entry in which to change the value.
- * @param data The data to be set.
+ * Changes the value of the entry at the given index in the array
+ * with the given data.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_set(Vector *vec, usize index, const void *data);
 
 /**
- * @brief Removes the entry at the given index from the array.
+ * vector_set:
+ * @vec: The array where to overwrite.
+ * @index: The position of the entry in which to overwrite the values.
+ * @data: The data to be set (can be `NULL`).
+ * @len The number of elements to be overwriten.
  *
- * @param vec The array where to remove.
- * @param index The position of the entry to be removed.
- * @param ret The pointer to retrieve removed data (can be NULL).
+ * Overwrites values of the entries at the given index in the
+ * array with the given data.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
+bool vector_overwrite(Vector *vec, usize index, const void *data, usize len);
+
+/**
+ * vector_remove_index:
+ * @vec: The array where to remove.
+ * @index: The position of the entry to be removed.
+ * @ret: The pointer to retrieve removed data (can be `NULL`).
+ *
+ * Removes the entry at the given index from the array.
+ *
+ * Returns: `TRUE` on success.
+ **/
 bool vector_remove_index(Vector *vec, usize index, void *ret);
 
 /**
- * @brief Removes the last element from the array.
+ * vector_pop_back:
+ * @vec: The array where to remove.
+ * @ret: The pointer to retrieve removed data (can be `NULL`).
  *
- * @param vec The array where to remove.
- * @param ret The pointer to retrieve removed data (can be NULL).
+ * Removes the last element from the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_pop_back(Vector *vec, void *ret);
 
 /**
- * @brief Removes the first element from the array.
+ * vector_pop_front:
+ * @vec: The array where to remove.
+ * @ret: The pointer to retrieve removed data (can be `NULL`).
  *
- * @param vec The array where to remove.
- * @param ret The pointer to retrieve removed data (can be NULL).
+ * Removes the first element from the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_pop_front(Vector *vec, void *ret);
 
 /**
- * @brief Reverses the array.
+ * vector_reverse:
+ * @vec: The array to be reversed.
  *
- * @param vec The array to be reversed.
- */
+ * Reverses the array.
+ **/
 void vector_reverse(Vector *vec);
 
 /**
- * @brief Removes the range from the array.
+ * vector_remove_range:
+ * @vec: The vec where to remove.
+ * @index: The index of the first element to be removed.
+ * @len: The number of elements to be removed.
+ * @ret: The pointer to retrieve removed data (can be `NULL`).
  *
- * @param vec The vec where to remove.
- * @param index The index of the first element to be removed.
- * @param len The number of elements to be removed.
- * @param ret The pointer to retrieve removed data (can be NULL).
+ * Removes the range from the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_remove_range(Vector *vec, usize index, usize len, void *ret);
 
 /**
- * @brief Removes all elements from the array.
+ * vector_remove_all:
+ * @vec: The vec where to remove.
+ * @ret: The pointer to retrieve removed data (can be `NULL`).
  *
- * @param vec The vec where to remove.
- * @param ret The pointer to retrieve removed data (can be NULL).
+ * Removes all elements from the array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_remove_all(Vector *vec, void *ret);
 
 /**
- * @brief Sorts the array.
+ * vector_sort:
+ * @vec: The array to be sorted.
+ * @cmp_func: The compare function for sorting entries.
  *
- * @param vec The array to be sorted.
- * @param cmp_func The compare function for sorting entries.
- */
+ * Sorts the array.
+ **/
 void vector_sort(Vector *vec, CmpFunc cmp_func);
 
 /**
- * @brief Gets the value of the entry at the given index in array.
+ * vector_get:
+ * @vec: The array where to get.
+ * @index: The position of the entry which value is to be got.
+ * @ret: The pointer to retrieve value of the entry.
  *
- * @param vec The array where to get.
- * @param index The position of the entry which value is to be got.
- * @param ret The pointer to retrieve value of the entry.
+ * Gets the value of the entry at the given index in array.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_get(const Vector *vec, usize index, void *ret);
 
 /**
- * @brief Steals the array buffer.
- *        Array creates a new buffer.
+ * vector_steal:
+ * @vec: The array where to steal the buffer.
+ * @ret: The pointer to retrieve the buffer.
+ * @len: The pointer to retrieve the number of elements in the array (can be `NULL`).
+ * @to_copy: If `TRUE`, the array buffer will be copied to ret and then recreated,
+ *           otherwise pointer to the buffer will be returned.
  *
- * @param vec The array where to steal the buffer.
- * @param ret The pointer to retrieve the buffer.
- * @param len The pointer to retrieve the number of elements in the array (can be NULL).
- * @param to_copy If TRUE, the array buffer will be copied to ret and then recreated,
- *                otherwise pointer to the buffer will be returned.
+ * Steals the array buffer.
+ * Array creates a new buffer.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy);
 
 /**
- * @brief Steals the array buffer.
- *        Array's buffer becomes NULL.
+ * vector_steal0:
+ * @vec: The array where to steal buffer.
+ * @ret: The pointer to retrieve the buffer.
+ * @len: The pointer to retrieve the number of the elements in the array (can be `NULL`).
+ * @to_copy: if `TRUE`, the array buffer will be copied to ret,
+ *           otherwise pointer to the buffer will be returned.
  *
- * @param vec The array where to steal buffer.
- * @param ret The pointer to retrieve the buffer.
- * @param len The pointer to retrieve the number of the elements in the array (can be NULL).
- * @param to_copy if TRUE, the array buffer will be copied to ret,
- *                otherwise pointer to the buffer will be returned.
+ * Steals the array buffer.
+ * Array's buffer becomes `NULL`.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy);
 
 /**
- * @brief Reserves memory in the array buffer.
+ * vector_reserve:
+ * @vec: The array where memory is to be reserved.
+ * @newcap: A new capacity of the array.
  *
- * @param vec The array where memory is to be reserved.
- * @param newcap A new capacity of the array.
+ * Reserves memory in the array buffer.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_reserve(Vector *vec, usize newcap);
 
 /**
- * @brief Frees unused memory of the array buffer.
+ * vector_shrink:
+ * @vec: The array which buffer is to shrunk.
  *
- * @param vec The array which buffer is to shrunk.
+ * Frees unused memory of the array buffer.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool vector_shrink(Vector *vec);
 
 /**
- * @brief Frees the array buffer.
+ * vector_purge:
+ * @vec: The array which buffer is to be freed.
+ * @free_func: The function for freeing elements (can be `NULL`).
  *
- * @param vec The array which buffer is to be freed.
- * @param free_func The function for freeing elements (can be NULL).
- */
+ * Frees the array buffer.
+ **/
 void vector_purge(Vector *vec, FreeFunc free_func);
 
 /**
- * @brief Frees the array completely.
+ * vector_free:
+ * @vec: The array to be deleted.
+ * @free_func: The function for freeing elements (can be `NULL`).
  *
- * @param vec The array to be deleted.
- * @param free_func The function for freeing elements (can be NULL).
- */
+ * Frees the array completely.
+ **/
 void vector_free(Vector *vec, FreeFunc free_func);
 
 /**
- * @brief Finds the entry in the array.
+ * vector_search:
+ * @vec: The array where to search.
+ * @target: The pointer to the data to be found (can be `NULL`).
+ * @cmp_func: The function for comparing values.
+ * @index: The pointer to retrieve the index of found value (can be `NULL`).
  *
- * @param vec The array where to search.
- * @param target The pointer to the data to be found.
- * @param cmp_func The function for comparing values.
- * @param index The pointer to retrieve the index of found value (can be NULL).
+ * Searches for the entry in the array.
  *
- * @return TRUE if found, FALSE if not.
- */
+ * Returns: `TRUE` if found, `FALSE` if not.
+ **/
 bool vector_search(Vector *vec, const void *target, CmpFunc cmp_func, usize *index);
 
 /**
- * @brief Unsafe version of vector_get.
- * @param vec The array where to get.
- * @param type The type to be got.
- * @param index The position of the entry which value is to be got.
- * @return Value of the entry.
- */
+ * vector_get_unsafe:
+ * @vec: The array where to get.
+ * @type: The type to be got.
+ * @index: The position of the entry which value is to be got.
+ *
+ * Unsafe version of vector_get.
+ *
+ * Returns: The value of the entry.
+ **/
 #define vector_get_unsafe(vec, type, index) (*(type *) &((char *) ((vec)->data))[(index) * (vec)->elemsize])
 
 #endif /* end of include guard: ARRAY_H_KSABYJ3T */

@@ -274,38 +274,6 @@ bool ht_remove(HashTable *ht, const void *key, void *ret)
 	return TRUE;
 }
 
-bool ht_contains(const HashTable *ht, const void *key)
-{
-	return_val_if_fail(ht != NULL, FALSE);
-	return_val_if_fail(key != NULL, FALSE);
-
-	usize hash = ht->hash_func(key, ht->keysize, ht->seed);
-	usize pos = hash & (ht->slots - 1);
-
-	if (*ht_occupied(ht, pos)) {
-		if (ht->cmp_func(key, ht_key(ht, pos)) == 0)
-			return TRUE;
-
-		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (ht->slots - 1);
-
-		while (1) {
-			if (*ht_occupied(ht, slot) == FALSE)
-				return FALSE;
-
-			if (ht->cmp_func(key, ht_key(ht, slot)) == 0)
-				return TRUE;
-
-			if (i++ >= ht->slots)
-				i = 0;
-
-			slot = ((i + i * i) >> 1) & (ht->slots - 1);
-		}
-	}
-
-	return FALSE;
-}
-
 bool ht_lookup(const HashTable *ht, const void *key, void *ret)
 {
 	return_val_if_fail(ht != NULL, FALSE);
@@ -317,7 +285,8 @@ bool ht_lookup(const HashTable *ht, const void *key, void *ret)
 
 	if (*ht_occupied(ht, pos)) {
 		if (ht->cmp_func(key, ht_key(ht, pos)) == 0) {
-			memcpy(ret, ht_value(ht, pos), ht->valuesize);
+			if (ret != NULL)
+				memcpy(ret, ht_value(ht, pos), ht->valuesize);
 			return TRUE;
 		}
 
@@ -329,7 +298,8 @@ bool ht_lookup(const HashTable *ht, const void *key, void *ret)
 				return FALSE;
 
 			if (ht->cmp_func(key, ht_key(ht, slot)) == 0) {
-				memcpy(ret, ht_value(ht, slot), ht->valuesize);
+				if (ret != NULL)
+					memcpy(ret, ht_value(ht, slot), ht->valuesize);
 				return TRUE;
 			}
 

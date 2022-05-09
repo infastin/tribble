@@ -235,7 +235,7 @@ void test_copy()
 	int_slist_push_front(&list1, 99);
 	int_slist_push_front(&list1, 333);
 
-	slist_copy(&list2, &list1, int_slist_copy);
+	slist_copy(&list2, &list1, int_slist_copy, NULL);
 
 	SList *iter1, *iter2;
 

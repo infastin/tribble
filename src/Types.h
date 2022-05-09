@@ -50,11 +50,9 @@ typedef double f64;
 typedef long double f128;
 
 /* Boolean */
-#ifdef bool
-	#undef bool
-#endif
-
+#ifndef bool
 typedef _Bool bool;
+#endif
 
 #define TRUE 1
 #define FALSE 0

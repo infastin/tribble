@@ -336,6 +336,35 @@ void test_set_get()
 	vector_purge(&vec, NULL);
 }
 
+void test_overwrite()
+{
+	Vector vec;
+	vector_init(&vec, FALSE, FALSE, 4);
+
+	u32 arr1[4] = { 10, 20, 30, 40 };
+	u32 arr2[4] = { 11, 22, 33, 44 };
+	u32 arr3[4] = { 98, 88, 77, 45 };
+	u32 arr4[4] = { 12, 55, 7, 2 };
+
+	vector_push_back_many(&vec, arr1, 4);
+	vector_push_back_many(&vec, arr2, 4);
+	vector_push_back_many(&vec, arr3, 4);
+	vector_push_back_many(&vec, arr4, 4);
+
+	u32 arr5[4] = { 95, 159, 32, 73 };
+
+	vector_overwrite(&vec, 4, arr5, 4);
+
+	u32 arr[16] = { 10, 20, 30, 40, 95, 159, 32, 73, 98, 88, 77, 45, 12, 55, 7, 2 };
+
+	for (usize i = 0; i < 16; ++i) {
+		u32 val = vector_get_unsafe(&vec, u32, i);
+		assert(val == arr[i]);
+	}
+
+	vector_purge(&vec, NULL);
+}
+
 void test_steal()
 {
 	Vector vec;
@@ -476,6 +505,7 @@ int main(int argc, char *argv[])
 	test_shrink();
 	test_reserve();
 	test_search();
+	test_overwrite();
 
 	return 0;
 }

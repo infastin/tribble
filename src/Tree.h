@@ -20,99 +20,110 @@ struct _Tree {
 };
 
 /**
- * @brief Creates a new tree.
+ * tree_init:
+ * @tree: The pointer to the tree to be initialized (can be `NULL`).
+ * @cmp_func: The function for comparing nodes.
  *
- * @param tree The pointer to the tree to be initialized (can be NULL).
- * @param cmp_func The function for comparing nodes.
+ * Creates a new tree.
  *
- * @return A new tree.
- */
+ * Returns: A new tree.
+ **/
 Tree *tree_init(Tree *tree, CmpFunc cmp_func);
 
 /**
- * @brief Inserts the node into the tree.
+ * tree_insert:
+ * @tree: The tree where to insert the node.
+ * @node: The node to be inserted.
  *
- * @param tree The tree where to insert the node.
- * @param node The node to be inserted.
+ * Inserts the node into the tree.
  *
- * @return TRUE on success.
- */
+ * Returns: `TRUE` on success.
+ **/
 bool tree_insert(Tree *tree, TreeNode *node);
 
 /**
- * @brief Removes the node from the tree.
+ * tree_remove:
+ * @tree: The tree where to remove the node.
+ * @node: The node to be removed.
  *
- * @param tree The tree where to remove the node.
- * @param node The node to be removed.
- */
+ * Removes the node from the tree.
+ **/
 void tree_remove(Tree *tree, TreeNode *node);
 
 /**
- * @brief Finds the element in the tree.
+ * tree_lookup:
+ * @tree: The tree where to search for the node.
+ * @node: The similar node for comparison (can be `NULL`).
  *
- * @param tree The tree where to search for the node.
- * @param node The similar node for comparison.
+ * Searches for the element in the tree.
  *
- * @return pointer The element, or NULL if it isn't in the tree.
- */
+ * Returns: pointer The element, or `NULL` if it isn't in the tree.
+ **/
 TreeNode *tree_lookup(const Tree *tree, const TreeNode *node);
 
 /**
- * @brief Traverses the tree. It is inorder traversal.
+ * tree_inorder:
+ * @tree: The tree to be traversed.
+ * @func: The function to call for each visited node.
+ * @userdata: The data to pass to the function (can be `NULL`).
  *
- * @param tree The tree to be traversed.
- * @param func The function to call for each visited node.
- * @param userdata The data to pass to the function.
- */
+ * Traverses the tree. It is inorder traversal.
+ **/
 void tree_inorder(Tree *tree, UserFunc func, void *userdata);
 
 /**
- * @brief Traverses the tree. It is preoder traversal.
+ * tree_preorder:
+ * @tree: The tree to be traversed.
+ * @func: The function to call for each visited node.
+ * @userdata: The data to pass to the function (can be `NULL`).
  *
- * @param tree The tree to be traversed.
- * @param func The function to call for each visited node.
- * @param userdata The data to pass to the function.
- */
+ * Traverses the tree. It is preoder traversal.
+ **/
 void tree_preorder(Tree *tree, UserFunc func, void *userdata);
 
 /**
- * @brief Traverses the tree. It is postorder traversal.
+ * tree_postorder:
+ * @tree: The tree to be traversed.
+ * @func: The function to call for each visited node.
+ * @userdata: The data to pass to the function (can be `NULL`).
  *
- * @param tree The tree to be traversed.
- * @param func The function to call for each visited node.
- * @param userdata The data to pass to the function.
- */
+ * Traverses the tree. It is postorder traversal.
+ **/
 void tree_postorder(Tree *tree, UserFunc func, void *userdata);
 
 /**
- * @brief Creates a copy of the tree.
+ * tree_copy:
+ * @dst: The pointer to the destination tree (can be `NULL`).
+ * @src: The pointer to the source tree.
+ * @copy_func: The function for copying nodes.
+ * @status: The pointer to retrieve the status
+ * 			of execution (`TRUE` for success, can be `NULL`).
  *
- * @param dst The pointer to the destination tree (can be NULL).
- * @param src The pointer to the source tree.
- * @param status The pointer to retrieve the status (TRUE for success).
- * @param copy_func The function for copying nodes.
+ * Creates a copy of the tree.
  *
- * @return A copy of the tree.
- */
+ * Returns: A copy of the tree.
+ **/
 Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status);
 
 /**
- * @brief Frees all nodes in the tree.
+ * tree_purge:
+ * @tree: The tree which nodes are to be freed.
+ * @free_func: The function for freeing nodes.
  *
- * @param tree The tree which nodes are to be freed.
- * @param free_func The function for freeing nodes.
- */
+ * Frees all nodes in the tree.
+ **/
 void tree_purge(Tree *tree, FreeFunc free_func);
 
 /**
- * @brief Frees all nodes in the tree and the tree itself.
+ * tree_free:
+ * @tree: The tree to be freed.
+ * @free_func: The function for freeing nodes.
  *
- * @param tree The tree to be freed.
- * @param free_func The function for freeing nodes.
- */
+ * Frees all nodes in the tree and the tree itself.
+ **/
 void tree_free(Tree *tree, FreeFunc free_func);
 
-/* Inits node */
+/* Inits the node */
 #define tree_node_init(node)   \
 	do {                       \
 		(node)->parent = NULL; \

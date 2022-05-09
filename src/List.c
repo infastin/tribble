@@ -324,14 +324,29 @@ void list_remove(List *node)
 	node->prev = node;
 }
 
-bool list_copy(List *dst, const List *src, CopyFunc copy_func)
+List *list_copy(List *dst, const List *src, CopyFunc copy_func, bool *status)
 {
-	return_val_if_fail(dst != NULL, FALSE);
 	return_val_if_fail(src != NULL, FALSE);
 	return_val_if_fail(copy_func != NULL, FALSE);
 
+	if (dst == NULL) {
+		dst = talloc(List, 1);
+
+		if (dst == NULL) {
+			msg_error("couldn't allocate memory for the copy of the list!");
+
+			if (status != NULL)
+				*status = FALSE;
+
+			return NULL;
+		}
+	}
+
+	if (status != NULL)
+		*status = TRUE;
+
 	if (src->next == src)
-		return TRUE;
+		return dst;
 
 	List *fast = src->next;
 	List *slow = dst;
@@ -354,9 +369,10 @@ bool list_copy(List *dst, const List *src, CopyFunc copy_func)
 	slow->next = dst;
 
 	do_if_fail (copy != NULL)
-		return FALSE;
+		if (status != NULL)
+			*status = FALSE;
 
-	return TRUE;
+	return dst;
 }
 
 void list_purge(List *list, FreeFunc free_func)
@@ -377,4 +393,13 @@ void list_purge(List *list, FreeFunc free_func)
 
 	list->next = list;
 	list->prev = list;
+}
+
+void list_free(List *list, FreeFunc free_func)
+{
+	return_if_fail(list != NULL);
+	return_if_fail(free_func != NULL);
+
+	list_purge(list, free_func);
+	free(list);
 }

@@ -483,7 +483,6 @@ void tree_purge(Tree *tree, FreeFunc free_func)
 TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
 {
 	return_val_if_fail(tree != NULL, NULL);
-	return_val_if_fail(node != NULL, NULL);
 
 	if (tree->root == NULL)
 		return NULL;

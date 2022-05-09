@@ -228,7 +228,7 @@ void test_copy()
 	int_list_push_back(&list1, 99);
 	int_list_push_back(&list1, 333);
 
-	list_copy(&list2, &list1, int_list_copy);
+	list_copy(&list2, &list1, int_list_copy, NULL);
 
 	List *iter1, *iter2;
 
