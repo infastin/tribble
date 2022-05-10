@@ -100,10 +100,29 @@ bool heap_get(const Heap *heap, usize index, void *ret)
 	return vector_get(&heap->vector, index, ret);
 }
 
-bool heap_search(Heap *heap, const void *target, usize *index)
+bool heap_search(const Heap *heap, const void *target, usize *index)
 {
 	return_val_if_fail(heap != NULL, FALSE);
-	return vector_search(&heap->vector, target, heap->cmp_func, index);
+
+	usize i = 0;
+
+	while (i < heap->vector.len) {
+		void *current = array_cell(heap->vector.data, heap->vector.elemsize, 0);
+
+		i32 cmp = heap->cmp_func(current, target);
+
+		if (cmp > 0) {
+			i = (i << 1) + 1;
+		} else if (cmp < 0) {
+			i = (i << 1) + 2;
+		} else {
+			if (index != NULL)
+				*index = i;
+			return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 void heap_purge(Heap *heap, FreeFunc free_func)

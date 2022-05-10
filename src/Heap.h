@@ -23,7 +23,7 @@ bool heap_pop_front(Heap *heap, void *ret);
 
 bool heap_get(const Heap *heap, usize index, void *ret);
 
-bool heap_search(Heap *heap, const void *target, usize *index);
+bool heap_search(const Heap *heap, const void *target, usize *index);
 
 void heap_purge(Heap *heap, FreeFunc free_func);
 
