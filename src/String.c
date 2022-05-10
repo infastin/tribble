@@ -126,10 +126,10 @@ static bool __string_insert_c(String *string, usize index, char c)
 		return FALSE;
 	}
 
-	if (index + 1 > string->capacity) {
+	if (index >= string->len && index + 1 > string->capacity) {
 		if (__string_newcap(string, index + 1) == FALSE)
 			return FALSE;
-	} else if (string->len + 1 > string->capacity) {
+	} else if (index < string->len && string->len + 1 > string->capacity) {
 		if (__string_newcap(string, string->capacity + 1) == FALSE)
 			return FALSE;
 	}
@@ -156,10 +156,10 @@ static bool __string_insert(String *string, usize index, const char *str, usize 
 		return FALSE;
 	}
 
-	if (index + len > string->capacity) {
+	if (index >= string->len && index + len > string->capacity) {
 		if (__string_newcap(string, index + len) == FALSE)
 			return FALSE;
-	} else if (string->len + len > string->capacity) {
+	} else if (index < string->len && string->len + len > string->capacity) {
 		if (__string_newcap(string, string->len + len) == FALSE)
 			return FALSE;
 	}
@@ -268,7 +268,7 @@ bool string_insert_c(String *string, usize index, char c)
 	return __string_insert_c(string, index, c);
 }
 
-bool string_push_insert_fmt(String *string, usize index, const char *fmt, ...)
+bool string_insert_fmt(String *string, usize index, const char *fmt, ...)
 {
 	return_val_if_fail(string != NULL, FALSE);
 	return_val_if_fail(fmt != NULL, FALSE);
@@ -478,6 +478,66 @@ bool string_vfmt(String *string, const char *fmt, va_list args)
 
 	memcpy(string->data, buf, len);
 	string->len = len;
+
+	return TRUE;
+}
+
+bool string_steal(String *string, char **ret, usize *len, bool to_copy)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(ret != NULL, FALSE);
+
+	if (string->data == NULL) {
+		msg_warn("string buffer is NULL!");
+		return FALSE;
+	}
+
+	if (to_copy) {
+		memcpy(*ret, string->data, string->len);
+		free(string->data);
+	} else {
+		*ret = string->data;
+	}
+
+	if (len != NULL)
+		*len = string->len;
+
+	string->len = 0;
+	string->capacity = 0;
+	string->data = 0;
+
+	return TRUE;
+}
+
+bool string_get(String *string, usize index, usize len, char *ret)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(ret != NULL, FALSE);
+
+	if (len == 0)
+		return TRUE;
+
+	if (index + len > string->len) {
+		msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
+		return FALSE;
+	}
+
+	memcpy(ret, &string->data[index], len);
+
+	return TRUE;
+}
+
+bool string_get_c(String *string, usize index, char *ret)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(ret != NULL, FALSE);
+
+	if (index > string->len) {
+		msg_warn("character at [%zu] is out of bounds!", index);
+		return FALSE;
+	}
+
+	*ret = string->data[index];
 
 	return TRUE;
 }

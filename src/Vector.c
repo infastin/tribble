@@ -113,11 +113,11 @@ static bool __vector_insert_many(Vector *vec, usize index, const void *data, usi
 		return FALSE;
 	}
 
-	if (index + zt + len > vec->capacity) {
-		if (__vector_newcap(vec, index + zt + len) == FALSE)
+	if (index >= vec->len && index + len + zt > vec->capacity) {
+		if (__vector_newcap(vec, index + len + zt) == FALSE)
 			return FALSE;
-	} else if (vec->len + zt + len > vec->capacity) {
-		if (__vector_newcap(vec, vec->len + zt + len) == FALSE)
+	} else if (index < vec->len && vec->len + len + zt > vec->capacity) {
+		if (__vector_newcap(vec, vec->len + len + zt) == FALSE)
 			return FALSE;
 	}
 
@@ -181,7 +181,7 @@ bool vector_insert_many(Vector *vec, usize index, const void *data, usize len)
 	return __vector_insert_many(vec, index, data, len);
 }
 
-static bool __vector_overwrite(Vector *vec, usize index, const void *data, usize len)
+static bool __vector_set_range(Vector *vec, usize index, const void *data, usize len)
 {
 	if (len == 0)
 		return TRUE;
@@ -218,13 +218,13 @@ static bool __vector_overwrite(Vector *vec, usize index, const void *data, usize
 bool vector_set(Vector *vec, usize index, const void *data)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_overwrite(vec, index, data, 1);
+	return __vector_set_range(vec, index, data, 1);
 }
 
-bool vector_overwrite(Vector *vec, usize index, const void *data, usize len)
+bool vector_set_range(Vector *vec, usize index, const void *data, usize len)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_overwrite(vec, index, data, len);
+	return __vector_set_range(vec, index, data, len);
 }
 
 bool vector_get(const Vector *vec, usize index, void *ret)
@@ -238,6 +238,24 @@ bool vector_get(const Vector *vec, usize index, void *ret)
 	}
 
 	memcpy(ret, vector_cell(vec, index), vec->elemsize);
+
+	return TRUE;
+}
+
+bool vector_get_range(const Vector *vec, usize index, usize len, void *ret)
+{
+	return_val_if_fail(vec != NULL, FALSE);
+	return_val_if_fail(ret != NULL, FALSE);
+
+	if (len == 0)
+		return TRUE;
+
+	if (index + len > vec->len) {
+		msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
+		return FALSE;
+	}
+
+	memcpy(ret, vector_cell(vec, index), len * vec->elemsize);
 
 	return TRUE;
 }
@@ -360,12 +378,12 @@ bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy)
 		*len = vec->len;
 
 	vec->len = 0;
-	vec->capacity = 1;
+	vec->capacity = VECTOR_INIT_CAP;
 
 	if (vec->clear)
-		vec->data = calloc(1, vec->elemsize);
+		vec->data = calloc(VECTOR_INIT_CAP, vec->elemsize);
 	else
-		vec->data = malloc(vec->elemsize);
+		vec->data = malloc(VECTOR_INIT_CAP * vec->elemsize);
 
 	if (vec->data == NULL) {
 		vec->capacity = 0;

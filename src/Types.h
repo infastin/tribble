@@ -58,7 +58,18 @@ typedef _Bool bool;
 #define FALSE 0
 
 /* Functions */
+
+/**
+ * CmpFunc:
+ * @a: The first value to be compared (can be `NULL`).
+ * @b: The second value to be compared (can be `NULL`).
+ *
+ * The function for comparing two values.
+ *
+ * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
+ **/
 typedef i32 (*CmpFunc)(const void *a, const void *b);
+
 typedef void *(*CopyFunc)(const void *src);
 typedef void (*FreeFunc)(void *ptr);
 typedef void (*UserFunc)(void *data, void *userdata);

@@ -129,6 +129,15 @@ u64 pow2_64(u64 value)
 	return (1 << (64 - __builtin_clzl(value)));
 }
 
+usize pow2(usize value)
+{
+#if __WORDSIZE == 64
+	return pow2_64(value);
+#else
+	return pow2_32(value);
+#endif
+}
+
 static inline void __inssort(void *array, usize len, usize elemsize, CmpFunc cmp_func)
 {
 	for (i32 i = 1; i < len; ++i) {

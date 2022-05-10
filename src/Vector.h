@@ -97,8 +97,8 @@ bool vector_push_front_many(Vector *vec, const void *data, usize len);
  * @index: The position to place the element at.
  * @data: The pointer to the data to be inserted (can be `NULL`).
  *
- * Inserts the element to the array at the given index.
- * If @data is `NULL`, inserts a zero to the array.
+ * Inserts the element into the array at the given index.
+ * If @data is `NULL`, inserts a zero into the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -111,8 +111,8 @@ bool vector_insert(Vector *vec, usize index, const void *data);
  * @data: The pointer to elements to be inserted (can be `NULL`).
  * @len: The number of elements to be inserted.
  *
- * Inserts elements to the array at the given index.
- * If @data is `NULL`, inserts zeroes to the array.
+ * Inserts elements into the array at the given index.
+ * If @data is `NULL`, inserts zeroes into the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -126,14 +126,14 @@ bool vector_insert_many(Vector *vec, usize index, const void *data, usize len);
  *
  * Changes the value of the entry at the given index in the array
  * with the given data.
- * If @data is NULL, changes the value with a zero.
+ * If @data is `NULL`, changes the value with a zero.
  *
  * Returns: `TRUE` on success.
  **/
 bool vector_set(Vector *vec, usize index, const void *data);
 
 /**
- * vector_set:
+ * vector_set_range:
  * @vec: The array where to overwrite.
  * @index: The position of the entry in which to overwrite the values.
  * @data: The data to be set (can be `NULL`).
@@ -141,11 +141,11 @@ bool vector_set(Vector *vec, usize index, const void *data);
  *
  * Overwrites values of the entries at the given index in the
  * array with the given data.
- * If @data is NULL, overwrites values with zeroes.
+ * If @data is `NULL`, overwrites values with zeroes.
  *
  * Returns: `TRUE` on success.
  **/
-bool vector_overwrite(Vector *vec, usize index, const void *data, usize len);
+bool vector_set_range(Vector *vec, usize index, const void *data, usize len);
 
 /**
  * vector_remove_index:
@@ -196,7 +196,7 @@ void vector_reverse(Vector *vec);
  * @len: The number of elements to be removed.
  * @ret: The pointer to retrieve removed data (can be `NULL`).
  *
- * Removes the range from the array.
+ * Removes the range of elements from the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -228,11 +228,24 @@ void vector_sort(Vector *vec, CmpFunc cmp_func);
  * @index: The position of the entry which value is to be got.
  * @ret: The pointer to retrieve value of the entry.
  *
- * Gets the value of the entry at the given index in array.
+ * Gets the value of the entry in the array at the given index.
  *
  * Returns: `TRUE` on success.
  **/
 bool vector_get(const Vector *vec, usize index, void *ret);
+
+/**
+ * vector_get_range:
+ * @vec: The array where to get.
+ * @index: The index of the first element to be got.
+ * @len: The number of elements to be got.
+ * @ret: The pointer to retrieve the data.
+ *
+ * Gets the range of elements in the array.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool vector_get_range(const Vector *vec, usize index, usize len, void *ret);
 
 /**
  * vector_steal:
@@ -251,7 +264,7 @@ bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy);
 
 /**
  * vector_steal0:
- * @vec: The array where to steal buffer.
+ * @vec: The array where to steal the buffer.
  * @ret: The pointer to retrieve the buffer.
  * @len: The pointer to retrieve the number of the elements in the array (can be `NULL`).
  * @to_copy: if `TRUE`, the array buffer will be copied to ret,
@@ -296,7 +309,7 @@ void vector_purge(Vector *vec, FreeFunc free_func);
 
 /**
  * vector_free:
- * @vec: The array to be deleted.
+ * @vec: The array to be freed.
  * @free_func: The function for freeing elements (can be `NULL`).
  *
  * Frees the array completely.
