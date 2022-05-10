@@ -107,7 +107,7 @@ bool heap_search(const Heap *heap, const void *target, usize *index)
 	usize i = 0;
 
 	while (i < heap->vector.len) {
-		void *current = array_cell(heap->vector.data, heap->vector.elemsize, 0);
+		void *current = array_cell(heap->vector.data, heap->vector.elemsize, i);
 
 		i32 cmp = heap->cmp_func(current, target);
 
