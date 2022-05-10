@@ -36,12 +36,21 @@ struct _String {
  **/
 String *string_init0(String *string);
 
+/**
+ * string_init:
+ * @string: The pointer to the string to be initialized (can be `NULL`).
+ * @str: The inital contents of the #String.
+ *
+ * Creates a new #String from @str.
+ *
+ * Returns: A new #String.
+ **/
 String *string_init(String *string, const char *c_str);
 
 /**
  * string_init_len:
  * @string: The pointer to the string to be initialized (can be `NULL`).
- * @str: The initial contents of the string.
+ * @str: The initial contents of the #String.
  * @len: The number of bytes in the @str to use.
  *
  * Creates a new #String with @len bytes of the @str.
@@ -112,7 +121,7 @@ bool string_push_back_fmt(String *string, const char *fmt, ...);
  * string_push_back_vfmt:
  * @string: The string where to add the formatted string
  * @fmt: The format of the string to be added.
- * @args The argument list.
+ * @args: The argument list.
  *
  * Adds the formatted string to the end of the @string.
  *
@@ -333,7 +342,7 @@ bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...);
 bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args);
 
 /**
- * string_assign_len:
+ * string_assign:
  * @string: The string which contents are to be replaced.
  * @c_str: The string that should replace contents of the @string.
  *
@@ -341,7 +350,7 @@ bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list
  *
  * Returns: `TRUE` on success.
  **/
-bool string_assign(String *string, const char *str);
+bool string_assign(String *string, const char *c_str);
 
 /**
  * string_assign_len:
