@@ -193,8 +193,8 @@ static bool __vector_set_range(Vector *vec, usize index, const void *data, usize
 		return FALSE;
 	}
 
-	if (index + zt + len > vec->capacity) {
-		if (__vector_newcap(vec, index + zt + len) == FALSE)
+	if (index + len + zt > vec->capacity) {
+		if (__vector_newcap(vec, index + len + zt) == FALSE)
 			return FALSE;
 	}
 
@@ -202,7 +202,7 @@ static bool __vector_set_range(Vector *vec, usize index, const void *data, usize
 		vec->len = index + len;
 
 		if (zt)
-			memset(vector_cell(vec, index + len), 0, vec->elemsize);
+			memset(vector_cell(vec, vec->len), 0, vec->elemsize);
 	}
 
 	if (data == NULL)

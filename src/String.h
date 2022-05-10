@@ -12,9 +12,9 @@
  * This example shows how to init and print the string to stdout:
  * ```c
  * String example_string;
- * string_init(&example_string, "I am an example!", 16);
+ * string_init(&example_string, "I am an example!");
  *
- * printf("%*s\n", example_string.len, example_string.data);
+ * printf("%s\n", example_string.data);
  * ```
  **/
 
@@ -36,8 +36,10 @@ struct _String {
  **/
 String *string_init0(String *string);
 
+String *string_init(String *string, const char *c_str);
+
 /**
- * string_init:
+ * string_init_len:
  * @string: The pointer to the string to be initialized (can be `NULL`).
  * @str: The initial contents of the string.
  * @len: The number of bytes in the @str to use.
@@ -46,7 +48,7 @@ String *string_init0(String *string);
  *
  * Returns: A new #String.
  **/
-String *string_init(String *string, const char *str, usize len);
+String *string_init_len(String *string, const char *str, usize len);
 
 /**
  * string_init_sized:
@@ -60,7 +62,18 @@ String *string_init(String *string, const char *str, usize len);
 String *string_init_sized(String *string, usize cap);
 
 /**
- * string_push_back:
+ * string_push_front:
+ * @string: The string where to add the other string.
+ * @c_str: The string to be added.
+ *
+ * Adds the @str to the end of the @string.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_push_back(String *string, const char *c_str);
+
+/**
+ * string_push_back_len:
  * @string: The string where to add the other string.
  * @str: The string to be added (can be `NULL`).
  * @len: The number of bytes in the @str to use.
@@ -70,7 +83,7 @@ String *string_init_sized(String *string, usize cap);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_push_back(String *string, const char *str, usize len);
+bool string_push_back_len(String *string, const char *str, usize len);
 
 /**
  * string_push_back_c:
@@ -110,6 +123,17 @@ bool string_push_back_vfmt(String *string, const char *fmt, va_list args);
 /**
  * string_push_front:
  * @string: The string where to add the other string.
+ * @c_str: The string to be added.
+ *
+ * Adds the @str to the beginning of the @string.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_push_front(String *string, const char *c_str);
+
+/**
+ * string_push_front_len:
+ * @string: The string where to add the other string.
  * @str: The string to be added (can be `NULL`).
  * @len: The number of bytes in @str to use.
  *
@@ -118,7 +142,7 @@ bool string_push_back_vfmt(String *string, const char *fmt, va_list args);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_push_front(String *string, const char *str, usize len);
+bool string_push_front_len(String *string, const char *str, usize len);
 
 /**
  * string_push_front_c:
@@ -159,6 +183,18 @@ bool string_push_front_vfmt(String *string, const char *fmt, va_list args);
  * string_insert:
  * @string: The string where to insert the other string.
  * @index: The position in the @string where the @str should be inserted.
+ * @c_str: The string to be inserted.
+ *
+ * Inserts the @str into the @string at the given index.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_insert(String *string, usize index, const char *c_str);
+
+/**
+ * string_insert_len:
+ * @string: The string where to insert the other string.
+ * @index: The position in the @string where the @str should be inserted.
  * @str: The string to be inserted (can be `NULL`).
  * @len: The number of bytes in the @str to use.
  *
@@ -167,7 +203,7 @@ bool string_push_front_vfmt(String *string, const char *fmt, va_list args);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_insert(String *string, usize index, const char *str, usize len);
+bool string_insert_len(String *string, usize index, const char *str, usize len);
 
 /**
  * string_insert_c:
@@ -236,14 +272,27 @@ bool string_get_c(String *string, usize index, char *ret);
  * string_overwrite:
  * @string: The string where to overwrite.
  * @index: The index of the first byte to be overwriten.
- * @str: The string that should overwrite some part of the @string.
- * @len: The number of bytes in the @str to use.
+ * @c_str: The string that should overwrite some part of the @string.
  *
- * Overwrites @len bytes in the @string at the given index with the @str.
+ * Overwrites the @string at the given index with the @str.
  *
  * Returns: `TRUE` on success.
  **/
-bool string_overwrite(String *string, usize index, const char *str, usize len);
+bool string_overwrite(String *string, usize index, const char *c_str);
+
+/**
+ * string_overwrite_len:
+ * @string: The string where to overwrite.
+ * @index: The index of the first byte to be overwriten.
+ * @str: The string that should overwrite some part of the @string (can be `NULL`).
+ * @len: The number of bytes in the @str to use.
+ *
+ * Overwrites @len bytes in the @string at the given index with the @str.
+ * If @str is `NULL`, overwrites @len bytes in the @string with zeroes.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_overwrite_len(String *string, usize index, const char *str, usize len);
 
 /**
  * string_overwrite_c:
@@ -258,7 +307,44 @@ bool string_overwrite(String *string, usize index, const char *str, usize len);
 bool string_overwrite_c(String *string, usize index, char c);
 
 /**
- * string_assign:
+ * string_overwrite_fmt:
+ * @string: The string where to overwrite.
+ * @index: The index of the first byte to be overwriten.
+ * @fmt: The format of the string that should overwrite some part of the @string.
+ * @...: Arguments.
+ *
+ * Overwrites the @string at the given index with the formatted string.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...);
+
+/**
+ * string_overwrite_vfmt:
+ * @string: The string where to overwrite.
+ * @index: The index of the first byte to be overwriten.
+ * @fmt: The format of the string that should overwrite some part of the @string.
+ * @args: The argument list.
+ *
+ * Overwrites the @string at the given index with the formatted string.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args);
+
+/**
+ * string_assign_len:
+ * @string: The string which contents are to be replaced.
+ * @c_str: The string that should replace contents of the @string.
+ *
+ * Replaces contents of the @string with the @str.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_assign(String *string, const char *str);
+
+/**
+ * string_assign_len:
  * @string: The string which contents are to be replaced.
  * @str: The string that should replace contents of the @string.
  * @len: The number of bytes in the @str to use.
@@ -267,7 +353,7 @@ bool string_overwrite_c(String *string, usize index, char c);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_assign(String *string, const char *str, usize len);
+bool string_assign_len(String *string, const char *str, usize len);
 
 /**
  * string_erase:
@@ -330,7 +416,7 @@ bool string_fmt(String *string, const char *fmt, ...);
 bool string_vfmt(String *string, const char *fmt, va_list args);
 
 /**
- * string_steal:
+ * string_steal0:
  * @string: The string where to steal the buffer.
  * @ret: The pointer to retrieve the buffer.
  * @len: The pointer to retrieve the length of the string (can be `NULL`).
@@ -339,6 +425,21 @@ bool string_vfmt(String *string, const char *fmt, va_list args);
  *
  * Steals the string buffer.
  * String's buffer becomes `NULL`.
+ *
+ * Returns: `TRUE` on success.
+ **/
+bool string_steal0(String *string, char **ret, usize *len, bool to_copy);
+
+/**
+ * string_steal:
+ * @string: The string where to steal the buffer.
+ * @ret: The pointer to retrieve the buffer.
+ * @len: The pointer to retrieve the length of the string (can be `NULL`).
+ * @to_copy: if `TRUE`, the string buffer will be copied to ret and then recreated,
+ *           otherwise pointer to the buffer will be returned.
+ *
+ * Steals the string buffer.
+ * String creates a new buffer.
  *
  * Returns: `TRUE` on success.
  **/

@@ -26,7 +26,51 @@ String *string_init0(String *string)
 	return string;
 }
 
-String *string_init(String *string, const char *str, usize len)
+String *string_init(String *string, const char *c_str)
+{
+	bool was_allocated = FALSE;
+
+	if (string == NULL) {
+		string = talloc(String, 1);
+
+		if (string == NULL) {
+			msg_error("couldn't allocate memory for the string!");
+			return NULL;
+		}
+
+		was_allocated = TRUE;
+	}
+
+	usize len = 0;
+	usize capacity = 1;
+
+	if (c_str != NULL) {
+		len = strlen(c_str);
+		capacity = len + 1;
+	}
+
+	string->data = malloc(capacity);
+
+	if (string->data == NULL) {
+		if (was_allocated)
+			free(string);
+
+		msg_error("couldn't allocate memory for the string buffer!");
+		return NULL;
+	}
+
+	if (c_str != NULL)
+		memcpy(string->data, c_str, len);
+
+	string->data[len] = '\0';
+
+	string->len = len;
+	string->capacity = capacity;
+
+	return string;
+}
+
+String *string_init_len(String *string, const char *str, usize len)
 {
 	return_val_if_fail(str != NULL, NULL);
 
@@ -58,6 +102,8 @@ String *string_init(String *string, const char *str, usize len)
 	if (len != 0)
 		memcpy(string->data, str, len);
 
+	string->data[len] = '\0';
+
 	string->len = len;
 	string->capacity = capacity;
 
@@ -88,6 +134,8 @@ String *string_init_sized(String *string, usize cap)
 		msg_error("couldn't allocate memory for the string buffer!");
 		return NULL;
 	}
+
+	string->data[0] = '\0';
 
 	string->len = 0;
 	string->capacity = cap;
@@ -126,11 +174,11 @@ static bool __string_insert_c(String *string, usize index, char c)
 		return FALSE;
 	}
 
-	if (index >= string->len && index + 1 > string->capacity) {
-		if (__string_newcap(string, index + 1) == FALSE)
+	if (index >= string->len && index + 2 > string->capacity) {
+		if (__string_newcap(string, index + 2) == FALSE)
 			return FALSE;
-	} else if (index < string->len && string->len + 1 > string->capacity) {
-		if (__string_newcap(string, string->capacity + 1) == FALSE)
+	} else if (index < string->len && string->len + 2 > string->capacity) {
+		if (__string_newcap(string, string->len + 2) == FALSE)
 			return FALSE;
 	}
 
@@ -142,6 +190,7 @@ static bool __string_insert_c(String *string, usize index, char c)
 	}
 
 	string->data[index] = c;
+	string->data[string->len] = '\0';
 
 	return TRUE;
 }
@@ -151,16 +200,21 @@ static bool __string_insert(String *string, usize index, const char *str, usize 
 	if (len == 0)
 		return TRUE;
 
-	if ((index > USIZE_MAX - len) || (string->len > USIZE_MAX - len)) {
+	if (
+		(index > USIZE_MAX - len) ||
+		(index + len > USIZE_MAX - 1) ||
+		(string->len > USIZE_MAX - len) ||
+		(string->len + len > USIZE_MAX - 1)
+	) {
 		msg_error("string capacity overflow!");
 		return FALSE;
 	}
 
-	if (index >= string->len && index + len > string->capacity) {
-		if (__string_newcap(string, index + len) == FALSE)
+	if (index >= string->len && index + len + 1 > string->capacity) {
+		if (__string_newcap(string, index + len + 1) == FALSE)
 			return FALSE;
-	} else if (index < string->len && string->len + len > string->capacity) {
-		if (__string_newcap(string, string->len + len) == FALSE)
+	} else if (index < string->len && string->len + len + 1 > string->capacity) {
+		if (__string_newcap(string, string->len + len + 1) == FALSE)
 			return FALSE;
 	}
 
@@ -170,6 +224,8 @@ static bool __string_insert(String *string, usize index, const char *str, usize 
 		memmove(&string->data[index + len], &string->data[index], string->len - index);
 		string->len += len;
 	}
+
+	string->data[string->len] = '\0';
 
 	if (str == NULL)
 		memset(&string->data[index], 0, len);
@@ -194,7 +250,14 @@ static bool __string_insert_vfmt(String *string, usize index, const char *fmt, v
 	return __string_insert(string, index, buf, len);
 }
 
-bool string_push_back(String *string, const char *str, usize len)
+bool string_push_back(String *string, const char *c_str)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(c_str != NULL, FALSE);
+	return __string_insert(string, string->len, c_str, strlen(c_str));
+}
+
+bool string_push_back_len(String *string, const char *str, usize len)
 {
 	return_val_if_fail(string != NULL, FALSE);
 	return __string_insert(string, string->len, str, len);
@@ -225,7 +288,14 @@ bool string_push_back_c(String *string, char c)
 	return __string_insert_c(string, string->len, c);
 }
 
-bool string_push_front(String *string, const char *str, usize len)
+bool string_push_front(String *string, const char *c_str)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(c_str != NULL, FALSE);
+	return __string_insert(string, 0, c_str, strlen(c_str));
+}
+
+bool string_push_front_len(String *string, const char *str, usize len)
 {
 	return_val_if_fail(string != NULL, FALSE);
 	return __string_insert(string, 0, str, len);
@@ -256,7 +326,14 @@ bool string_push_front_vfmt(String *string, const char *fmt, va_list args)
 	return __string_insert_vfmt(string, 0, fmt, args);
 }
 
-bool string_insert(String *string, usize index, const char *str, usize len)
+bool string_insert(String *string, usize index, const char *c_str)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(c_str != NULL, FALSE);
+	return __string_insert(string, index, c_str, strlen(c_str));
+}
+
+bool string_insert_len(String *string, usize index, const char *str, usize len)
 {
 	return_val_if_fail(string != NULL, FALSE);
 	return __string_insert(string, index, str, len);
@@ -311,7 +388,9 @@ static bool __string_erase(String *string, usize index, usize len, char *ret)
 		memcpy(ret, &string->data[index], len);
 
 	if (index + len != string->len)
-		memmove(&string->data[index], &string->data[index + len], string->len - len - index);
+		memmove(&string->data[index], &string->data[index + len], (string->len + 1) - len - index);
+	else
+		string->data[index] = '\0';
 
 	string->len -= len;
 
@@ -330,10 +409,8 @@ bool string_erase_c(String *string, usize index, char *ret)
 	return __string_erase(string, index, 1, ret);
 }
 
-bool string_overwrite(String *string, usize index, const char *str, usize len)
+static bool __string_overwrite(String *string, usize index, const char *str, usize len)
 {
-	return_val_if_fail(string != NULL, FALSE);
-
 	if (len == 0)
 		return TRUE;
 
@@ -342,13 +419,14 @@ bool string_overwrite(String *string, usize index, const char *str, usize len)
 		return FALSE;
 	}
 
-	if (index + len > string->capacity) {
-		if (__string_newcap(string, index + len) == FALSE)
+	if (index + len + 1 > string->capacity) {
+		if (__string_newcap(string, index + len + 1) == FALSE)
 			return FALSE;
 	}
 
 	if (index + len > string->len) {
 		string->len = index + len;
+		string->data[string->len] = '\0';
 	}
 
 	if (str == NULL)
@@ -357,6 +435,53 @@ bool string_overwrite(String *string, usize index, const char *str, usize len)
 		memcpy(&string->data[index], str, len);
 
 	return TRUE;
+}
+
+static bool __string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args)
+{
+	va_list args_copy;
+	va_copy(args_copy, args);
+
+	char *buf;
+	usize len = vstrfmt(&buf, fmt, args);
+	if (len == -1) {
+		msg_error(strerror(errno));
+		return FALSE;
+	}
+
+	return __string_overwrite(string, index, buf, len);
+}
+
+bool string_overwrite(String *string, usize index, const char *c_str)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(c_str != NULL, FALSE);
+	return __string_overwrite(string, index, c_str, strlen(c_str));
+}
+
+bool string_overwrite_len(String *string, usize index, const char *str, usize len)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return __string_overwrite(string, index, str, len);
+}
+
+bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(fmt != NULL, FALSE);
+
+	va_list args;
+	va_start(args, fmt);
+	bool res = __string_overwrite_vfmt(string, index, fmt, args);
+	va_end(args);
+	return res;
+}
+
+bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(fmt != NULL, FALSE);
+	return __string_overwrite_vfmt(string, index, fmt, args);
 }
 
 bool string_overwrite_c(String *string, usize index, char c)
@@ -368,13 +493,14 @@ bool string_overwrite_c(String *string, usize index, char c)
 		return FALSE;
 	}
 
-	if (index + 1 > string->capacity) {
-		if (__string_newcap(string, index + 1) == FALSE)
+	if (index + 2 > string->capacity) {
+		if (__string_newcap(string, index + 2) == FALSE)
 			return FALSE;
 	}
 
 	if (index + 1 > string->len) {
 		string->len = index + 1;
+		string->data[string->len] = '\0';
 	}
 
 	string->data[index] = c;
@@ -382,16 +508,15 @@ bool string_overwrite_c(String *string, usize index, char c)
 	return TRUE;
 }
 
-bool string_assign(String *string, const char *str, usize len)
+static bool __string_assign(String *string, const char *str, usize len)
 {
-	return_val_if_fail(string != NULL, FALSE);
-
-	if (len > string->capacity) {
-		if (__string_newcap(string, len) == FALSE)
+	if (len + 1 > string->capacity) {
+		if (__string_newcap(string, len + 1) == FALSE)
 			return FALSE;
 	}
 
 	string->len = len;
+	string->data[string->len] = '\0';
 
 	if (str == NULL)
 		memset(string->data, 0, len);
@@ -399,6 +524,19 @@ bool string_assign(String *string, const char *str, usize len)
 		memcpy(string->data, str, len);
 
 	return TRUE;
+}
+
+bool string_assign(String *string, const char *c_str)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(c_str != NULL, FALSE);
+	return __string_assign(string, c_str, strlen(c_str));
+}
+
+bool string_assign_len(String *string, const char *str, usize len)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return __string_assign(string, str, len);
 }
 
 i32 string_cmp(const String *a, const String *b)
@@ -443,14 +581,14 @@ bool string_fmt(String *string, const char *fmt, ...)
 		return FALSE;
 	}
 
-	if (len > string->capacity) {
-		if (__string_newcap(string, len) == FALSE) {
+	if (len + 1 > string->capacity) {
+		if (__string_newcap(string, len + 1) == FALSE) {
 			free(buf);
 			return FALSE;
 		}
 	}
 
-	memcpy(string->data, buf, len);
+	memcpy(string->data, buf, len + 1);
 	string->len = len;
 
 	return TRUE;
@@ -469,14 +607,14 @@ bool string_vfmt(String *string, const char *fmt, va_list args)
 		return FALSE;
 	}
 
-	if (len > string->capacity) {
-		if (__string_newcap(string, len) == FALSE) {
+	if (len + 1 > string->capacity) {
+		if (__string_newcap(string, len + 1) == FALSE) {
 			free(buf);
 			return FALSE;
 		}
 	}
 
-	memcpy(string->data, buf, len);
+	memcpy(string->data, buf, len + 1);
 	string->len = len;
 
 	return TRUE;
@@ -493,7 +631,7 @@ bool string_steal(String *string, char **ret, usize *len, bool to_copy)
 	}
 
 	if (to_copy) {
-		memcpy(*ret, string->data, string->len);
+		memcpy(*ret, string->data, string->len + 1);
 		free(string->data);
 	} else {
 		*ret = string->data;
@@ -503,8 +641,44 @@ bool string_steal(String *string, char **ret, usize *len, bool to_copy)
 		*len = string->len;
 
 	string->len = 0;
+	string->capacity = 1;
+
+	string->data = malloc(1);
+
+	if (string->data == NULL) {
+		string->capacity = 0;
+		msg_error("couldn't allocate memory for a new buffer of the string!");
+		return FALSE;
+	}
+
+	string->data[0] = '\0';
+
+	return TRUE;
+}
+
+bool string_steal0(String *string, char **ret, usize *len, bool to_copy)
+{
+	return_val_if_fail(string != NULL, FALSE);
+	return_val_if_fail(ret != NULL, FALSE);
+
+	if (string->data == NULL) {
+		msg_warn("string buffer is NULL!");
+		return FALSE;
+	}
+
+	if (to_copy) {
+		memcpy(*ret, string->data, string->len + 1);
+		free(string->data);
+	} else {
+		*ret = string->data;
+	}
+
+	if (len != NULL)
+		*len = string->len;
+
+	string->data = NULL;
+	string->len = 0;
 	string->capacity = 0;
-	string->data = 0;
 
 	return TRUE;
 }
