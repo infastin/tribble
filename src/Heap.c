@@ -43,12 +43,10 @@ bool heap_insert(Heap *heap, const void *data)
 	return FALSE;
 }
 
-bool heap_remove(Heap *heap, usize index, void *ret)
+static bool __heap_remove(Heap *heap, usize index, void *ret)
 {
-	return_val_if_fail(heap != NULL, FALSE);
-
 	if (index >= heap->vector.len) {
-		msg_warn("element at [%u] is out of bounds!", index);
+		msg_warn("element at [%zu] is out of bounds!", index);
 		return FALSE;
 	}
 
@@ -72,14 +70,28 @@ bool heap_remove(Heap *heap, usize index, void *ret)
 	return FALSE;
 }
 
+bool heap_remove(Heap *heap, usize index, void *ret)
+{
+	return_val_if_fail(heap != NULL, FALSE);
+	return __heap_remove(heap, index, ret);
+}
+
 bool heap_pop_back(Heap *heap, void *ret)
 {
-	return heap_remove(heap, heap->vector.len - 1, ret);
+	return_val_if_fail(heap != NULL, FALSE);
+
+	if (heap->vector.len == 0) {
+		msg_warn("heap is empty!");
+		return FALSE;
+	}
+
+	return __heap_remove(heap, heap->vector.len - 1, ret);
 }
 
 bool heap_pop_front(Heap *heap, void *ret)
 {
-	return heap_remove(heap, 0, ret);
+	return_val_if_fail(heap != NULL, FALSE);
+	return __heap_remove(heap, 0, ret);
 }
 
 bool heap_get(const Heap *heap, usize index, void *ret)

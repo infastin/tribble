@@ -10,37 +10,111 @@
 
 #define SORT_LEN_THRESHOLD 16
 
-char *strdup_printf(const char *fmt, ...)
+usize strfmt(char **buf, const char *fmt, ...)
+{
+	return_val_if_fail(buf != NULL, -1);
+	return_val_if_fail(fmt != NULL, -1);
+
+	va_list args, args_copy;
+	va_start(args, fmt);
+	va_copy(args_copy, args);
+
+	i32 len = vsnprintf(NULL, 0, fmt, args_copy);
+	if (len < 0)
+		return -1;
+
+	usize ulen = len;
+	*buf = (char *) calloc(sizeof(char), len + 1);
+
+	if (*buf != NULL) {
+		if (vsnprintf(*buf, len + 1, fmt, args) < 0) {
+			free(*buf);
+			ulen = -1;
+		}
+	}
+
+	va_end(args_copy);
+	va_end(args);
+
+	return ulen;
+}
+
+usize vstrfmt(char **buf, const char *fmt, va_list args)
+{
+	return_val_if_fail(buf != NULL, -1);
+	return_val_if_fail(fmt != NULL, -1);
+
+	va_list args_copy;
+	va_copy(args_copy, args);
+
+	i32 len = vsnprintf(NULL, 0, fmt, args_copy);
+	if (len < 0)
+		return -1;
+
+	usize ulen = len;
+	*buf = (char *) calloc(sizeof(char), len + 1);
+
+	if (*buf != NULL) {
+		if (vsnprintf(*buf, len + 1, fmt, args) < 0) {
+			free(*buf);
+			ulen = -1;
+		}
+	}
+
+	va_end(args_copy);
+	va_end(args);
+
+	return ulen;
+}
+
+char *strdup_fmt(const char *fmt, ...)
 {
 	return_val_if_fail(fmt != NULL, NULL);
 
-	va_list ap, ap_copy;
-	va_start(ap, fmt);
-	va_copy(ap_copy, ap);
+	va_list args, args_copy;
+	va_start(args, fmt);
+	va_copy(args_copy, args);
 
-	i32 len = vsnprintf(NULL, 0, fmt, ap_copy);
+	i32 len = vsnprintf(NULL, 0, fmt, args_copy);
+	if (len < 0)
+		return NULL;
+
 	char *result = (char *) calloc(sizeof(char), len + 1);
-	vsnprintf(result, len + 1, fmt, ap);
 
-	va_end(ap_copy);
-	va_end(ap);
+	if (result != NULL) {
+		if (vsnprintf(result, len + 1, fmt, args) < 0) {
+			free(result);
+			result = NULL;
+		}
+	}
+
+	va_end(args_copy);
+	va_end(args);
 
 	return result;
 }
 
-char *strdup_vprintf(const char *fmt, va_list *ap)
+char *strdup_vfmt(const char *fmt, va_list args)
 {
 	return_val_if_fail(fmt != NULL, NULL);
-	return_val_if_fail(ap != NULL, NULL);
 
-	va_list ap_copy;
-	va_copy(ap_copy, *ap);
+	va_list args_copy;
+	va_copy(args_copy, args);
 
-	i32 len = vsnprintf(NULL, 0, fmt, ap_copy);
+	i32 len = vsnprintf(NULL, 0, fmt, args_copy);
+	if (len < 0)
+		return NULL;
+
 	char *result = (char *) calloc(sizeof(char), len + 1);
-	vsnprintf(result, len + 1, fmt, *ap);
 
-	va_end(ap_copy);
+	if (result != NULL) {
+		if (vsnprintf(result, len + 1, fmt, args) < 0) {
+			free(result);
+			result = NULL;
+		}
+	}
+
+	va_end(args_copy);
 
 	return result;
 }
@@ -300,183 +374,261 @@ bool binary_search(const void *array, const void *target, usize len, usize elems
 	return FALSE;
 }
 
-i32 u8cmp(const void *a, const void *b)
+i32 u8cmp(const u8 *a, const u8 *b)
 {
-	const u8 *ua = a;
-	const u8 *ub = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ua > *ub)
+	if (b == NULL)
 		return 1;
 
-	if (*ua < *ub)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 u16cmp(const void *a, const void *b)
+i32 u16cmp(const u16 *a, const u16 *b)
 {
-	const u16 *ua = a;
-	const u16 *ub = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ua > *ub)
+	if (b == NULL)
 		return 1;
 
-	if (*ua < *ub)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 u32cmp(const void *a, const void *b)
+i32 u32cmp(const u32 *a, const u32 *b)
 {
-	const u32 *ua = a;
-	const u32 *ub = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ua > *ub)
+	if (b == NULL)
 		return 1;
 
-	if (*ua < *ub)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 u64cmp(const void *a, const void *b)
+i32 u64cmp(const u64 *a, const u64 *b)
 {
-	const u64 *ua = a;
-	const u64 *ub = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ua > *ub)
+	if (b == NULL)
 		return 1;
 
-	if (*ua < *ub)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 usizecmp(const void *a, const void *b)
+i32 usizecmp(const usize *a, const usize *b)
 {
-	const usize *ua = a;
-	const usize *ub = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ua > *ub)
+	if (b == NULL)
 		return 1;
 
-	if (*ua < *ub)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 i8cmp(const void *a, const void *b)
+i32 i8cmp(const i8 *a, const i8 *b)
 {
-	const i8 *ia = a;
-	const i8 *ib = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ia > *ib)
+	if (b == NULL)
 		return 1;
 
-	if (*ia < *ib)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 i16cmp(const void *a, const void *b)
+i32 i16cmp(const i16 *a, const i16 *b)
 {
-	const i16 *ia = a;
-	const i16 *ib = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ia > *ib)
+	if (b == NULL)
 		return 1;
 
-	if (*ia < *ib)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 i32cmp(const void *a, const void *b)
+i32 i32cmp(const i32 *a, const i32 *b)
 {
-	const i32 *ia = a;
-	const i32 *ib = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ia > *ib)
+	if (b == NULL)
 		return 1;
 
-	if (*ia < *ib)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 i64cmp(const void *a, const void *b)
+i32 i64cmp(const i64 *a, const i64 *b)
 {
-	const i64 *ia = a;
-	const i64 *ib = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ia > *ib)
+	if (b == NULL)
 		return 1;
 
-	if (*ia < *ib)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 f32cmp(const void *a, const void *b)
+i32 isizecmp(const isize *a, const isize *b)
 {
-	const f32 *fa = a;
-	const f32 *fb = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*fa > *fb)
+	if (b == NULL)
 		return 1;
 
-	if (*fa < *fb)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 f64cmp(const void *a, const void *b)
+i32 f32cmp(const f32 *a, const f32 *b)
 {
-	const f64 *fa = a;
-	const f64 *fb = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*fa > *fb)
+	if (b == NULL)
 		return 1;
 
-	if (*fa < *fb)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 isizecmp(const void *a, const void *b)
+i32 f64cmp(const f64 *a, const f64 *b)
 {
-	const isize *ua = a;
-	const isize *ub = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*ua > *ub)
+	if (b == NULL)
 		return 1;
 
-	if (*ua < *ub)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;
 }
 
-i32 f128cmp(const void *a, const void *b)
+i32 f128cmp(const f128 *a, const f128 *b)
 {
-	const f128 *fa = a;
-	const f128 *fb = b;
+	if (a == NULL && b == NULL)
+		return 0;
 
-	if (*fa > *fb)
+	if (b == NULL)
 		return 1;
 
-	if (*fa < *fb)
+	if (a == NULL)
+		return -1;
+
+	if (*a > *b)
+		return 1;
+
+	if (*a < *b)
 		return -1;
 
 	return 0;

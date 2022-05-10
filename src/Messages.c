@@ -68,10 +68,15 @@ void message(MessageFlags flag, const char *msg, ...)
 	else
 		stream = stderr;
 
-	va_list ap;
-	va_start(ap, msg);
-	char *parsed = strdup_vprintf(msg, &ap);
-	va_end(ap);
+	va_list args;
+	va_start(args, msg);
+	char *parsed = strdup_vfmt(msg, args);
+	va_end(args);
+
+	if (parsed == NULL) {
+		perror("message");
+		return;
+	}
 
 	fprintf(stream, "** %s%s%s: %s\n", color, prefix, reset, parsed);
 	free(parsed);
@@ -79,15 +84,20 @@ void message(MessageFlags flag, const char *msg, ...)
 
 void message_func(MessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...)
 {
-	va_list ap;
-	va_start(ap, msg);
-	char *parsed = strdup_vprintf(msg, &ap);
-	va_end(ap);
+	va_list args;
+	va_start(args, msg);
+	char *parsed = strdup_vfmt(msg, args);
+	va_end(args);
+
+	if (parsed == NULL) {
+		perror("message_func");
+		return;
+	}
 
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(flag, "%s%s:%llu:%s%s: %s", white, file, line, func, reset, parsed);
+	message(flag, "%s%s:%zu:%s%s: %s", white, file, line, func, reset, parsed);
 
 	free(parsed);
 }
@@ -97,7 +107,7 @@ void return_if_fail_warning(const char *file, usize line, const char *func, cons
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(MESSAGE_WARNING, "%s%s:%llu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
+	message(MESSAGE_WARNING, "%s%s:%zu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
 }
 
 void exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr)
@@ -105,5 +115,5 @@ void exit_if_fail_critical(const char *file, usize line, const char *func, const
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(MESSAGE_CRITICAL, "%s%s:%llu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
+	message(MESSAGE_CRITICAL, "%s%s:%zu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
 }

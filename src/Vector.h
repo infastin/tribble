@@ -46,7 +46,8 @@ Vector *vector_copy(Vector *dst, const Vector *src);
  * @vec: The array where to add the element.
  * @data: The pointer to the data to be added (can be `NULL`).
  *
- * Adds the element onto the end of the array.
+ * Adds the element to the end of the array.
+ * If @data is `NULL`, adds a zero to the end of the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -58,7 +59,8 @@ bool vector_push_back(Vector *vec, const void *data);
  * @data: The pointer to the elements to be added (can be `NULL`).
  * @len: The number of elements to be added.
  *
- * Adds elements onto the end of the array.
+ * Adds elements to the end of the array.
+ * If @data is `NULL`, adds zeroes to the end of the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -69,7 +71,8 @@ bool vector_push_back_many(Vector *vec, const void *data, usize len);
  * @vec: The array where to add the element.
  * @data: The pointer to the data to be added (can be `NULL`).
  *
- * Adds the element onto the beginning of the array.
+ * Adds the element to the beginning of the array.
+ * If @data is `NULL`, adds a zero to the beginning of the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -81,7 +84,8 @@ bool vector_push_front(Vector *vec, const void *data);
  * @data: The pointer to elements to be added (can be `NULL`).
  * @len: The number of elements to be added.
  *
- * Adds elements onto the beginning of the array.
+ * Adds elements to the beginning of the array.
+ * If @data is `NULL`, adds zeroes to the beginning of the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -94,6 +98,7 @@ bool vector_push_front_many(Vector *vec, const void *data, usize len);
  * @data: The pointer to the data to be inserted (can be `NULL`).
  *
  * Inserts the element to the array at the given index.
+ * If @data is `NULL`, inserts a zero to the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -107,6 +112,7 @@ bool vector_insert(Vector *vec, usize index, const void *data);
  * @len: The number of elements to be inserted.
  *
  * Inserts elements to the array at the given index.
+ * If @data is `NULL`, inserts zeroes to the array.
  *
  * Returns: `TRUE` on success.
  **/
@@ -120,6 +126,7 @@ bool vector_insert_many(Vector *vec, usize index, const void *data, usize len);
  *
  * Changes the value of the entry at the given index in the array
  * with the given data.
+ * If @data is NULL, changes the value with a zero.
  *
  * Returns: `TRUE` on success.
  **/
@@ -134,6 +141,7 @@ bool vector_set(Vector *vec, usize index, const void *data);
  *
  * Overwrites values of the entries at the given index in the
  * array with the given data.
+ * If @data is NULL, overwrites values with zeroes.
  *
  * Returns: `TRUE` on success.
  **/

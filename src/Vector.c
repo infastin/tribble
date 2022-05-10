@@ -7,12 +7,18 @@
 #include <memory.h>
 #include <stdlib.h>
 
+#define VECTOR_INIT_CAP 4
 #define BINARY_SEARCH_LEN_THRESHOLD 64
 #define vector_cell(a, i) ((void *) &((char *) ((a)->data))[(i) * (a)->elemsize])
 
 Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsize)
 {
 	return_val_if_fail(elemsize != 0, NULL);
+
+	if (elemsize > USIZE_MAX / VECTOR_INIT_CAP) {
+		msg_error("array capacity overflow!");
+		return FALSE;
+	}
 
 	bool was_allocated = FALSE;
 
@@ -27,10 +33,10 @@ Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsiz
 		was_allocated = TRUE;
 	}
 
-	if (clear || zero_terminated)
-		vec->data = calloc(1, elemsize);
+	if (clear)
+		vec->data = calloc(VECTOR_INIT_CAP, elemsize);
 	else
-		vec->data = malloc(elemsize);
+		vec->data = malloc(VECTOR_INIT_CAP * elemsize);
 
 	if (vec->data == NULL) {
 		if (was_allocated)
@@ -40,8 +46,11 @@ Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsiz
 		return NULL;
 	}
 
+	if (!clear && zero_terminated)
+		memset(vec->data, 0, elemsize);
+
 	vec->len = 0;
-	vec->capacity = 1;
+	vec->capacity = VECTOR_INIT_CAP;
 	vec->elemsize = elemsize;
 	vec->clear = (clear) ? 1 : 0;
 	vec->zero_terminated = (zero_terminated) ? 1 : 0;
@@ -87,50 +96,6 @@ static bool __vector_newcap(Vector *vec, usize newcap)
 	return TRUE;
 }
 
-static bool __vector_insert(Vector *vec, usize index, const void *data)
-{
-	usize zt = vec->zero_terminated;
-
-	if (index > USIZE_MAX - zt - 1 || vec->len > USIZE_MAX - zt - 1) {
-		msg_error("array capacity overflow!");
-		return FALSE;
-	}
-
-	if (index + zt + 1 > vec->capacity) {
-		if (__vector_newcap(vec, index + zt + 1) == FALSE)
-			return FALSE;
-	} else if (vec->len + zt + 1 > vec->capacity) {
-		if (__vector_newcap(vec, vec->capacity + 1) == FALSE)
-			return FALSE;
-	}
-
-	if (index >= vec->len) {
-		vec->len = index + 1;
-
-		if (zt)
-			memset(vector_cell(vec, index + 1), 0, vec->elemsize);
-	} else {
-		memmove(
-			vector_cell(vec, index + 1), vector_cell(vec, index),
-			(vec->len - index) * vec->elemsize
-		);
-
-		vec->len++;
-
-		if (zt)
-			memset(vector_cell(vec, vec->len), 0, vec->elemsize);
-	}
-
-	if (data == NULL)
-		memset(vector_cell(vec, index), 0, vec->elemsize);
-	else
-		memcpy(vector_cell(vec, index), data, vec->elemsize);
-
-	vec->sorted = 0;
-
-	return TRUE;
-}
-
 static bool __vector_insert_many(Vector *vec, usize index, const void *data, usize len)
 {
 	if (len == 0)
@@ -158,9 +123,6 @@ static bool __vector_insert_many(Vector *vec, usize index, const void *data, usi
 
 	if (index >= vec->len) {
 		vec->len = index + len;
-
-		if (zt)
-			memset(vector_cell(vec, index + len), 0, vec->elemsize);
 	} else {
 		memmove(
 			vector_cell(vec, index + len), vector_cell(vec, index),
@@ -168,10 +130,10 @@ static bool __vector_insert_many(Vector *vec, usize index, const void *data, usi
 		);
 
 		vec->len += len;
-
-		if (zt)
-			memset(vector_cell(vec, vec->len), 0, vec->elemsize);
 	}
+
+	if (zt)
+		memset(vector_cell(vec, vec->len), 0, vec->elemsize);
 
 	if (data == NULL)
 		memset(vector_cell(vec, index), 0, len * vec->elemsize);
@@ -186,7 +148,7 @@ static bool __vector_insert_many(Vector *vec, usize index, const void *data, usi
 bool vector_push_back(Vector *vec, const void *data)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert(vec, vec->len, data);
+	return __vector_insert_many(vec, vec->len, data, 1);
 }
 
 bool vector_push_back_many(Vector *vec, const void *data, usize len)
@@ -198,7 +160,7 @@ bool vector_push_back_many(Vector *vec, const void *data, usize len)
 bool vector_push_front(Vector *vec, const void *data)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert(vec, 0, data);
+	return __vector_insert_many(vec, 0, data, 1);
 }
 
 bool vector_push_front_many(Vector *vec, const void *data, usize len)
@@ -210,7 +172,7 @@ bool vector_push_front_many(Vector *vec, const void *data, usize len)
 bool vector_insert(Vector *vec, usize index, const void *data)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert(vec, index, data);
+	return __vector_insert_many(vec, index, data, 1);
 }
 
 bool vector_insert_many(Vector *vec, usize index, const void *data, usize len)
@@ -219,42 +181,10 @@ bool vector_insert_many(Vector *vec, usize index, const void *data, usize len)
 	return __vector_insert_many(vec, index, data, len);
 }
 
-bool vector_set(Vector *vec, usize index, const void *data)
+static bool __vector_overwrite(Vector *vec, usize index, const void *data, usize len)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-
-	usize zt = vec->zero_terminated;
-
-	if (index > USIZE_MAX - zt - 1) {
-		msg_error("array capacity overflow!");
-		return FALSE;
-	}
-
-	if (index + zt + 1 > vec->capacity) {
-		if (__vector_newcap(vec, index + zt + 1) == FALSE)
-			return FALSE;
-	}
-
-	if (index >= vec->len) {
-		vec->len = index + 1;
-
-		if (zt)
-			memset(vector_cell(vec, index + 1), 0, vec->elemsize);
-	}
-
-	if (data == NULL)
-		memset(vector_cell(vec, index), 0, vec->elemsize);
-	else
-		memcpy(vector_cell(vec, index), data, vec->elemsize);
-
-	vec->sorted = 0;
-
-	return TRUE;
-}
-
-bool vector_overwrite(Vector *vec, usize index, const void *data, usize len)
-{
-	return_val_if_fail(vec != NULL, FALSE);
+	if (len == 0)
+		return TRUE;
 
 	usize zt = vec->zero_terminated;
 
@@ -268,7 +198,7 @@ bool vector_overwrite(Vector *vec, usize index, const void *data, usize len)
 			return FALSE;
 	}
 
-	if (index >= vec->len) {
+	if (index + len > vec->len) {
 		vec->len = index + len;
 
 		if (zt)
@@ -285,13 +215,25 @@ bool vector_overwrite(Vector *vec, usize index, const void *data, usize len)
 	return TRUE;
 }
 
+bool vector_set(Vector *vec, usize index, const void *data)
+{
+	return_val_if_fail(vec != NULL, FALSE);
+	return __vector_overwrite(vec, index, data, 1);
+}
+
+bool vector_overwrite(Vector *vec, usize index, const void *data, usize len)
+{
+	return_val_if_fail(vec != NULL, FALSE);
+	return __vector_overwrite(vec, index, data, len);
+}
+
 bool vector_get(const Vector *vec, usize index, void *ret)
 {
 	return_val_if_fail(vec != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
 
 	if (index >= vec->len) {
-		msg_warn("element at [%lu] is out of bounds!", index);
+		msg_warn("element at [%zu] is out of bounds!", index);
 		return FALSE;
 	}
 
@@ -302,22 +244,30 @@ bool vector_get(const Vector *vec, usize index, void *ret)
 
 static bool __vector_remove_range(Vector *vec, usize index, usize len, void *ret)
 {
-	if (index + len - 1 >= vec->len) {
+	if (len == 0)
+		return TRUE;
+
+	if (index > USIZE_MAX - len) {
+		msg_error("array index overflow!");
+		return FALSE;
+	}
+
+	if (index + len > vec->len) {
 		if (len == 1) {
-			msg_warn("element at [%u] is out of bounds!", index);
+			msg_warn("element at [%zu] is out of bounds!", index);
 		} else {
-			msg_warn("range [%lu:%lu] is out of bounds!", index, index + len - 1);
+			msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
 		}
 
 		return FALSE;
 	}
 
+	usize zt = vec->zero_terminated;
+
 	if (ret != NULL)
 		memcpy(ret, vector_cell(vec, index), len * vec->elemsize);
 
-	usize zt = vec->zero_terminated;
-
-	if (index + len < vec->len)
+	if (index + len != vec->len)
 		memmove(
 			vector_cell(vec, index), vector_cell(vec, index + len),
 			((vec->len + zt) - len - index) * vec->elemsize
@@ -347,7 +297,7 @@ bool vector_pop_back(Vector *vec, void *ret)
 	return_val_if_fail(vec != NULL, FALSE);
 
 	if (vec->len == 0) {
-		msg_warn("array length is zero!");
+		msg_warn("array is empty!");
 		return FALSE;
 	}
 
@@ -357,22 +307,12 @@ bool vector_pop_back(Vector *vec, void *ret)
 bool vector_pop_front(Vector *vec, void *ret)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-
-	if (vec->len == 0) {
-		msg_warn("array length is zero!");
-		return FALSE;
-	}
-
 	return __vector_remove_range(vec, 0, 1, ret);
 }
 
 bool vector_remove_range(Vector *vec, usize index, usize len, void *ret)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-
-	if (len == 0)
-		return TRUE;
-
 	return __vector_remove_range(vec, index, len, ret);
 }
 

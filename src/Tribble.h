@@ -10,6 +10,7 @@
 #include "Polynom.h"
 #include "Rand.h"
 #include "SList.h"
+#include "String.h"
 #include "Tree.h"
 #include "Types.h"
 #include "Utils.h"

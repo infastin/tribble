@@ -256,7 +256,7 @@ void test_sort_reverse()
 	vector_push_back_many(&vec, arr3, 4);
 	vector_push_back_many(&vec, arr4, 4);
 
-	vector_sort(&vec, u32cmp);
+	vector_sort(&vec, (CmpFunc) u32cmp);
 	assert(vec.len == 16);
 
 	u32 arr[16] = { 2, 7, 10, 11, 12, 20, 22, 30, 33, 40, 44, 45, 55, 77, 88, 98 };
@@ -481,13 +481,13 @@ void test_search()
 	vector_push_back_many(&vec, arr4, 4);
 
 	usize index;
-	assert(vector_search(&vec, get_ptr(u32, 33), u32cmp, &index));
+	assert(vector_search(&vec, get_ptr(u32, 33), (CmpFunc) u32cmp, &index));
 	assert(vector_get_unsafe(&vec, u32, index) == 33);
 
-	assert(vector_search(&vec, get_ptr(u32, 12), u32cmp, &index));
+	assert(vector_search(&vec, get_ptr(u32, 12), (CmpFunc) u32cmp, &index));
 	assert(vector_get_unsafe(&vec, u32, index) == 12);
 
-	assert(vector_search(&vec, get_ptr(u32, 110), u32cmp, NULL) == FALSE);
+	assert(vector_search(&vec, get_ptr(u32, 110), (CmpFunc) u32cmp, NULL) == FALSE);
 
 	vector_purge(&vec, NULL);
 }

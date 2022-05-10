@@ -21,6 +21,18 @@ HashTable *ht_init(HashTable *ht, usize keysize, usize valuesize, usize seed, Ha
 	return_val_if_fail(hash_func != NULL, NULL);
 	return_val_if_fail(cmp_func != NULL, NULL);
 
+	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
+		msg_error("bucket size overflow!");
+		return FALSE;
+	}
+
+	usize bucketsize = keysize + valuesize + 1;
+
+	if (bucketsize > USIZE_MAX / HT_INIT_SLOTS) {
+		msg_error("hash table capacity overflow!");
+		return FALSE;
+	}
+
 	bool was_allocated = FALSE;
 
 	if (ht == NULL) {
@@ -32,24 +44,6 @@ HashTable *ht_init(HashTable *ht, usize keysize, usize valuesize, usize seed, Ha
 		}
 
 		was_allocated = TRUE;
-	}
-
-	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
-		if (was_allocated)
-			free(ht);
-
-		msg_error("bucket size overflow!");
-		return FALSE;
-	}
-
-	usize bucketsize = keysize + valuesize + 1;
-
-	if (bucketsize > USIZE_MAX / HT_INIT_SLOTS) {
-		if (was_allocated)
-			free(ht);
-
-		msg_error("hash table capacity overflow!");
-		return FALSE;
 	}
 
 	ht->buckets = calloc(HT_INIT_SLOTS, bucketsize);
@@ -148,16 +142,21 @@ bool ht_insert(HashTable *ht, const void *key, const void *value)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 
-	f64 load_factor = (f64) ht->used / (f64) ht->slots;
-	if (load_factor >= 0.6) {
-		usize new_slots = ht->slots << 1;
-		if (ht->slots > new_slots) {
-			msg_error("hash table capacity overflow!");
+	if (ht->slots == 0) {
+		if (!ht_resize(ht, HT_INIT_SLOTS))
 			return FALSE;
-		}
+	} else {
+		f64 load_factor = (f64) ht->used / (f64) ht->slots;
+		if (load_factor >= 0.6) {
+			usize new_slots = ht->slots << 1;
+			if (ht->slots > new_slots) {
+				msg_error("hash table capacity overflow!");
+				return FALSE;
+			}
 
-		if (!ht_resize(ht, new_slots))
-			return FALSE;
+			if (!ht_resize(ht, new_slots))
+				return FALSE;
+		}
 	}
 
 	bool only_change_value = FALSE;
@@ -187,10 +186,10 @@ bool ht_insert(HashTable *ht, const void *key, const void *value)
 		}
 	}
 
-	if (!only_change_value)
+	if (!only_change_value) {
 		memcpy(ht_key(ht, pos), key, ht->keysize);
-	else
 		ht->used++;
+	}
 
 	if (value != NULL)
 		memcpy(ht_value(ht, pos), value, ht->valuesize);
@@ -207,16 +206,21 @@ bool ht_add(HashTable *ht, const void *key, const void *value)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 
-	f64 load_factor = (f64) ht->used / (f64) ht->slots;
-	if (load_factor >= 0.6) {
-		usize new_slots = ht->slots << 1;
-		if (ht->slots > new_slots) {
-			msg_error("hash table capacity overflow!");
+	if (ht->slots == 0) {
+		if (!ht_resize(ht, HT_INIT_SLOTS))
 			return FALSE;
-		}
+	} else {
+		f64 load_factor = (f64) ht->used / (f64) ht->slots;
+		if (load_factor >= 0.6) {
+			usize new_slots = ht->slots << 1;
+			if (ht->slots > new_slots) {
+				msg_error("hash table capacity overflow!");
+				return FALSE;
+			}
 
-		if (!ht_resize(ht, new_slots))
-			return FALSE;
+			if (!ht_resize(ht, new_slots))
+				return FALSE;
+		}
 	}
 
 	if (__ht_add(ht, ht->slots, ht->buckets, key, value)) {
@@ -232,10 +236,17 @@ bool ht_remove(HashTable *ht, const void *key, void *ret)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 
-	f64 load_factor = (f64) ht->used / (f64) ht->slots;
-	if (load_factor <= 0.4) {
-		if (!ht_resize(ht, ht->slots >> 1))
-			return FALSE;
+	if (ht->slots == 0) {
+		msg_warn("hash table capacity is zero!");
+		return FALSE;
+	}
+
+	if (ht->slots > HT_INIT_SLOTS) {
+		f64 load_factor = (f64) ht->used / (f64) ht->slots;
+		if (load_factor <= 0.4) {
+			if (!ht_resize(ht, ht->slots >> 1))
+				return FALSE;
+		}
 	}
 
 	usize hash = ht->hash_func(key, ht->keysize, ht->seed);
@@ -279,6 +290,11 @@ bool ht_lookup(const HashTable *ht, const void *key, void *ret)
 	return_val_if_fail(ht != NULL, FALSE);
 	return_val_if_fail(key != NULL, FALSE);
 	return_val_if_fail(ret != NULL, FALSE);
+
+	if (ht->slots == 0) {
+		msg_warn("hash table capacity is zero!");
+		return FALSE;
+	}
 
 	usize hash = ht->hash_func(key, ht->keysize, ht->seed);
 	usize pos = hash & (ht->slots - 1);
@@ -337,6 +353,9 @@ void ht_remove_all(HashTable *ht, void *ret, usize *len)
 void ht_purge(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)
 {
 	return_if_fail(ht != NULL);
+
+	if (ht->buckets == NULL)
+		return;
 
 	if (key_free_func != NULL || value_free_func != NULL) {
 		for (usize i = 0; i < ht->slots; ++i) {
