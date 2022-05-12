@@ -350,7 +350,7 @@ void ht_remove_all(HashTable *ht, void *ret, usize *len)
 	ht->used = 0;
 }
 
-void ht_purge(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)
+void ht_destroy(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)
 {
 	return_if_fail(ht != NULL);
 
@@ -378,6 +378,6 @@ void ht_purge(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)
 void ht_free(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)
 {
 	return_if_fail(ht != NULL);
-	ht_purge(ht, key_free_func, value_free_func);
+	ht_destroy(ht, key_free_func, value_free_func);
 	free(ht);
 }

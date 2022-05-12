@@ -181,13 +181,13 @@ void list_splice(List *list, List *node);
 List *list_copy(List *dst, const List *src, CopyFunc copy_func, bool *status);
 
 /**
- * list_purge:
+ * list_destroy:
  * @list: The list to be freed.
  * @free_func: The function for freeing nodes.
  *
  * Frees all nodes in the list.
  **/
-void list_purge(List *list, FreeFunc free_func);
+void list_destroy(List *list, FreeFunc free_func);
 
 /**
  * list_free:

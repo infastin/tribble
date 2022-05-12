@@ -455,12 +455,12 @@ bool string_steal0(String *string, char **ret, usize *len, bool to_copy);
 bool string_steal(String *string, char **ret, usize *len, bool to_copy);
 
 /**
- * string_purge:
+ * string_destroy:
  * @string: The string which buffer is to be freed.
  *
  * Frees the string buffer.
  **/
-void string_purge(String *string);
+void string_destroy(String *string);
 
 /**
  * string_free:

@@ -447,7 +447,7 @@ void tree_postorder(Tree *tree, UserFunc func, void *userdata)
 	}
 }
 
-void tree_purge(Tree *tree, FreeFunc free_func)
+void tree_destroy(Tree *tree, FreeFunc free_func)
 {
 	return_if_fail(tree != NULL);
 	return_if_fail(free_func != NULL);
@@ -508,6 +508,6 @@ void tree_free(Tree *tree, FreeFunc free_func)
 	return_if_fail(tree != NULL);
 	return_if_fail(free_func != NULL);
 
-	tree_purge(tree, free_func);
+	tree_destroy(tree, free_func);
 	free(tree);
 }

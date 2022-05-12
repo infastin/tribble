@@ -71,7 +71,7 @@ void *int_list_copy(const void *ptr)
 	return &copy->entry;
 }
 
-void test_push_purge()
+void test_push_destroy()
 {
 	List list1;
 	list_init(&list1);
@@ -114,8 +114,8 @@ void test_push_purge()
 		assert(ii1->value == ii2->value);
 	}
 
-	list_purge(&list1, int_list_free);
-	list_purge(&list2, int_list_free);
+	list_destroy(&list1, int_list_free);
+	list_destroy(&list2, int_list_free);
 
 	assert(list1.next == &list1 && list1.prev == &list1);
 	assert(list2.next == &list2 && list2.prev == &list2);
@@ -168,8 +168,8 @@ void test_reverse()
 		assert(ii1->value == ii2->value);
 	}
 
-	list_purge(&list1, int_list_free);
-	list_purge(&list2, int_list_free);
+	list_destroy(&list1, int_list_free);
+	list_destroy(&list2, int_list_free);
 }
 
 void test_sort()
@@ -209,8 +209,8 @@ void test_sort()
 		assert(ii1->value == ii2->value);
 	}
 
-	list_purge(&list1, int_list_free);
-	list_purge(&list2, int_list_free);
+	list_destroy(&list1, int_list_free);
+	list_destroy(&list2, int_list_free);
 }
 
 void test_copy()
@@ -243,8 +243,8 @@ void test_copy()
 		assert(ii1->value == ii2->value);
 	}
 
-	list_purge(&list1, int_list_free);
-	list_purge(&list2, int_list_free);
+	list_destroy(&list1, int_list_free);
+	list_destroy(&list2, int_list_free);
 }
 
 void test_len_empty()
@@ -261,7 +261,7 @@ void test_len_empty()
 
 	assert(list_len(&list) == 6);
 
-	list_purge(&list, int_list_free);
+	list_destroy(&list, int_list_free);
 
 	assert(list_empty(&list));
 }
@@ -288,7 +288,7 @@ void test_nth_position()
 	assert(list_position(&list, node1) == 2);
 	assert(list_position(&list, node2) == 5);
 
-	list_purge(&list, int_list_free);
+	list_destroy(&list, int_list_free);
 }
 
 void test_insert()
@@ -331,8 +331,8 @@ void test_insert()
 		assert(ii1->value == ii2->value);
 	}
 
-	list_purge(&list1, int_list_free);
-	list_purge(&list2, int_list_free);
+	list_destroy(&list1, int_list_free);
+	list_destroy(&list2, int_list_free);
 }
 
 void test_remove_pop()
@@ -381,8 +381,8 @@ void test_remove_pop()
 	int_list_free(node3);
 	int_list_free(node4);
 
-	list_purge(&list1, int_list_free);
-	list_purge(&list2, int_list_free);
+	list_destroy(&list1, int_list_free);
+	list_destroy(&list2, int_list_free);
 }
 
 void test_splice()
@@ -446,13 +446,13 @@ void test_splice()
 		assert(ii2->value == ii3->value);
 	}
 
-	list_purge(&list2, int_list_free);
-	list_purge(&list3, int_list_free);
+	list_destroy(&list2, int_list_free);
+	list_destroy(&list3, int_list_free);
 }
 
 int main(int argc, char *argv[])
 {
-	test_push_purge();
+	test_push_destroy();
 	test_reverse();
 	test_sort();
 	test_copy();

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void test_push_purge()
+void test_push_destroy()
 {
 	Vector vec;
 	vector_init(&vec, FALSE, FALSE, 4);
@@ -34,7 +34,7 @@ void test_push_purge()
 		assert(val == arr[i]);
 	}
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 
 	assert(vec.capacity == 0);
 	assert(vec.len == 0);
@@ -73,7 +73,7 @@ void test_insert()
 
 	assert(vector_insert(&vec, USIZE_MAX, get_ptr(u32, 10)) == FALSE);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_insert_many()
@@ -103,7 +103,7 @@ void test_insert_many()
 
 	assert(vector_push_back_many(&vec, arr1, USIZE_MAX) == FALSE);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_pop_remove()
@@ -141,7 +141,7 @@ void test_pop_remove()
 		assert(val == arr[i]);
 	}
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_remove_range()
@@ -194,7 +194,7 @@ void test_remove_range()
 	assert(vector_remove_range(&vec, 0, 5, NULL) == FALSE);
 	assert(vec.len == 0);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_zero()
@@ -245,7 +245,7 @@ void test_zero()
 	zero = vector_get_unsafe(&vec, u32, 9);
 	assert(zero == 0);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_sort_reverse()
@@ -283,7 +283,7 @@ void test_sort_reverse()
 		assert(val == arr_[i]);
 	}
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_set_get()
@@ -340,7 +340,7 @@ void test_set_get()
 
 	assert(vector_get(&vec, 20, &val2) == FALSE);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_set_range()
@@ -369,7 +369,7 @@ void test_set_range()
 		assert(val == arr[i]);
 	}
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_get_range()
@@ -396,7 +396,7 @@ void test_get_range()
 		assert(val == arr[i]);
 	}
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_steal()
@@ -465,7 +465,7 @@ void test_shrink()
 	assert(vec.capacity == 16);
 	assert(vec.len == 16);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_reserve()
@@ -496,7 +496,7 @@ void test_reserve()
 	assert(vec.len == 16);
 	assert(vec.capacity == 24);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 void test_search()
@@ -523,12 +523,12 @@ void test_search()
 
 	assert(vector_search(&vec, get_ptr(u32, 110), (CmpFunc) u32cmp, NULL) == FALSE);
 
-	vector_purge(&vec, NULL);
+	vector_destroy(&vec, NULL);
 }
 
 int main(int argc, char *argv[])
 {
-	test_push_purge();
+	test_push_destroy();
 	test_insert();
 	test_insert_many();
 	test_pop_remove();

@@ -716,7 +716,7 @@ bool string_get_c(String *string, usize index, char *ret)
 	return TRUE;
 }
 
-void string_purge(String *string)
+void string_destroy(String *string)
 {
 	return_if_fail(string != NULL);
 
@@ -733,6 +733,6 @@ void string_purge(String *string)
 void string_free(String *string)
 {
 	return_if_fail(string != NULL);
-	string_purge(string);
+	string_destroy(string);
 	free(string);
 }

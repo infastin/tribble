@@ -25,7 +25,7 @@ bool heap_get(const Heap *heap, usize index, void *ret);
 
 bool heap_search(const Heap *heap, const void *target, usize *index);
 
-void heap_purge(Heap *heap, FreeFunc free_func);
+void heap_destroy(Heap *heap, FreeFunc free_func);
 
 void heap_free(Heap *heap, FreeFunc free_func);
 

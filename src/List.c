@@ -375,7 +375,7 @@ List *list_copy(List *dst, const List *src, CopyFunc copy_func, bool *status)
 	return dst;
 }
 
-void list_purge(List *list, FreeFunc free_func)
+void list_destroy(List *list, FreeFunc free_func)
 {
 	return_if_fail(list != NULL);
 	return_if_fail(free_func != NULL);
@@ -400,6 +400,6 @@ void list_free(List *list, FreeFunc free_func)
 	return_if_fail(list != NULL);
 	return_if_fail(free_func != NULL);
 
-	list_purge(list, free_func);
+	list_destroy(list, free_func);
 	free(list);
 }

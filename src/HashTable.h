@@ -93,14 +93,14 @@ void ht_remove_all(HashTable *ht, void *ret, usize *len);
 bool ht_lookup(const HashTable *ht, const void *key, void *ret);
 
 /**
- * ht_purge:
+ * ht_destroy:
  * @ht: The hash table which buckets will be freed.
  * @key_free_func: The function for freeing keys (can be `NULL`).
  * @value_free_func: The function for freeing values (can be `NULL`).
  *
  * Frees the hash table buckets.
  **/
-void ht_purge(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func);
+void ht_destroy(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func);
 
 /**
  * ht_free:

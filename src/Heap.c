@@ -125,15 +125,15 @@ bool heap_search(const Heap *heap, const void *target, usize *index)
 	return FALSE;
 }
 
-void heap_purge(Heap *heap, FreeFunc free_func)
+void heap_destroy(Heap *heap, FreeFunc free_func)
 {
 	return_if_fail(heap != NULL);
-	vector_purge(&heap->vector, free_func);
+	vector_destroy(&heap->vector, free_func);
 }
 
 void heap_free(Heap *heap, FreeFunc free_func)
 {
 	return_if_fail(heap != NULL);
-	heap_purge(heap, free_func);
+	heap_destroy(heap, free_func);
 	free(heap);
 }

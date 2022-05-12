@@ -106,13 +106,13 @@ void tree_postorder(Tree *tree, UserFunc func, void *userdata);
 Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status);
 
 /**
- * tree_purge:
+ * tree_destroy:
  * @tree: The tree which nodes are to be freed.
  * @free_func: The function for freeing nodes.
  *
  * Frees all nodes in the tree.
  **/
-void tree_purge(Tree *tree, FreeFunc free_func);
+void tree_destroy(Tree *tree, FreeFunc free_func);
 
 /**
  * tree_free:

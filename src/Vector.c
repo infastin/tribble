@@ -394,7 +394,7 @@ bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy)
 	return TRUE;
 }
 
-void vector_purge(Vector *vec, FreeFunc free_func)
+void vector_destroy(Vector *vec, FreeFunc free_func)
 {
 	return_if_fail(vec != NULL);
 
@@ -443,7 +443,7 @@ bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy)
 void vector_free(Vector *vec, FreeFunc free_func)
 {
 	return_if_fail(vec != NULL);
-	vector_purge(vec, free_func);
+	vector_destroy(vec, free_func);
 	free(vec);
 }
 

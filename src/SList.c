@@ -364,7 +364,7 @@ SList *slist_copy(SList *dst, const SList *src, CopyFunc copy_func, bool *status
 	return dst;
 }
 
-void slist_purge(SList *list, FreeFunc free_func)
+void slist_destroy(SList *list, FreeFunc free_func)
 {
 	return_if_fail(list != NULL);
 	return_if_fail(free_func != NULL);
@@ -388,6 +388,6 @@ void slist_free(SList *list, FreeFunc free_func)
 	return_if_fail(list != NULL);
 	return_if_fail(free_func != NULL);
 
-	slist_purge(list, free_func);
+	slist_destroy(list, free_func);
 	free(list);
 }

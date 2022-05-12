@@ -299,13 +299,13 @@ bool vector_reserve(Vector *vec, usize newcap);
 bool vector_shrink(Vector *vec);
 
 /**
- * vector_purge:
+ * vector_destroy:
  * @vec: The array which buffer is to be freed.
  * @free_func: The function for freeing elements (can be `NULL`).
  *
  * Frees the array buffer.
  **/
-void vector_purge(Vector *vec, FreeFunc free_func);
+void vector_destroy(Vector *vec, FreeFunc free_func);
 
 /**
  * vector_free:
