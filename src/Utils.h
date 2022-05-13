@@ -85,13 +85,65 @@ u64 pow2_64(u64 value);
  **/
 usize pow2(usize value);
 
+/**
+ * heapify;
+ * @array: The array to be heapified.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmp_func: The compare function for comparing elements.
+ *
+ * Heapifies the array.
+ **/
 void heapify(void *array, usize len, usize elemsize, CmpFunc cmp_func);
 
+/**
+ * inssort:
+ * @array: The array to be sorted.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmp_func: The compare function for comparing elements.
+ *
+ * Sorts the array using Insertion Sort.
+ **/
 void inssort(void *array, usize len, usize elemsize, CmpFunc cmp_func);
+
+/**
+ * heapsort:
+ * @array: The array to be sorted.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmp_func: The compare function for comparing elements.
+ *
+ * Sorts the array using Heap Sort.
+ **/
 void heapsort(void *array, usize len, usize elemsize, CmpFunc cmp_func);
+
+/**
+ * quicksort:
+ * @array: The array to be sorted.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmp_func: The compare function for comparing elements.
+ *
+ * Sorts the array using Quicksort by Knuth.
+ * [Reference](http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/quicksort.pdf).
+ **/
 void quicksort(void *array, usize len, usize elemsize, CmpFunc cmp_func);
 
-bool linear_search(const void *array, const void *target, usize len, usize elemsize, CmpFunc cmp_func, usize *index);
+/**
+ * binary_search:
+ * @array: The array to be searchen.
+ * @target: The pointer to the data to be found (can be `NULL`).
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmp_func: The compare function for comparing elements.
+ * @index: The pointer to retrieve the index of found value (can be `NULL`).
+ *
+ * Searches for the entry in the array using binary search.
+ * The array should be sorted if you want to use this function.
+ *
+ * Returns: `TRUE` if found, `FALSE` if not.
+ **/
 bool binary_search(const void *array, const void *target, usize len, usize elemsize, CmpFunc cmp_func, usize *index);
 
 /**

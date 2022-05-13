@@ -71,6 +71,30 @@ String *string_init_len(String *string, const char *str, usize len);
 String *string_init_sized(String *string, usize cap);
 
 /**
+ * string_init_fmt:
+ * @string: The pointer to the string to be initialized (can be `NULL`).
+ * @fmt: The format of the string that wiil be used as the initial contents of the #String.
+ * @...: Arguments.
+ *
+ * Creates a new #String from the formatted string.
+ *
+ * Returns: A new #String.
+ **/
+String *string_init_fmt(String *string, const char *fmt, ...);
+
+/**
+ * string_init_vfmt:
+ * @string: The pointer to the string to be initialized (can be `NULL`).
+ * @fmt: The format of the string that will be used as the initial contents of the #String.
+ * @args: The argument list.
+ *
+ * Creates a new #String from the formatted string.
+ *
+ * Returns: A new #String.
+ **/
+String *string_init_vfmt(String *string, const char *fmt, va_list args);
+
+/**
  * string_push_front:
  * @string: The string where to add the other string.
  * @c_str: The string to be added.
@@ -401,7 +425,7 @@ bool string_erase_c(String *string, usize index, char *ret);
 i32 string_cmp(const String *a, const String *b);
 
 /**
- * string_fmt:
+ * string_assign_fmt:
  * @string: The string which contents are to be replaced.
  * @fmt: The format of the string that should replace contents of the @string.
  * @...: Arguments.
@@ -410,10 +434,10 @@ i32 string_cmp(const String *a, const String *b);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_fmt(String *string, const char *fmt, ...);
+bool string_assign_fmt(String *string, const char *fmt, ...);
 
 /**
- * string_vfmt:
+ * string_assign_vfmt:
  * @string: The string which contents are to be replaced.
  * @fmt: The format of the string that should replace contents of the @string.
  * @args: The argument list.
@@ -422,7 +446,7 @@ bool string_fmt(String *string, const char *fmt, ...);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_vfmt(String *string, const char *fmt, va_list args);
+bool string_assign_vfmt(String *string, const char *fmt, va_list args);
 
 /**
  * string_steal0:

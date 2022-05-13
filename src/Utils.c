@@ -334,24 +334,6 @@ void quicksort(void *array, usize len, usize elemsize, CmpFunc cmp_func)
 	quicksort_recursive(array, 0, len - 1, elemsize, cmp_func);
 }
 
-bool linear_search(const void *array, const void *target, usize len, usize elemsize, CmpFunc cmp_func, usize *index)
-{
-	return_val_if_fail(array != NULL, FALSE);
-	return_val_if_fail(elemsize != 0, FALSE);
-	return_val_if_fail(cmp_func != NULL, FALSE);
-
-	for (usize i = 0; i < len; ++i) {
-		if (cmp_func(array_cell(array, elemsize, i), target) == 0) {
-			if (index != NULL)
-				*index = i;
-
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 bool binary_search(const void *array, const void *target, usize len, usize elemsize, CmpFunc cmp_func, usize *index)
 {
 	return_val_if_fail(array != NULL, FALSE);

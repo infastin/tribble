@@ -455,8 +455,17 @@ bool vector_search(Vector *vec, const void *target, CmpFunc cmp_func, usize *ind
 	if (vec->len == 0)
 		return FALSE;
 
-	if (vec->len < BINARY_SEARCH_LEN_THRESHOLD)
-		return linear_search(vec->data, target, vec->len, vec->elemsize, cmp_func, index);
+	if (vec->len < BINARY_SEARCH_LEN_THRESHOLD) {
+		for (usize i = 0; i < vec->len; ++i) {
+			if (cmp_func(vector_cell(vec, i), target) == 0) {
+				if (index != NULL)
+					*index = i;
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
 
 	if (vec->sorted == 0) {
 		quicksort(vec->data, vec->len, vec->elemsize, cmp_func);
@@ -516,7 +525,7 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 	return dst;
 }
 
-bool vector_reserve(Vector *vec, usize newcap)
+bool vector_require(Vector *vec, usize newcap)
 {
 	return_val_if_fail(vec != NULL, FALSE);
 

@@ -473,7 +473,7 @@ void test_reserve()
 	Vector vec;
 	vector_init(&vec, FALSE, FALSE, 4);
 
-	vector_reserve(&vec, 16);
+	vector_require(&vec, 16);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };

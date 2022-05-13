@@ -143,6 +143,41 @@ String *string_init_sized(String *string, usize cap)
 	return string;
 }
 
+String *string_init_fmt(String *string, const char *fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+
+	char *buf;
+	usize len = vstrfmt(&buf, fmt, args);
+
+	if (len == -1) {
+		msg_error(strerror(errno));
+		return NULL;
+	}
+
+	String *result = string_init_len(string, buf, len);
+	free(buf);
+
+	return result;
+}
+
+String *string_init_vfmt(String *string, const char *fmt, va_list args)
+{
+	char *buf;
+	usize len = vstrfmt(&buf, fmt, args);
+
+	if (len == -1) {
+		msg_error(strerror(errno));
+		return NULL;
+	}
+
+	String *result = string_init_len(string, buf, len);
+	free(buf);
+
+	return result;
+}
+
 static bool __string_newcap(String *string, usize newcap)
 {
 	usize new_allocated = (newcap >> 3) + (newcap < 9 ? 3 : 6);
@@ -566,7 +601,7 @@ i32 string_cmp(const String *a, const String *b)
 	return 0;
 }
 
-bool string_fmt(String *string, const char *fmt, ...)
+bool string_assign_fmt(String *string, const char *fmt, ...)
 {
 	return_val_if_fail(string != NULL, FALSE);
 	return_val_if_fail(fmt != NULL, FALSE);
@@ -594,7 +629,7 @@ bool string_fmt(String *string, const char *fmt, ...)
 	return TRUE;
 }
 
-bool string_vfmt(String *string, const char *fmt, va_list args)
+bool string_assign_vfmt(String *string, const char *fmt, va_list args)
 {
 	return_val_if_fail(string != NULL, FALSE);
 	return_val_if_fail(fmt != NULL, FALSE);

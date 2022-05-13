@@ -278,7 +278,7 @@ bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy);
 bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy);
 
 /**
- * vector_reserve:
+ * vector_require:
  * @vec: The array where memory is to be reserved.
  * @newcap: A new capacity of the array.
  *
@@ -286,7 +286,7 @@ bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy);
  *
  * Returns: `TRUE` on success.
  **/
-bool vector_reserve(Vector *vec, usize newcap);
+bool vector_require(Vector *vec, usize newcap);
 
 /**
  * vector_shrink:
