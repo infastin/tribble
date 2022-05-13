@@ -7,7 +7,6 @@
 #include "List.h"
 #include "Macros.h"
 #include "Messages.h"
-#include "Polynom.h"
 #include "Rand.h"
 #include "SList.h"
 #include "String.h"
