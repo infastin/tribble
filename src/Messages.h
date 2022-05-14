@@ -25,8 +25,8 @@ typedef enum {
 	MESSAGE_DEBUG
 } MessageFlags;
 
-void message(MessageFlags flag, const char *msg, ...);
-void message_func(MessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...);
+void message(MessageFlags flag, const char *msg, ...) FORMAT(printf, 2, 3);
+void message_func(MessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...) FORMAT(printf, 5, 6);
 void return_if_fail_warning(const char *file, usize line, const char *func, const char *expr);
 void exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr);
 

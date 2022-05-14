@@ -52,8 +52,8 @@ Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsiz
 	vec->len = 0;
 	vec->capacity = VECTOR_INIT_CAP;
 	vec->elemsize = elemsize;
-	vec->clear = (clear) ? 1 : 0;
-	vec->zero_terminated = (zero_terminated) ? 1 : 0;
+	vec->clear = clear;
+	vec->zero_terminated = zero_terminated;
 	vec->sorted = 0;
 
 	return vec;
@@ -483,7 +483,7 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 
 	if (src->data == NULL) {
 		msg_warn("source array buffer is NULL!");
-		return FALSE;
+		return NULL;
 	}
 
 	bool was_allocated = FALSE;
@@ -492,7 +492,7 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 		dst = talloc(Vector, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for the copy of the array!");
+			msg_error("couldn't allocate memory for a copy of the array!");
 			return NULL;
 		}
 
@@ -508,7 +508,7 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 		if (was_allocated)
 			free(dst);
 
-		msg_error("couldn't allocate memory for a buffer of the copy of the array!");
+		msg_error("couldn't allocate memory for a buffer of a copy of the array!");
 		return NULL;
 	}
 

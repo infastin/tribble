@@ -169,7 +169,7 @@ void list_splice(List *list, List *node)
 
 static List *__list_merge(List *list, List *first, List *second, CmpFunc cmp_func)
 {
-	List *result = NULL;
+	List *result = list;
 	List *prev = list;
 	List **linkp = &result;
 
@@ -180,7 +180,7 @@ static List *__list_merge(List *list, List *first, List *second, CmpFunc cmp_fun
 		if (f == list && s == list)
 			break;
 
-		if (f == list || f == NULL) {
+		if (f == list) {
 			s->prev = prev;
 			*linkp = s;
 
@@ -218,7 +218,7 @@ void list_sort(List *list, CmpFunc cmp_func)
 	if (list->next == list)
 		return;
 
-	List *array[32] = { 0 };
+	List *array[32] = { [0 ... 31] = list };
 	List *result;
 	i32 max_i = 0;
 	i32 i;
@@ -231,9 +231,9 @@ void list_sort(List *list, CmpFunc cmp_func)
 		next = result->next;
 		result->next = list;
 
-		for (i = 0; (i < 32) && (array[i] != NULL); ++i) {
+		for (i = 0; (i < 32) && (array[i] != list); ++i) {
 			result = __list_merge(list, array[i], result, cmp_func);
-			array[i] = NULL;
+			array[i] = list;
 		}
 
 		if (i == 32)
@@ -333,7 +333,7 @@ List *list_copy(List *dst, const List *src, CopyFunc copy_func, bool *status)
 		dst = talloc(List, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for the copy of the list!");
+			msg_error("couldn't allocate memory for a copy of the list!");
 
 			if (status != NULL)
 				*status = FALSE;

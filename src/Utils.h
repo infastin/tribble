@@ -1,6 +1,7 @@
 #ifndef UTILS_H_ATMQZMHO
 #define UTILS_H_ATMQZMHO
 
+#include "Macros.h"
 #include "Types.h"
 
 #include <stdarg.h>
@@ -14,9 +15,9 @@
  * It is analogous to `snprintf()`, except it allocates a string large enough to
  * hold the output including terminating null byte.
  *
- * Returns: The length of the formatted string. Can return -1 if error occured.
+ * Returns: The length of the formatted string. Can return -1 if an error occurs.
  **/
-usize strfmt(char **buf, const char *fmt, ...);
+usize strfmt(char **buf, const char *fmt, ...) FORMAT(printf, 2, 3);
 
 /**
  * vstrfmt:
@@ -27,9 +28,9 @@ usize strfmt(char **buf, const char *fmt, ...);
  * It is analogous to `vsnprintf()`, except it allocates a string large enough to
  * hold the output including terminating null byte.
  *
- * Returns: The length of the formatted string. Can return -1 if error occured.
+ * Returns: The length of the formatted string. Can return -1 if an error occurs.
  **/
-usize vstrfmt(char **buf, const char *fmt, va_list args);
+usize vstrfmt(char **buf, const char *fmt, va_list args) FORMAT(printf, 2, 0);
 
 /**
  * strdup_fmt:
@@ -39,9 +40,9 @@ usize vstrfmt(char **buf, const char *fmt, va_list args);
  * It is analogous to `snprintf()`, except it allocates a string large enough to
  * hold the output including terminating null byte.
  *
- * Returns: The string with terminating null byte. Can return `NULL` if error occured.
+ * Returns: The string with terminating null byte. Can return `NULL` if an error occurs.
  **/
-char *strdup_fmt(const char *fmt, ...);
+char *strdup_fmt(const char *fmt, ...) FORMAT(printf, 1, 2);
 
 /**
  * strdup_vfmt:
@@ -53,7 +54,7 @@ char *strdup_fmt(const char *fmt, ...);
  *
  * Returns: The string with terminating null byte. Can return `NULL` if error occured.
  **/
-char *strdup_vfmt(const char *fmt, va_list args);
+char *strdup_vfmt(const char *fmt, va_list args) FORMAT(printf, 1, 0);
 
 /**
  * pow2_32:

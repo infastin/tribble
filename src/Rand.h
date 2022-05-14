@@ -25,7 +25,7 @@ struct _SplitMix64 {
  *
  * Initializes the state of SplitMix64 with the given seed.
  *
- * Returns: A new state.
+ * Returns: A new state. Can return `NULL` if an allocation error occurs.
  **/
 SplitMix64 *sm64_init(SplitMix64 *state, u64 seed);
 
@@ -71,7 +71,7 @@ struct _Xoshiro128StarStar {
  *
  * Initializes the state of xoshiro128** with the given seed.
  *
- * Returns: A new state.
+ * Returns: A new state. Can return `NULL` if an allocation error occurs.
  **/
 Xoshiro128StarStar *xs128ss_init(Xoshiro128StarStar *state, u64 seed);
 
@@ -110,7 +110,7 @@ struct _Xoshiro128Plus {
  *
  * Initializes the state of xoshiro128+ with the given seed.
  *
- * Returns: A new state.
+ * Returns: A new state. Can return `NULL` if an allocation error occurs.
  **/
 Xoshiro128Plus *xs128p_init(Xoshiro128Plus *state, u64 seed);
 
@@ -156,7 +156,7 @@ struct _Xoshiro256StarStar {
  *
  * Initializes the state of xoshiro256** with the given seed.
  *
- * Returns: A new state.
+ * Returns: A new state. Can return `NULL` if an allocation error occurs.
  **/
 Xoshiro256StarStar *xs256ss_init(Xoshiro256StarStar *state, u64 seed);
 
@@ -195,7 +195,7 @@ struct _Xoshiro256Plus {
  *
  * Initializes the state of xoshiro256+ with the given seed.
  *
- * Returns: A new state.
+ * Returns: A new state. Can return `NULL` if an allocation error occurs.
  **/
 Xoshiro256Plus *xs256p_init(Xoshiro256Plus *state, u64 seed);
 

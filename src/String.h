@@ -1,6 +1,7 @@
 #ifndef STRING_H_WW4E6R5D
 #define STRING_H_WW4E6R5D
 
+#include "Macros.h"
 #include "Types.h"
 
 #include <stdarg.h>
@@ -32,18 +33,18 @@ struct _String {
  *
  * Creates a new #String.
  *
- * Returns: A new #String.
+ * Returns: A new #String. Can return `NULL` if an alloction error occurs.
  **/
 String *string_init0(String *string);
 
 /**
  * string_init:
  * @string: The pointer to the string to be initialized (can be `NULL`).
- * @str: The inital contents of the #String.
+ * @c_str: The inital contents of the #String.
  *
  * Creates a new #String from @str.
  *
- * Returns: A new #String.
+ * Returns: A new #String. Can return `NULL` if an alloction error occurs.
  **/
 String *string_init(String *string, const char *c_str);
 
@@ -55,7 +56,7 @@ String *string_init(String *string, const char *c_str);
  *
  * Creates a new #String with @len bytes of the @str.
  *
- * Returns: A new #String.
+ * Returns: A new #String. Can return `NULL` if an alloction error occurs.
  **/
 String *string_init_len(String *string, const char *str, usize len);
 
@@ -66,7 +67,7 @@ String *string_init_len(String *string, const char *str, usize len);
  *
  * Creates a new #String with capacity of @cap bytes.
  *
- * Returns: A new #String.
+ * Returns: A new #String. Can return `NULL` if an alloction error occurs.
  **/
 String *string_init_sized(String *string, usize cap);
 
@@ -78,9 +79,9 @@ String *string_init_sized(String *string, usize cap);
  *
  * Creates a new #String from the formatted string.
  *
- * Returns: A new #String.
+ * Returns: A new #String. Can return `NULL` if an allocate error occurs.
  **/
-String *string_init_fmt(String *string, const char *fmt, ...);
+String *string_init_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
 
 /**
  * string_init_vfmt:
@@ -90,9 +91,9 @@ String *string_init_fmt(String *string, const char *fmt, ...);
  *
  * Creates a new #String from the formatted string.
  *
- * Returns: A new #String.
+ * Returns: A new #String. Can return `NULL` if an alloction error occurs.
  **/
-String *string_init_vfmt(String *string, const char *fmt, va_list args);
+String *string_init_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
 
 /**
  * string_push_front:
@@ -139,7 +140,7 @@ bool string_push_back_c(String *string, char c);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_push_back_fmt(String *string, const char *fmt, ...);
+bool string_push_back_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
 
 /**
  * string_push_back_vfmt:
@@ -151,7 +152,7 @@ bool string_push_back_fmt(String *string, const char *fmt, ...);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_push_back_vfmt(String *string, const char *fmt, va_list args);
+bool string_push_back_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
 
 /**
  * string_push_front:
@@ -198,7 +199,7 @@ bool string_push_front_c(String *string, char c);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_push_front_fmt(String *string, const char *fmt, ...);
+bool string_push_front_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
 
 /**
  * string_push_front_vfmt:
@@ -210,7 +211,7 @@ bool string_push_front_fmt(String *string, const char *fmt, ...);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_push_front_vfmt(String *string, const char *fmt, va_list args);
+bool string_push_front_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
 
 /**
  * string_insert:
@@ -261,7 +262,7 @@ bool string_insert_c(String *string, usize index, char c);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_insert_fmt(String *string, usize index, const char *fmt, ...);
+bool string_insert_fmt(String *string, usize index, const char *fmt, ...) FORMAT(printf, 3, 4);
 
 /**
  * string_insert_vfmt:
@@ -274,7 +275,7 @@ bool string_insert_fmt(String *string, usize index, const char *fmt, ...);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_insert_vfmt(String *string, usize index, const char *fmt, va_list args);
+bool string_insert_vfmt(String *string, usize index, const char *fmt, va_list args) FORMAT(printf, 3, 0);
 
 /**
  * string_get:
@@ -350,7 +351,7 @@ bool string_overwrite_c(String *string, usize index, char c);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...);
+bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...) FORMAT(printf, 3, 4);
 
 /**
  * string_overwrite_vfmt:
@@ -363,7 +364,7 @@ bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args);
+bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args) FORMAT(printf, 3, 0);
 
 /**
  * string_assign:
@@ -434,7 +435,7 @@ i32 string_cmp(const String *a, const String *b);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_assign_fmt(String *string, const char *fmt, ...);
+bool string_assign_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
 
 /**
  * string_assign_vfmt:
@@ -446,7 +447,7 @@ bool string_assign_fmt(String *string, const char *fmt, ...);
  *
  * Returns: `TRUE` on success.
  **/
-bool string_assign_vfmt(String *string, const char *fmt, va_list args);
+bool string_assign_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
 
 /**
  * string_steal0:
@@ -493,5 +494,16 @@ void string_destroy(String *string);
  * Frees the string completely.
  **/
 void string_free(String *string);
+
+/**
+ * string_copy:
+ * @dst: The pointer to the destination string (can be `NULL`).
+ * @src: The string to be copied.
+ *
+ * Creates a copy of the string.
+ *
+ * Returns: A copy of the array. Can return `NULL` if an allocation error occurs.
+ **/
+String *string_copy(String *dst, const String *src);
 
 #endif /* end of include guard: STRING_H_WW4E6R5D */

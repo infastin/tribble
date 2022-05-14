@@ -39,6 +39,8 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
+#define FORMAT(archetype, index, first) __attribute__((format(archetype, index, first)))
+
 /* Linux kernel vibes */
 
 #ifndef offsetof

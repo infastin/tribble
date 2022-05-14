@@ -27,7 +27,7 @@ struct _HashTable {
  *
  * Creates a new hash table.
  *
- * Returns: A new hash table.
+ * Returns: A new hash table. Can return `NULL` if an error occurs
  **/
 HashTable *ht_init(HashTable *ht, usize keysize, usize valuesize, usize seed, HashFunc hash_func, CmpFunc cmp_func);
 

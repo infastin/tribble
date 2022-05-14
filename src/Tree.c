@@ -248,7 +248,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 		dst = talloc(Tree, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for the copy of the tree!");
+			msg_error("couldn't allocate memory for a copy of the tree!");
 			return NULL;
 		}
 	}
@@ -265,7 +265,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 	dst->root = copy_func(src->root);
 
 	if (dst->root == NULL) {
-		msg_error("couldn't allocate memory for a node of the copy of the tree!");
+		msg_error("couldn't allocate memory for a node of a copy of the tree!");
 
 		if (status != NULL)
 			*status = FALSE;
@@ -281,7 +281,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 			copy->left = copy_func(orig->left);
 
 			if (copy->left == NULL) {
-				msg_error("couldn't allocate memory for a node of the copy of the tree!");
+				msg_error("couldn't allocate memory for a node of a copy of the tree!");
 
 				if (status != NULL)
 					*status = FALSE;
@@ -297,7 +297,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 			copy->right = copy_func(orig->right);
 
 			if (copy->right == NULL) {
-				msg_error("couldn't allocate memory for a node of the copy of the tree!");
+				msg_error("couldn't allocate memory for a node of a copy of the tree!");
 
 				if (status != NULL)
 					*status = FALSE;

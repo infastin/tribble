@@ -19,7 +19,7 @@ struct _Heap {
  *
  * Creates a new #Heap.
  *
- * Returns: A new #Heap.
+ * Returns: A new #Heap. Can return `NULL` if an error occurs.
  **/
 Heap *heap_init(Heap *heap, usize elemsize, CmpFunc cmp_func);
 

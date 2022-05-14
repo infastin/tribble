@@ -26,18 +26,18 @@ struct _Vector {
  *
  * Creates a new dynamic size array.
  *
- * Returns: A new dynamic size array.
+ * Returns: A new dynamic size array. Can return `NULL` if an error occurs.
  **/
 Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsize);
 
 /**
  * vector_copy:
- * @dst: The pointer to the array to copy (can be `NULL`).
+ * @dst: The pointer to the destination array (can be `NULL`).
  * @src: The array to be copied.
  *
- * Creates the copy of the array.
+ * Creates a copy of the array.
  *
- * Returns: The copy of the array.
+ * Returns: A copy of the array. Can return `NULL` if an allocation error occurs.
  **/
 Vector *vector_copy(Vector *dst, const Vector *src);
 

@@ -12,11 +12,11 @@ struct _SList {
 
 /**
  * slist_init:
- * @list: The pointer to the list to be initialized (can be `NULL`)
+ * @list: The pointer to the list to be initialized (can be `NULL`).
  *
- * Creates a new singly-linked list
+ * Creates a new singly-linked list.
  *
- * Returns: A new singly-linked list
+ * Returns: A new singly-linked list. Can return `NULL` if an alloction error occurs.
  **/
 SList *slist_init(SList *list);
 
@@ -145,6 +145,7 @@ void slist_remove(SList *list, SList *node);
  * Removes the last node from the list.
  *
  * Returns: The node that was removed.
+ *          Can return `NULL` if the list is empty.
  **/
 SList *slist_pop_back(SList *list);
 
@@ -155,6 +156,7 @@ SList *slist_pop_back(SList *list);
  * Removes the first node from the list.
  *
  * Returns: The node that was removed.
+ *          Can return `NULL` if the list is empty.
  **/
 SList *slist_pop_front(SList *list);
 
@@ -177,7 +179,7 @@ void slist_splice(SList *list, SList *node);
  *
  * Copies the list.
  *
- * Returns: A copy of the list
+ * Returns: A copy of the list. Can return `NULL` if an allocation error occurs.
  **/
 SList *slist_copy(SList *dst, const SList *src, CopyFunc copy_func, bool *status);
 

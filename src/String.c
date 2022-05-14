@@ -87,7 +87,7 @@ String *string_init_len(String *string, const char *str, usize len)
 		was_allocated = TRUE;
 	}
 
-	usize capacity = (len != 0) ? len : 1;
+	usize capacity = len ?: 1;
 
 	string->data = malloc(capacity);
 
@@ -770,4 +770,40 @@ void string_free(String *string)
 	return_if_fail(string != NULL);
 	string_destroy(string);
 	free(string);
+}
+
+String *string_copy(String *dst, const String *src)
+{
+	return_val_if_fail(src != NULL, NULL);
+
+	if (src->data == NULL) {
+		msg_warn("source string buffer is NULL!");
+		return NULL;
+	}
+
+	bool was_allocated = FALSE;
+
+	if (dst == NULL) {
+		dst = talloc(String, 1);
+
+		if (dst == NULL) {
+			msg_error("couldn't allocate memory for a copy of the string!");
+			return NULL;
+		}
+	}
+
+	dst->data = malloc(src->capacity);
+
+	if (dst->data == NULL) {
+		if (was_allocated)
+			free(dst);
+
+		msg_error("couldn't allocate memory for a buffer of a copy of the string!");
+		return NULL;
+	}
+
+	dst->capacity = src->capacity;
+	dst->len = src->len;
+
+	return dst;
 }

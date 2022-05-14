@@ -131,7 +131,7 @@ void slist_insert_before(SList *list, SList *sibling, SList *node)
 
 static SList *__slist_merge(SList *list, SList *first, SList *second, CmpFunc cmp_func)
 {
-	SList *result = NULL;
+	SList *result = list;
 	SList **linkp = &result;
 
 	SList *f = first;
@@ -141,7 +141,7 @@ static SList *__slist_merge(SList *list, SList *first, SList *second, CmpFunc cm
 		if (f == list && s == list)
 			break;
 
-		if (f == list || f == NULL) {
+		if (f == list) {
 			*linkp = s;
 			break;
 		}
@@ -173,7 +173,7 @@ void slist_sort(SList *list, CmpFunc cmp_func)
 	if (list->next == list)
 		return;
 
-	SList *array[32] = { 0 };
+	SList *array[32] = { [0 ... 31] = list };
 	SList *result;
 	i32 max_i = 0;
 	i32 i;
@@ -188,7 +188,7 @@ void slist_sort(SList *list, CmpFunc cmp_func)
 
 		for (i = 0; (i < 32) && (array[i] != NULL); ++i) {
 			result = __slist_merge(list, array[i], result, cmp_func);
-			array[i] = NULL;
+			array[i] = list;
 		}
 
 		if (i == 32)
@@ -324,7 +324,7 @@ SList *slist_copy(SList *dst, const SList *src, CopyFunc copy_func, bool *status
 		dst = talloc(SList, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for the copy of the list!");
+			msg_error("couldn't allocate memory for a copy of the list!");
 
 			if (status != NULL)
 				*status = FALSE;

@@ -26,7 +26,7 @@ struct _Tree {
  *
  * Creates a new tree.
  *
- * Returns: A new tree.
+ * Returns: A new tree. Can return `NULL` if an allocation error occurs.
  **/
 Tree *tree_init(Tree *tree, CmpFunc cmp_func);
 
@@ -101,7 +101,7 @@ void tree_postorder(Tree *tree, UserFunc func, void *userdata);
  *
  * Creates a copy of the tree.
  *
- * Returns: A copy of the tree.
+ * Returns: A copy of the tree. Can return `NULL` if an allocation error occurs.
  **/
 Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status);
 
