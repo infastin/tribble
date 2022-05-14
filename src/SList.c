@@ -186,7 +186,7 @@ void slist_sort(SList *list, CmpFunc cmp_func)
 		next = result->next;
 		result->next = list;
 
-		for (i = 0; (i < 32) && (array[i] != NULL); ++i) {
+		for (i = 0; (i < 32) && (array[i] != list); ++i) {
 			result = __slist_merge(list, array[i], result, cmp_func);
 			array[i] = list;
 		}
