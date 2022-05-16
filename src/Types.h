@@ -33,6 +33,12 @@ typedef uintptr_t usize;
 #define I32_C(C) INT32_C(c)
 #define I64_C(c) INT64_C(c)
 
+#define I8_WIDTH INT8_WIDTH
+#define I16_WIDTH INT16_WIDTH
+#define I32_WIDTH INT32_WIDTH
+#define I64_WIDTH INT64_WIDTH
+#define ISIZE_WIDTH INTPTR_WIDTH
+
 #define U8_MAX UINT8_MAX
 #define U16_MAX UINT16_MAX
 #define U32_MAX UINT32_MAX
@@ -43,6 +49,12 @@ typedef uintptr_t usize;
 #define U16_C(C) UINT16_C(c)
 #define U32_C(C) UINT32_C(c)
 #define U64_C(c) UINT64_C(c)
+
+#define U8_WIDTH UINT8_WIDTH
+#define U16_WIDTH UINT16_WIDTH
+#define U32_WIDTH UINT32_WIDTH
+#define U64_WIDTH UINT64_WIDTH
+#define USIZE_WIDTH UINTPTR_WIDTH
 
 /* Floating point numbers */
 typedef float f32;

@@ -40,6 +40,7 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
 #define FORMAT(archetype, index, first) __attribute__((format(archetype, index, first)))
+#define UNUSED __attribute__((unused))
 
 /* Linux kernel vibes */
 

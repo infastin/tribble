@@ -228,8 +228,15 @@ void list_sort(List *list, CmpFunc cmp_func)
 	while (result != list) {
 		List *next;
 
-		next = result->next;
-		result->next = list;
+		for (next = result->next; next != list;) {
+			if (cmp_func(result, next) > 0) {
+				result->next = list;
+				break;
+			} else {
+				result = next;
+				next = next->next;
+			}
+		}
 
 		for (i = 0; (i < 32) && (array[i] != list); ++i) {
 			result = __list_merge(list, array[i], result, cmp_func);

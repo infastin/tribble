@@ -147,7 +147,7 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 
 usize murmurhash3(const void *key, usize keysize, usize seed)
 {
-#if __WORDSIZE == 64
+#if USIZE_WIDTH == 64
 	return murmurhash3_64(key, keysize, seed);
 #else
 	return murmurhash3_32(key, keysize, seed);
@@ -318,7 +318,7 @@ u64 jhash64(const void *key, u64 keysize, u64 seed)
 
 usize jhash(const void *key, usize keysize, usize seed)
 {
-#if __WORDSIZE == 64
+#if USIZE_WIDTH == 64
 	return jhash64(key, keysize, seed);
 #else
 	return jhash32(key, keysize, seed);
@@ -484,7 +484,7 @@ u64 siphash64(const void *key, u64 keysize, u64 seed)
 
 usize siphash(const void *key, usize keysize, usize seed)
 {
-#if __WORDSIZE == 64
+#if USIZE_WIDTH == 64
 	return siphash64(key, keysize, seed);
 #else
 	return siphash32(key, keysize, seed);

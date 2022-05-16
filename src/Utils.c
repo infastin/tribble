@@ -131,7 +131,7 @@ u64 pow2_64(u64 value)
 
 usize pow2(usize value)
 {
-#if __WORDSIZE == 64
+#if USIZE_WIDTH == 64
 	return pow2_64(value);
 #else
 	return pow2_32(value);
