@@ -358,21 +358,16 @@ void vector_sort(Vector *vec, CmpFunc cmp_func)
 	vec->sorted = 1;
 }
 
-bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy)
+void *vector_steal(Vector *vec, usize *len)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
 
 	if (vec->data == NULL) {
 		msg_warn("array buffer is NULL!");
 		return FALSE;
 	}
 
-	if (to_copy) {
-		memcpy(ret, vec->data, vec->len * vec->elemsize);
-		free(vec->data);
-	} else
-		*((void **) ret) = vec->data;
+	void *ret = vec->data;
 
 	if (len != NULL)
 		*len = vec->len;
@@ -388,10 +383,9 @@ bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy)
 	if (vec->data == NULL) {
 		vec->capacity = 0;
 		msg_error("couldn't allocate memory for a new buffer of the array!");
-		return FALSE;
 	}
 
-	return TRUE;
+	return ret;
 }
 
 void vector_destroy(Vector *vec, FreeFunc free_func)
@@ -414,21 +408,16 @@ void vector_destroy(Vector *vec, FreeFunc free_func)
 	vec->len = 0;
 }
 
-bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy)
+void *vector_steal0(Vector *vec, usize *len)
 {
 	return_val_if_fail(vec != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
 
 	if (vec->data == NULL) {
 		msg_warn("array buffer is NULL!");
 		return FALSE;
 	}
 
-	if (to_copy) {
-		memcpy(ret, vec->data, vec->len * vec->elemsize);
-		free(vec->data);
-	} else
-		*((void **) ret) = vec->data;
+	void *ret = vec->data;
 
 	if (len != NULL)
 		*len = vec->len;
@@ -437,7 +426,7 @@ bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy)
 	vec->capacity = 0;
 	vec->data = NULL;
 
-	return TRUE;
+	return ret;
 }
 
 void vector_free(Vector *vec, FreeFunc free_func)

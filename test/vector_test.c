@@ -415,9 +415,7 @@ void test_steal()
 	vector_push_back_many(&vec, arr4, 4);
 
 	u32 arr[16] = { 10, 20, 30, 40, 11, 22, 33, 44, 98, 88, 77, 45, 12, 55, 7, 2 };
-	u32 arr_[16];
-
-	vector_steal(&vec, arr_, NULL, TRUE);
+	u32 *arr_ = vector_steal(&vec, NULL);
 
 	for (usize i = 0; i < 16; ++i) {
 		assert(arr_[i] == arr[i]);
@@ -431,8 +429,7 @@ void test_steal()
 	vector_push_back_many(&vec, arr3, 4);
 	vector_push_back_many(&vec, arr4, 4);
 
-	u32 *arr__;
-	vector_steal0(&vec, &arr__, NULL, FALSE);
+	u32 *arr__ = vector_steal0(&vec, NULL);
 
 	for (usize i = 0; i < 16; ++i) {
 		assert(arr__[i] == arr_[i]);

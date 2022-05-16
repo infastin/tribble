@@ -250,32 +250,26 @@ bool vector_get_range(const Vector *vec, usize index, usize len, void *ret);
 /**
  * vector_steal:
  * @vec: The array where to steal the buffer.
- * @ret: The pointer to retrieve the buffer.
  * @len: The pointer to retrieve the number of elements in the array (can be `NULL`).
- * @to_copy: If `TRUE`, the array buffer will be copied to ret and then recreated,
- *           otherwise pointer to the buffer will be returned.
  *
  * Steals the array buffer.
  * Array creates a new buffer.
  *
- * Returns: `TRUE` on success.
+ * Returns: The buffer on success.
  **/
-bool vector_steal(Vector *vec, void *ret, usize *len, bool to_copy);
+void *vector_steal(Vector *vec, usize *len);
 
 /**
  * vector_steal0:
  * @vec: The array where to steal the buffer.
- * @ret: The pointer to retrieve the buffer.
  * @len: The pointer to retrieve the number of the elements in the array (can be `NULL`).
- * @to_copy: if `TRUE`, the array buffer will be copied to ret,
- *           otherwise pointer to the buffer will be returned.
  *
  * Steals the array buffer.
  * Array's buffer becomes `NULL`.
  *
- * Returns: `TRUE` on success.
+ * Returns: The buffer on success.
  **/
-bool vector_steal0(Vector *vec, void *ret, usize *len, bool to_copy);
+void *vector_steal0(Vector *vec, usize *len);
 
 /**
  * vector_require:

@@ -72,13 +72,16 @@ bool ht_remove(HashTable *ht, const void *key, void *ret);
 /**
  * ht_remove_all:
  * @ht: The hash table where to remove all entries.
+ * @padding: The padding between the key and the value.
  * @ret: The pointer to retrieve removed entries (can be `NULL`).
  *       The retrieved data will be an unaligned array of key:value pairs.
  * @len: The pointer to retrieve the number of entries (can be `NULL`).
  *
  * Removes all entries from the hash table.
+ *
+ * Returns: `TRUE` on success.
  **/
-void ht_remove_all(HashTable *ht, void *ret, usize *len);
+bool ht_remove_all(HashTable *ht, usize padding, void *ret, usize *len);
 
 /**
  * ht_lookup:

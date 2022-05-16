@@ -152,7 +152,7 @@ String *string_init_fmt(String *string, const char *fmt, ...)
 	usize len = vstrfmt(&buf, fmt, args);
 
 	if (len == -1) {
-		msg_error(strerror(errno));
+		msg_error("%s", strerror(errno));
 		return NULL;
 	}
 
@@ -168,7 +168,7 @@ String *string_init_vfmt(String *string, const char *fmt, va_list args)
 	usize len = vstrfmt(&buf, fmt, args);
 
 	if (len == -1) {
-		msg_error(strerror(errno));
+		msg_error("%s", strerror(errno));
 		return NULL;
 	}
 
@@ -278,7 +278,7 @@ static bool __string_insert_vfmt(String *string, usize index, const char *fmt, v
 	char *buf;
 	usize len = vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error(strerror(errno));
+		msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
@@ -480,7 +480,7 @@ static bool __string_overwrite_vfmt(String *string, usize index, const char *fmt
 	char *buf;
 	usize len = vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error(strerror(errno));
+		msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
@@ -612,7 +612,7 @@ bool string_assign_fmt(String *string, const char *fmt, ...)
 
 	usize len = vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error(strerror(errno));
+		msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
@@ -638,7 +638,7 @@ bool string_assign_vfmt(String *string, const char *fmt, va_list args)
 
 	usize len = vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error(strerror(errno));
+		msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
@@ -655,22 +655,16 @@ bool string_assign_vfmt(String *string, const char *fmt, va_list args)
 	return TRUE;
 }
 
-bool string_steal(String *string, char **ret, usize *len, bool to_copy)
+char *string_steal(String *string, usize *len)
 {
 	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
 
 	if (string->data == NULL) {
 		msg_warn("string buffer is NULL!");
 		return FALSE;
 	}
 
-	if (to_copy) {
-		memcpy(*ret, string->data, string->len + 1);
-		free(string->data);
-	} else {
-		*ret = string->data;
-	}
+	char *ret = string->data;
 
 	if (len != NULL)
 		*len = string->len;
@@ -683,30 +677,23 @@ bool string_steal(String *string, char **ret, usize *len, bool to_copy)
 	if (string->data == NULL) {
 		string->capacity = 0;
 		msg_error("couldn't allocate memory for a new buffer of the string!");
-		return FALSE;
 	}
 
 	string->data[0] = '\0';
 
-	return TRUE;
+	return ret;
 }
 
-bool string_steal0(String *string, char **ret, usize *len, bool to_copy)
+char *string_steal0(String *string, usize *len)
 {
 	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
 
 	if (string->data == NULL) {
 		msg_warn("string buffer is NULL!");
 		return FALSE;
 	}
 
-	if (to_copy) {
-		memcpy(*ret, string->data, string->len + 1);
-		free(string->data);
-	} else {
-		*ret = string->data;
-	}
+	char *ret = string->data;
 
 	if (len != NULL)
 		*len = string->len;
@@ -715,7 +702,7 @@ bool string_steal0(String *string, char **ret, usize *len, bool to_copy)
 	string->len = 0;
 	string->capacity = 0;
 
-	return TRUE;
+	return ret;
 }
 
 bool string_get(String *string, usize index, usize len, char *ret)

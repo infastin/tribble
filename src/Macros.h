@@ -41,6 +41,9 @@
 
 #define FORMAT(archetype, index, first) __attribute__((format(archetype, index, first)))
 #define UNUSED __attribute__((unused))
+#define PACKED __attribute__((packed))
+
+#define paddingof(type, m1, m2) (offsetof(type, m2) - sizeof(((type *) 0)->m1))
 
 /* Linux kernel vibes */
 

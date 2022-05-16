@@ -1,7 +1,6 @@
 #include "Hash.h"
 #include "HashTable.h"
 #include "Macros.h"
-#include "Polynom.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,48 +50,49 @@ char last_names[][16] = {
 	"Zwickelman",
 };
 
-void random_name(char *name)
+void random_name(char *name, usize size)
 {
 	char *first_name = first_names[rand() % 22];
 	char *last_name = last_names[rand() % 15];
 
-	sprintf(name, "%s %s", first_name, last_name);
+	snprintf(name, size, "%s %s", first_name, last_name);
 }
 
-void hexDump(void *addr, uint32_t len)
-{
-	char *memory = (char *) addr;
-
-	for (uint32_t i = 0; i < len; ++i) {
-		if (i != 0 && i % 37 == 0)
-			printf("\n");
-
-		printf("%02x ", memory[i]);
-	}
-}
+#define NAME_SIZE 27
 
 int main(int argc, char *argv[])
 {
 	HashTable ht;
-	ht_init(&ht, 32, 4, jhash, (CmpFunc) strcmp);
+	ht_init(&ht, NAME_SIZE, 8, 0xdeadbeef, jhash, (CmpFunc) strcmp);
 
 	srand(time(0));
 
-	char name[32];
-	uint age;
+	char name[NAME_SIZE] = { 0 };
+	u64 age;
 
 	for (int i = 0; i < 100; ++i) {
-		random_name(name);
+		random_name(name, NAME_SIZE);
 		age = rand() % 80;
 		ht_add(&ht, name, &age);
 	}
 
-	hexDump(ht.buckets, ht.slots * 37);
+	struct Person {
+		char name[NAME_SIZE];
+		u64 age;
+	};
 
-	uint ret;
-	ht_lookup(&ht, name, &ret);
+	usize len = 0;
+	struct Person buf[ht.used];
 
-	printf("%s: (%d == %d)", name, age, ret);
+	ht_remove_all(&ht, paddingof(struct Person, name, age), buf, &len);
+
+	for (int i = 0; i < len; ++i) {
+		struct Person persona = buf[i];
+
+		printf("%s: %lu\n", persona.name, persona.age);
+	}
+
+	ht_destroy(&ht, NULL, NULL);
 
 	return 0;
 }

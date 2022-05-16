@@ -280,14 +280,14 @@ i32 f32cmp(const f32 *a, const f32 *b);
 i32 f64cmp(const f64 *a, const f64 *b);
 
 /**
- * f128cmp:
+ * realcmp:
  * @a: The first value to be compared (can be `NULL`).
  * @b: The second value to be compared (can be `NULL`).
  *
- * Compares two %f128.
+ * Compares two %real.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 f128cmp(const f128 *a, const f128 *b);
+i32 realcmp(const real *a, const real *b);
 
 #endif /* end of include guard: UTILS_H_ATMQZMHO */

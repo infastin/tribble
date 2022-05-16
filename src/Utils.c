@@ -605,7 +605,7 @@ i32 f64cmp(const f64 *a, const f64 *b)
 	return 0;
 }
 
-i32 f128cmp(const f128 *a, const f128 *b)
+i32 realcmp(const real *a, const real *b)
 {
 	if (a == NULL && b == NULL)
 		return 0;

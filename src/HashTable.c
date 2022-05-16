@@ -6,7 +6,7 @@
 
 #define HT_INIT_SLOTS 16
 
-#define htb_bucket(ht, buckets, i) ((void *) &((char *) (buckets))[(i) * (ht)->bucketsize])
+#define htb_bucket(ht, buckets, i) ((void *) (((char *) buckets) + (i) * (ht)->bucketsize))
 #define htb_key(ht, buckets, i) (htb_bucket(ht, buckets, i))
 #define htb_value(ht, buckets, i) ((void *) (((char *) htb_bucket(ht, buckets, i)) + (ht)->keysize))
 #define htb_occupied(ht, buckets, i) ((bool *) (((char *) htb_bucket(ht, buckets, i)) + (ht)->keysize + (ht)->valuesize))
@@ -20,6 +20,8 @@ HashTable *ht_init(HashTable *ht, usize keysize, usize valuesize, usize seed, Ha
 {
 	return_val_if_fail(hash_func != NULL, NULL);
 	return_val_if_fail(cmp_func != NULL, NULL);
+	return_val_if_fail(keysize != 0, NULL);
+	return_val_if_fail(valuesize != 0, NULL);
 
 	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
 		msg_error("bucket size overflow!");
@@ -131,6 +133,7 @@ static bool ht_resize(HashTable *ht, usize new_slots)
 	}
 
 	free(ht->buckets);
+
 	ht->buckets = buckets;
 	ht->slots = new_slots;
 
@@ -329,17 +332,26 @@ bool ht_lookup(const HashTable *ht, const void *key, void *ret)
 	return FALSE;
 }
 
-void ht_remove_all(HashTable *ht, void *ret, usize *len)
+bool ht_remove_all(HashTable *ht, usize padding, void *ret, usize *len)
 {
-	return_if_fail(ht != NULL);
-	return_if_fail(ret != NULL);
+	return_val_if_fail(ht != NULL, FALSE);
+	return_val_if_fail(ret != NULL, FALSE);
+
+	if (ht->keysize + ht->valuesize > USIZE_MAX - padding) {
+		msg_error("bucket size overflow: the padding is too big!");
+		return FALSE;
+	}
 
 	u8 *data = ret;
 
 	for (usize i = 0, j = 0; i < ht->slots; ++i) {
 		if (*ht_occupied(ht, i)) {
-			u8 *elem = data + (ht->keysize + ht->valuesize) * j++;
-			memcpy(elem, ht_key(ht, i), ht->keysize + ht->valuesize);
+			u8 *elem = data + (ht->keysize + padding + ht->valuesize) * j++;
+			memcpy(elem, ht_key(ht, i), ht->keysize);
+
+			elem += ht->keysize + padding;
+			memcpy(elem, ht_value(ht, i), ht->valuesize);
+
 			*ht_occupied(ht, i) = FALSE;
 		}
 	}
@@ -348,6 +360,8 @@ void ht_remove_all(HashTable *ht, void *ret, usize *len)
 		*len = ht->used;
 
 	ht->used = 0;
+
+	return TRUE;
 }
 
 void ht_destroy(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)

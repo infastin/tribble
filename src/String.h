@@ -452,32 +452,26 @@ bool string_assign_vfmt(String *string, const char *fmt, va_list args) FORMAT(pr
 /**
  * string_steal0:
  * @string: The string where to steal the buffer.
- * @ret: The pointer to retrieve the buffer.
  * @len: The pointer to retrieve the length of the string (can be `NULL`).
- * @to_copy: if `TRUE`, the string buffer will be copied to ret,
- *           otherwise pointer to the buffer will be returned.
  *
  * Steals the string buffer.
  * String's buffer becomes `NULL`.
  *
- * Returns: `TRUE` on success.
+ * Returns: The buffer on success.
  **/
-bool string_steal0(String *string, char **ret, usize *len, bool to_copy);
+char *string_steal0(String *string, usize *len);
 
 /**
  * string_steal:
  * @string: The string where to steal the buffer.
- * @ret: The pointer to retrieve the buffer.
  * @len: The pointer to retrieve the length of the string (can be `NULL`).
- * @to_copy: if `TRUE`, the string buffer will be copied to ret and then recreated,
- *           otherwise pointer to the buffer will be returned.
  *
  * Steals the string buffer.
  * String creates a new buffer.
  *
- * Returns: `TRUE` on success.
+ * Returns: The buffer on success.
  **/
-bool string_steal(String *string, char **ret, usize *len, bool to_copy);
+char *string_steal(String *string, usize *len);
 
 /**
  * string_destroy:
