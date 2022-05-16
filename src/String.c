@@ -282,7 +282,10 @@ static bool __string_insert_vfmt(String *string, usize index, const char *fmt, v
 		return FALSE;
 	}
 
-	return __string_insert(string, index, buf, len);
+	bool res = __string_insert(string, index, buf, len);
+	free(buf);
+
+	return res;
 }
 
 bool string_push_back(String *string, const char *c_str)
@@ -484,7 +487,10 @@ static bool __string_overwrite_vfmt(String *string, usize index, const char *fmt
 		return FALSE;
 	}
 
-	return __string_overwrite(string, index, buf, len);
+	bool res = __string_overwrite(string, index, buf, len);
+	free(buf);
+
+	return res;
 }
 
 bool string_overwrite(String *string, usize index, const char *c_str)
@@ -626,6 +632,8 @@ bool string_assign_fmt(String *string, const char *fmt, ...)
 	memcpy(string->data, buf, len + 1);
 	string->len = len;
 
+	free(buf);
+
 	return TRUE;
 }
 
@@ -651,6 +659,8 @@ bool string_assign_vfmt(String *string, const char *fmt, va_list args)
 
 	memcpy(string->data, buf, len + 1);
 	string->len = len;
+
+	free(buf);
 
 	return TRUE;
 }
