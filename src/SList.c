@@ -173,10 +173,10 @@ void slist_sort(SList *list, CmpFunc cmp_func)
 	if (list->next == list)
 		return;
 
-	SList *array[32] = { [0 ... 31] = list };
+	SList *array[USIZE_WIDTH] = { [0 ...(USIZE_WIDTH - 1)] = list };
 	SList *result;
-	i32 max_i = 0;
-	i32 i;
+	u32 max_i = 0;
+	u32 i;
 
 	result = list->next;
 
@@ -193,12 +193,12 @@ void slist_sort(SList *list, CmpFunc cmp_func)
 			}
 		}
 
-		for (i = 0; (i < 32) && (array[i] != list); ++i) {
+		for (i = 0; (i < USIZE_WIDTH) && (array[i] != list); ++i) {
 			result = __slist_merge(list, array[i], result, cmp_func);
 			array[i] = list;
 		}
 
-		if (i == 32)
+		if (i == USIZE_WIDTH)
 			i--;
 
 		if (i > max_i)
@@ -208,7 +208,7 @@ void slist_sort(SList *list, CmpFunc cmp_func)
 		result = next;
 	}
 
-	for (i32 j = 0; j <= max_i; ++j)
+	for (u32 j = 0; j <= max_i; ++j)
 		result = __slist_merge(list, array[j], result, cmp_func);
 
 	list->next = result;
