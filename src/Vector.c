@@ -7,8 +7,9 @@
 #include <memory.h>
 #include <stdlib.h>
 
-#define VECTOR_INIT_CAP 4
+#define VECTOR_INIT_CAP 8
 #define BINARY_SEARCH_LEN_THRESHOLD 64
+
 #define vector_cell(a, i) ((void *) &((char *) ((a)->data))[(i) * (a)->elemsize])
 
 Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsize)
