@@ -10,6 +10,10 @@ vector_test = executable('vector_test', 'vector_test.c',
   dependencies: libtribble_dep,
 )
 
+example_ht = executable('example_ht', 'example_ht.c',
+  dependencies: libtribble_dep,
+)
+
 test('List test', list_test)
 test('SList test', slist_test)
 test('Vector test', vector_test)

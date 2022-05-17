@@ -69,6 +69,11 @@ typedef _Bool bool;
 #define TRUE 1
 #define FALSE 0
 
+/* auto */
+#ifndef auto
+	#define auto __auto_type
+#endif
+
 /* Functions */
 
 /**
