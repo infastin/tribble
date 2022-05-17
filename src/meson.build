@@ -1,6 +1,7 @@
 src_files = [
   'Hash.c',
   'HashTable.c',
+  'HashTableIter.c',
   'Heap.c',
   'List.c',
   'Messages.c',
@@ -15,6 +16,7 @@ src_files = [
 header_files = [
   'Hash.h',
   'HashTable.h',
+  'HashTableIter.h',
   'Heap.h',
   'List.h',
   'Macros.h',

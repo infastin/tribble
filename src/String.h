@@ -16,6 +16,13 @@
  * string_init(&example_string, "I am an example!");
  *
  * printf("%s\n", example_string.data);
+ *
+ * string_destroy(&example_string);
+ * ```
+ *
+ * You should get an output similar to the following:
+ * ```
+ * I am an example!
  * ```
  **/
 
