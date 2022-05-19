@@ -43,7 +43,17 @@
 #define UNUSED __attribute__((unused))
 #define PACKED __attribute__((packed))
 
-#define paddingof(type, m1, m2) (offsetof(type, m2) - sizeof(((type *) 0)->m1))
+#define distance_of(type, m1, m2) ({                  \
+	const usize __m1_offset = offsetof(type, m1);     \
+	const usize __m1_size = sizeof(((type *) 0)->m1); \
+	const usize __m2_offset = offsetof(type, m2);     \
+	const usize __m2_size = sizeof(((type *) 0)->m2); \
+	(__m1_offset > __m2_offset)                       \
+		? (__m1_offset - __m2_size)                   \
+	: (__m1_offset < __m2_offset)                     \
+		? (__m2_offset - __m1_size)                   \
+		: 0;                                          \
+})
 
 /* Linux kernel vibes */
 

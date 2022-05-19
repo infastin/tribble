@@ -79,6 +79,53 @@ bool ht_remove(HashTable *ht, const void *key, void *ret);
  *
  * Removes all entries from the hash table.
  *
+ * This example shows how to use this function:
+ * ```c
+ * HashTable ht;
+ * ht_init(&ht, 30, 8, 0xdeadbeef, jhash, (CmpFunc) strcmp);
+ *
+ * ht_insert(&ht, get_arr(char, 30, "Mike Urasawa"), get_ptr(u64, 42));
+ * ht_insert(&ht, get_arr(char, 32, "Mario Franco"), get_ptr(u64, 12));
+ *
+ * struct entry {
+ *     char key[30];
+ *
+ *     // In this case the padding between the key and the value is 2.
+ *     // You can manually pass 2 in the function or
+ *     // use the distance_of(type, m1, m2) macro.
+ *
+ *     u64 age;
+ * };
+ *
+ * usize len;
+ * struct entry buf[ht.slots]; // It is better not to allocate a buffer in the stack.
+ *                             // Because this way you can get a stack overflow error,
+ *                             // if the buffer is too big.
+ *
+ * ht_remove_all(&ht, distance_of(struct entry, key, age), buf, &len);
+ *
+ * for (usize i = 0; i < len; ++i) {
+ *     printf("--------------------\n");
+ *     printf(" Name: %s\n", buf[i].key);
+ *     printf(" Age: %lu\n", buf[i].age);
+ *     printf("--------------------\n");
+ * }
+ *
+ * ht_destroy(&ht, NULL, NULL);
+ * ```
+ *
+ * You should get an output similar to the following:
+ * ```
+ * --------------------
+ *  Name: Mario Franco
+ *  Age: 12
+ * --------------------
+ * --------------------
+ *  Name: Mike Urasawa
+ *  Age: 42
+ * --------------------
+ * ```
+ *
  * Returns: `TRUE` on success.
  **/
 bool ht_remove_all(HashTable *ht, usize padding, void *ret, usize *len);

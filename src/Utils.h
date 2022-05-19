@@ -52,7 +52,7 @@ char *strdup_fmt(const char *fmt, ...) FORMAT(printf, 1, 2);
  * It is analogous to `vsnprintf()`, except it allocates a string large enough to
  * hold the output including terminating null byte.
  *
- * Returns: The string with terminating null byte. Can return `NULL` if error occured.
+ * Returns: The string with terminating null byte. Can return `NULL` if error occurs.
  **/
 char *strdup_vfmt(const char *fmt, va_list args) FORMAT(printf, 1, 0);
 
