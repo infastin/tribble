@@ -1,6 +1,7 @@
 #include "Tree.h"
 
 #include "Macros.h"
+#include "Math.h"
 #include "Messages.h"
 #include "Types.h"
 

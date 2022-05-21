@@ -1,6 +1,5 @@
 #include "Utils.h"
 
-#include "Macros.h"
 #include "Messages.h"
 #include "Types.h"
 
@@ -117,25 +116,6 @@ char *trb_strdup_vfmt(const char *fmt, va_list args)
 	va_end(args_copy);
 
 	return result;
-}
-
-u32 trb_pow2_32(u32 value)
-{
-	return (1 << (32 - __builtin_clz(value)));
-}
-
-u64 trb_pow2_64(u64 value)
-{
-	return (1 << (64 - __builtin_clzl(value)));
-}
-
-usize trb_pow2(usize value)
-{
-#if USIZE_WIDTH == 64
-	return trb_pow2_64(value);
-#else
-	return trb_pow2_32(value);
-#endif
 }
 
 /* Insertion sort */

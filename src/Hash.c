@@ -1,6 +1,6 @@
 #include "Hash.h"
 
-#include "Macros.h"
+#include "Math.h"
 
 u32 trb_murmurhash3_32(const void *key, u32 keysize, u32 seed)
 {

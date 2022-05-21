@@ -57,36 +57,6 @@ char *trb_strdup_fmt(const char *fmt, ...) TRB_FORMAT(printf, 1, 2);
 char *trb_strdup_vfmt(const char *fmt, va_list args) TRB_FORMAT(printf, 1, 0);
 
 /**
- * trb_pow2_32:
- * @value: The 32-bit integer.
- *
- * Rounds up to the next power of 2.
- *
- * Returns: The next power of 2.
- **/
-u32 trb_pow2_32(u32 value);
-
-/**
- * trb_pow2_64:
- * @value: The 64-bit integer.
- *
- * Rounds up to the next power of 2.
- *
- * Returns: The next power of 2.
- **/
-u64 trb_pow2_64(u64 value);
-
-/**
- * trb_pow2:
- * @value: The 32/64-bit integer.
- *
- * Rounds up to the next power of 2.
- *
- * Returns: The next power of 2.
- **/
-usize trb_pow2(usize value);
-
-/**
  * trb_heapify:
  * @array: The array to be heapified.
  * @len: The length of the array.

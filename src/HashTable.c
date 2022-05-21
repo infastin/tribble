@@ -5,6 +5,7 @@
 #include <memory.h>
 
 #define HT_INIT_SLOTS 16
+#define HT_INIT_SLOTS_POW 4
 
 #define htb_bucket(ht, buckets, i) ((void *) (((char *) buckets) + (i) * (ht)->bucketsize))
 #define htb_key(ht, buckets, i) (htb_bucket(ht, buckets, i))
@@ -36,7 +37,7 @@ TrbHashTable *trb_hash_table_init(
 
 	usize bucketsize = keysize + valuesize + 1;
 
-	if (bucketsize > USIZE_MAX / HT_INIT_SLOTS) {
+	if (bucketsize > (USIZE_MAX >> HT_INIT_SLOTS_POW)) {
 		trb_msg_error("hash table capacity overflow!");
 		return FALSE;
 	}
@@ -100,7 +101,7 @@ TrbHashTable *trb_hash_table_init_data(
 
 	usize bucketsize = keysize + valuesize + 1;
 
-	if (bucketsize > USIZE_MAX / HT_INIT_SLOTS) {
+	if (bucketsize > (USIZE_MAX >> HT_INIT_SLOTS_POW)) {
 		trb_msg_error("hash table capacity overflow!");
 		return FALSE;
 	}
@@ -155,10 +156,14 @@ static bool __trb_hash_table_add(TrbHashTable *self, usize slots, void *buckets,
 			return FALSE;
 		}
 
-		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
+		for (usize i = pos ?: 1;; ++i) {
+			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+				trb_msg_error("quadratic probing overflow!");
+				return FALSE;
+			}
 
-		while (1) {
+			usize slot = (pos + ((i + i * i) >> 1)) & (slots - 1);
+
 			if (*htb_occupied(self, buckets, slot) == FALSE) {
 				pos = slot;
 				break;
@@ -171,10 +176,8 @@ static bool __trb_hash_table_add(TrbHashTable *self, usize slots, void *buckets,
 				return FALSE;
 			}
 
-			if (i++ >= slots)
+			if (i >= slots)
 				i = 0;
-
-			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 
@@ -254,19 +257,17 @@ bool trb_hash_table_insert(TrbHashTable *self, const void *key, const void *valu
 	}
 
 	if (*ht_occupied(self, pos) && cmp != 0) {
-		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
+		for (usize i = pos ?: 1;; ++i) {
+			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+				trb_msg_error("quadratic probing overflow!");
+				return FALSE;
+			}
 
-		while (1) {
+			usize slot = (pos + ((i + i * i) >> 1)) & (self->slots - 1);
+
 			if (*ht_occupied(self, slot) == FALSE) {
 				pos = slot;
 				break;
-			}
-
-			if (self->with_data) {
-				cmp = self->cmpd_func(key, ht_key(self, pos), self->data);
-			} else {
-				cmp = self->cmpd_func(key, ht_key(self, pos), self->data);
 			}
 
 			i32 cmp;
@@ -284,8 +285,6 @@ bool trb_hash_table_insert(TrbHashTable *self, const void *key, const void *valu
 
 			if (i >= self->slots)
 				i = 0;
-
-			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 
@@ -314,6 +313,7 @@ bool trb_hash_table_add(TrbHashTable *self, const void *key, const void *value)
 			return FALSE;
 	} else {
 		f64 load_factor = (f64) self->used / (f64) self->slots;
+
 		if (load_factor >= 0.6) {
 			usize new_slots = self->slots << 1;
 			if (self->slots > new_slots) {
@@ -366,10 +366,14 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret)
 	}
 
 	if (cmp != 0) {
-		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
+		for (usize i = pos ?: 1;; ++i) {
+			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+				trb_msg_error("quadratic probing overflow!");
+				return FALSE;
+			}
 
-		while (1) {
+			usize slot = (pos + ((i + i * i) >> 1)) & (self->slots - 1);
+
 			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
 
@@ -385,10 +389,8 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret)
 				break;
 			}
 
-			if (i++ >= self->slots)
+			if (i >= self->slots)
 				i = 0;
-
-			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 
@@ -430,10 +432,14 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 			return TRUE;
 		}
 
-		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
+		for (usize i = pos ?: 1;; ++i) {
+			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+				trb_msg_error("quadratic probing overflow!");
+				return FALSE;
+			}
 
-		while (1) {
+			usize slot = (pos + ((i + i * i) >> 1)) & (self->slots - 1);
+
 			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
 
@@ -450,10 +456,8 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 				return TRUE;
 			}
 
-			if (i++ >= self->slots)
+			if (i >= self->slots)
 				i = 0;
-
-			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 

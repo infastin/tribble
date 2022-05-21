@@ -1,6 +1,7 @@
 #ifndef RAND_H_B1PCU4KT
 #define RAND_H_B1PCU4KT
 
+#include "Math.h"
 #include "Types.h"
 
 /**
@@ -35,7 +36,7 @@ TrbSM64 *trb_sm64_init(TrbSM64 *self, u64 seed);
  *
  * Generates a random number with the given state.
  *
- * Returns: A random number in the range [0, U32_MAX].
+ * Returns: A random number in the range [0, %U32_MAX].
  **/
 u32 trb_sm64_next_u32(TrbSM64 *self);
 
@@ -45,7 +46,7 @@ u32 trb_sm64_next_u32(TrbSM64 *self);
  *
  * Generates a random number with the given state.
  *
- * Returns: A random number in the range [0, U64_MAX].
+ * Returns: A random number in the range [0, %U64_MAX].
  **/
 u64 trb_sm64_next_u64(TrbSM64 *self);
 
@@ -76,12 +77,12 @@ struct _TrbXs128ss {
 TrbXs128ss *trb_xs128ss_init(TrbXs128ss *self, u64 seed);
 
 /**
- * xs128ss_next:
+ * trb_xs128ss_next:
  * @self: The pointer to the state.
  *
  * Generates a random number with the given state.
  *
- * Returns: A random number in the range [0, U32_MAX].
+ * Returns: A random number in the range [0, %U32_MAX].
  **/
 u32 trb_xs128ss_next(TrbXs128ss *self);
 
@@ -120,7 +121,7 @@ TrbXs128p *trb_xs128p_init(TrbXs128p *self, u64 seed);
  *
  * Generates a random number with the given state.
  *
- * Returns: A random number in the range [0, U32_MAX].
+ * Returns: A random number in the range [0, %U32_MAX].
  **/
 u32 trb_xs128p_next_u32(TrbXs128p *self);
 
@@ -130,7 +131,7 @@ u32 trb_xs128p_next_u32(TrbXs128p *self);
  *
  * Generates a random floating-point number with the given state.
  *
- * Returns: A random number in the range [0, 1].
+ * Returns: A random number in the interval [0, 1).
  **/
 f32 trb_xs128p_next_f32(TrbXs128p *self);
 
@@ -161,12 +162,12 @@ struct _TrbXs256ss {
 TrbXs256ss *trb_xs256ss_init(TrbXs256ss *self, u64 seed);
 
 /**
- * xs256ss_next:
+ * trb_xs256ss_next:
  * @self: The pointer to the state.
  *
  * Generates a random number with the given state.
  *
- * Returns: A random number in the range [0, U64_MAX].
+ * Returns: A random number in the range [0, %U64_MAX].
  **/
 u64 trb_xs256ss_next(TrbXs256ss *self);
 
@@ -205,7 +206,7 @@ TrbXs256p *trb_xs256p_init(TrbXs256p *self, u64 seed);
  *
  * Generates a random number with the given state.
  *
- * Returns: A random number in the range [0, U64_MAX].
+ * Returns: A random number in the range [0, %U64_MAX].
  **/
 u64 trb_xs256p_next_u64(TrbXs256p *self);
 
@@ -215,8 +216,134 @@ u64 trb_xs256p_next_u64(TrbXs256p *self);
  *
  * Generates a random floating-point number with the given state.
  *
- * Returns: A random number in the range [0, 1].
+ * Returns: A random number in the interval [0, 1).
  **/
 f64 trb_xs256p_next_f64(TrbXs256p *self);
+
+typedef struct _TrbPcg64 TrbPcg64;
+
+/**
+ * TrbPcg64:
+ * @s: The state of the generator.
+ *
+ * It is the state of a PCG64 generator.
+ * [Reference](https://www.pcg-random.org/)
+ **/
+struct _TrbPcg64 {
+	u64 s;
+};
+
+/**
+ * trb_pcg64_init:
+ * @self: The pointer to the state to be initialized.
+ * @seed: The seed to initialize with.
+ *
+ * Initializes the state of #TrbPcg64 with the given seed.
+ *
+ * Returns: A new state. Can return %NULL if an allocation error occurs.
+ **/
+TrbPcg64 *trb_pcg64_init(TrbPcg64 *self, u64 seed);
+
+/**
+ * trb_pcg64_next_u32:
+ * @self: The pointer to the state.
+ *
+ * Generates a random number with the given state.
+ * Uses the PCG64 XSH RS generator.
+ *
+ * Returns: A random number in the range [0, %U32_MAX].
+ **/
+u32 trb_pcg64_next_u32(TrbPcg64 *self);
+
+/**
+ * trb_pcg64_next_f32:
+ * @self: The pointer to the state.
+ *
+ * Generates a random number with the given state.
+ * Uses the PCG64 XSH RS generator.
+ *
+ * Returns: A random number in the interval [0, 1).
+ **/
+f32 trb_pcg64_next_f32(TrbPcg64 *self);
+
+/**
+ * trb_pcg64_next_u64:
+ * @self: The pointer to the state.
+ *
+ * Generates a random number with the given state.
+ * Uses the PCG64 RXS M XS generator.
+ *
+ * Returns: A random number in the range [0, %U64_MAX].
+ **/
+u64 trb_pcg64_next_u64(TrbPcg64 *self);
+
+/**
+ * trb_pcg64_next_f64:
+ * @self: The pointer to the state.
+ *
+ * Generates a random number with the given state.
+ * Uses the PCG64 RXS M XS generator.
+ *
+ * Returns: A random number in the interval [0, 1).
+ **/
+f64 trb_pcg64_next_f64(TrbPcg64 *self);
+
+typedef struct _TrbPcg128 TrbPcg128;
+
+/**
+ * TrbPcg128:
+ * @s: The state of the generator.
+ *
+ * It is the state of a PCG128 generator.
+ * [Reference](https://www.pcg-random.org/)
+ *
+ **/
+struct _TrbPcg128 {
+	u128 s;
+};
+
+/**
+ * trb_pcg128_init:
+ * @self: The pointer to the state to be initialized.
+ * @seed: The seed to initialize with.
+ *
+ * Initializes the state of #TrbPcg128 with the given seed.
+ *
+ * Returns: A new state. Can return %NULL if an allocation error occurs.
+ **/
+TrbPcg128 *trb_pcg128_init(TrbPcg128 *self, u128 seed);
+
+/**
+ * trb_pcg128_next_u64:
+ * @self: The pointer to the state.
+ *
+ * Generates a random number with the given state.
+ * Uses the PCG128 XSH RS generator.
+ *
+ * Returns: A random number in the range [0, %U64_MAX].
+ **/
+u64 trb_pcg128_next_u64(TrbPcg128 *self);
+
+/**
+ * trb_pcg128_next_f64:
+ * @self: The pointer to the state.
+ *
+ * Generates a random number with the given state.
+ * Uses the PCG128 XSH RS generator.
+ *
+ * Returns: A random number in the interval [0, 1).
+ **/
+f64 trb_pcg128_next_f64(TrbPcg128 *self);
+
+/**
+ * trb_pcg128_next_u128:
+ * @self: The pointer to the state.
+ *
+ * Generates a random number with the given state.
+ * Uses the PCG128 RXS M XS generator.
+ *
+ * Returns: A random number in the range [0, %U128_MAX].
+ **/
+u128 trb_pcg128_next_u128(TrbPcg128 *self);
 
 #endif /* end of include guard: RAND_H_B1PCU4KT */

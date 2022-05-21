@@ -56,10 +56,49 @@ typedef uintptr_t usize;
 #define U64_WIDTH UINT64_WIDTH
 #define USIZE_WIDTH UINTPTR_WIDTH
 
+#define TRB_STRFUNC ((const char *) (__PRETTY_FUNCTION__))
+#define TRB_STRFILE ((const char *) (__FILE__))
+#define TRB_USIZELINE ((usize) (__LINE__))
+
+#define TRB_FORMAT(archetype, index, first) __attribute__((format(archetype, index, first)))
+#define TRB_UNUSED __attribute__((unused))
+#define TRB_PACKED __attribute__((packed))
+
 /* Floating point numbers */
 typedef float f32;
 typedef double f64;
 typedef long double real;
+
+/* Tuples for div functions */
+typedef struct {
+	i32 quot;
+	i32 rem;
+} d32;
+
+typedef struct {
+	i64 quot;
+	i64 rem;
+} d64;
+
+typedef struct {
+	isize quot;
+	isize rem;
+} dsize;
+
+typedef struct {
+	u32 quot;
+	u32 rem;
+} ud32;
+
+typedef struct {
+	u64 quot;
+	u64 rem;
+} ud64;
+
+typedef struct {
+	usize quot;
+	usize rem;
+} udsize;
 
 /* Boolean */
 #ifndef bool

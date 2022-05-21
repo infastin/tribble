@@ -5,10 +5,6 @@
 
 #include <malloc.h>
 
-#define TRB_STRFUNC ((const char *) (__PRETTY_FUNCTION__))
-#define TRB_STRFILE ((const char *) (__FILE__))
-#define TRB_USIZELINE ((usize) (__LINE__))
-
 #define trb_talloc(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (malloc(sizeof(struct_type) * n_structs)) : (NULL)))
 #define trb_talloc0(struct_type, n_structs) ((struct_type *) ((n_structs > 0) ? (calloc(n_structs, sizeof(struct_type))) : (NULL)))
 
@@ -29,19 +25,6 @@
 			*__b++ = __tmp;            \
 		} while (--__size > 0);        \
 	}
-
-#define trb_rotl32(x, r) (((x) << (r)) | ((x) >> (32 - (r))))
-#define trb_rotr32(x, r) (((x) >> (r)) | ((x) << (32 - (r))))
-
-#define trb_rotl64(x, r) (((x) << (r)) | ((x) >> (64 - (r))))
-#define trb_rotr64(x, r) (((x) >> (r)) | ((x) << (64 - (r))))
-
-#define trb_max(a, b) (((a) > (b)) ? (a) : (b))
-#define trb_min(a, b) (((a) < (b)) ? (a) : (b))
-
-#define TRB_FORMAT(archetype, index, first) __attribute__((format(archetype, index, first)))
-#define TRB_UNUSED __attribute__((unused))
-#define TRB_PACKED __attribute__((packed))
 
 #define trb_distance_of(type, m1, m2) ({              \
 	const usize __m1_offset = offsetof(type, m1);     \
