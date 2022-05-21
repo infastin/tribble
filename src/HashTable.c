@@ -11,387 +11,515 @@
 #define htb_value(ht, buckets, i) ((void *) (((char *) htb_bucket(ht, buckets, i)) + (ht)->keysize))
 #define htb_occupied(ht, buckets, i) ((bool *) (((char *) htb_bucket(ht, buckets, i)) + (ht)->keysize + (ht)->valuesize))
 
-#define ht_bucket(ht, i) (htb_bucket(ht, (ht)->buckets, i))
 #define ht_key(ht, i) (htb_key(ht, (ht)->buckets, i))
 #define ht_value(ht, i) (htb_value(ht, (ht)->buckets, i))
 #define ht_occupied(ht, i) (htb_occupied(ht, (ht)->buckets, i))
 
-HashTable *ht_init(HashTable *ht, usize keysize, usize valuesize, usize seed, HashFunc hash_func, CmpFunc cmp_func)
+TrbHashTable *trb_hash_table_init(
+	TrbHashTable *self,
+	usize keysize,
+	usize valuesize,
+	usize seed,
+	TrbHashFunc hash_func,
+	TrbCmpFunc cmp_func
+)
 {
-	return_val_if_fail(hash_func != NULL, NULL);
-	return_val_if_fail(cmp_func != NULL, NULL);
-	return_val_if_fail(keysize != 0, NULL);
-	return_val_if_fail(valuesize != 0, NULL);
+	trb_return_val_if_fail(hash_func != NULL, NULL);
+	trb_return_val_if_fail(cmp_func != NULL, NULL);
+	trb_return_val_if_fail(keysize != 0, NULL);
+	trb_return_val_if_fail(valuesize != 0, NULL);
 
 	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
-		msg_error("bucket size overflow!");
+		trb_msg_error("bucket size overflow!");
 		return FALSE;
 	}
 
 	usize bucketsize = keysize + valuesize + 1;
 
 	if (bucketsize > USIZE_MAX / HT_INIT_SLOTS) {
-		msg_error("hash table capacity overflow!");
+		trb_msg_error("hash table capacity overflow!");
 		return FALSE;
 	}
 
 	bool was_allocated = FALSE;
 
-	if (ht == NULL) {
-		ht = talloc(HashTable, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbHashTable, 1);
 
-		if (ht == NULL) {
-			msg_error("couldn't allocate memory for the hash table!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the hash table!");
 			return NULL;
 		}
 
 		was_allocated = TRUE;
 	}
 
-	ht->buckets = calloc(HT_INIT_SLOTS, bucketsize);
+	self->buckets = calloc(HT_INIT_SLOTS, bucketsize);
 
-	if (ht->buckets == NULL) {
+	if (self->buckets == NULL) {
 		if (was_allocated)
-			free(ht);
+			free(self);
 
-		msg_error("couldn't allocate memory for the hash table buckets!");
+		trb_msg_error("couldn't allocate memory for the hash table buckets!");
 		return NULL;
 	}
 
-	ht->slots = HT_INIT_SLOTS;
-	ht->used = 0;
-	ht->keysize = keysize;
-	ht->valuesize = valuesize;
-	ht->bucketsize = bucketsize;
-	ht->seed = seed;
-	ht->hash_func = hash_func;
-	ht->cmp_func = cmp_func;
+	self->slots = HT_INIT_SLOTS;
+	self->used = 0;
+	self->keysize = keysize;
+	self->valuesize = valuesize;
+	self->bucketsize = bucketsize;
+	self->seed = seed;
+	self->hash_func = hash_func;
+	self->cmp_func = cmp_func;
+	self->with_data = FALSE;
+	self->data = NULL;
 
-	return ht;
+	return self;
 }
 
-static bool __ht_add(HashTable *ht, usize slots, void *buckets, const void *key, const void *value)
+TrbHashTable *trb_hash_table_init_data(
+	TrbHashTable *self,
+	usize keysize,
+	usize valuesize,
+	usize seed,
+	TrbHashFunc hash_func,
+	TrbCmpDataFunc cmpd_func,
+	void *data
+)
 {
-	usize hash = ht->hash_func(key, ht->keysize, ht->seed);
+	trb_return_val_if_fail(hash_func != NULL, NULL);
+	trb_return_val_if_fail(cmpd_func != NULL, NULL);
+	trb_return_val_if_fail(keysize != 0, NULL);
+	trb_return_val_if_fail(valuesize != 0, NULL);
+
+	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
+		trb_msg_error("bucket size overflow!");
+		return FALSE;
+	}
+
+	usize bucketsize = keysize + valuesize + 1;
+
+	if (bucketsize > USIZE_MAX / HT_INIT_SLOTS) {
+		trb_msg_error("hash table capacity overflow!");
+		return FALSE;
+	}
+
+	bool was_allocated = FALSE;
+
+	if (self == NULL) {
+		self = trb_talloc(TrbHashTable, 1);
+
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the hash table!");
+			return NULL;
+		}
+
+		was_allocated = TRUE;
+	}
+
+	self->buckets = calloc(HT_INIT_SLOTS, bucketsize);
+
+	if (self->buckets == NULL) {
+		if (was_allocated)
+			free(self);
+
+		trb_msg_error("couldn't allocate memory for the hash table buckets!");
+		return NULL;
+	}
+
+	self->slots = HT_INIT_SLOTS;
+	self->used = 0;
+	self->keysize = keysize;
+	self->valuesize = valuesize;
+	self->bucketsize = bucketsize;
+	self->seed = seed;
+	self->hash_func = hash_func;
+	self->cmpd_func = cmpd_func;
+	self->with_data = TRUE;
+	self->data = data;
+
+	return self;
+}
+
+static bool __trb_hash_table_add(TrbHashTable *self, usize slots, void *buckets, const void *key, const void *value)
+{
+	usize hash = self->hash_func(key, self->keysize, self->seed);
 	usize pos = hash & (slots - 1);
 
-	if (*htb_occupied(ht, buckets, pos)) {
-		if (ht->cmp_func(key, htb_key(ht, buckets, pos)) == 0)
+	if (*htb_occupied(self, buckets, pos)) {
+		if (self->with_data) {
+			if (self->cmpd_func(key, htb_key(self, buckets, pos), self->data) == 0)
+				return FALSE;
+		} else if (self->cmp_func(key, htb_key(self, buckets, pos)) == 0) {
 			return FALSE;
+		}
 
 		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (ht->slots - 1);
+		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
 
 		while (1) {
-			if (*htb_occupied(ht, buckets, slot) == FALSE) {
+			if (*htb_occupied(self, buckets, slot) == FALSE) {
 				pos = slot;
 				break;
 			}
 
-			if (ht->cmp_func(key, htb_key(ht, buckets, slot)) == 0)
+			if (self->with_data) {
+				if (self->cmpd_func(key, htb_key(self, buckets, slot), self->data) == 0)
+					return FALSE;
+			} else if (self->cmp_func(key, htb_key(self, buckets, slot)) == 0) {
 				return FALSE;
+			}
 
 			if (i++ >= slots)
 				i = 0;
 
-			slot = ((i + i * i) >> 1) & (ht->slots - 1);
+			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 
-	memcpy(htb_key(ht, buckets, pos), key, ht->keysize);
+	memcpy(htb_key(self, buckets, pos), key, self->keysize);
 
 	if (value != NULL)
-		memcpy(htb_value(ht, buckets, pos), value, ht->valuesize);
+		memcpy(htb_value(self, buckets, pos), value, self->valuesize);
 	else
-		memset(htb_value(ht, buckets, pos), 0, ht->valuesize);
+		memset(htb_value(self, buckets, pos), 0, self->valuesize);
 
-	memset(htb_occupied(ht, buckets, pos), 1, 1);
+	memset(htb_occupied(self, buckets, pos), 1, 1);
 
 	return TRUE;
 }
 
-static bool ht_resize(HashTable *ht, usize new_slots)
+static bool trb_hash_table_resize(TrbHashTable *self, usize new_slots)
 {
-	if (ht->bucketsize > USIZE_MAX / new_slots) {
-		msg_error("hash table capacity overflow!");
+	if (self->bucketsize > USIZE_MAX / new_slots) {
+		trb_msg_error("hash table capacity overflow!");
 		return FALSE;
 	}
 
-	void *buckets = calloc(new_slots, ht->bucketsize);
+	void *buckets = calloc(new_slots, self->bucketsize);
 	if (buckets == NULL) {
-		msg_error("couldn't reallocate memory for the hash table buckets!");
+		trb_msg_error("couldn't reallocate memory for the hash table buckets!");
 		return FALSE;
 	}
 
-	for (usize i = 0; i < ht->slots; ++i) {
-		if (*ht_occupied(ht, i)) {
-			if (__ht_add(ht, new_slots, buckets, ht_key(ht, i), ht_value(ht, i)) == FALSE) {
+	for (usize i = 0; i < self->slots; ++i) {
+		if (*ht_occupied(self, i)) {
+			if (__trb_hash_table_add(self, new_slots, buckets, ht_key(self, i), ht_value(self, i)) == FALSE) {
 				free(buckets);
 				return FALSE;
 			}
 		}
 	}
 
-	free(ht->buckets);
+	free(self->buckets);
 
-	ht->buckets = buckets;
-	ht->slots = new_slots;
+	self->buckets = buckets;
+	self->slots = new_slots;
 
 	return TRUE;
 }
 
-bool ht_insert(HashTable *ht, const void *key, const void *value)
+bool trb_hash_table_insert(TrbHashTable *self, const void *key, const void *value)
 {
-	return_val_if_fail(ht != NULL, FALSE);
-	return_val_if_fail(key != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(key != NULL, FALSE);
 
-	if (ht->slots == 0) {
-		if (!ht_resize(ht, HT_INIT_SLOTS))
+	if (self->slots == 0) {
+		if (!trb_hash_table_resize(self, HT_INIT_SLOTS))
 			return FALSE;
 	} else {
-		f64 load_factor = (f64) ht->used / (f64) ht->slots;
+		f64 load_factor = (f64) self->used / (f64) self->slots;
 		if (load_factor >= 0.6) {
-			usize new_slots = ht->slots << 1;
-			if (ht->slots > new_slots) {
-				msg_error("hash table capacity overflow!");
+			usize new_slots = self->slots << 1;
+			if (self->slots > new_slots) {
+				trb_msg_error("hash table capacity overflow!");
 				return FALSE;
 			}
 
-			if (!ht_resize(ht, new_slots))
+			if (!trb_hash_table_resize(self, new_slots))
 				return FALSE;
 		}
 	}
 
 	bool only_change_value = FALSE;
-	usize hash = ht->hash_func(key, ht->keysize, ht->seed);
-	usize pos = hash & (ht->slots - 1);
+	usize hash = self->hash_func(key, self->keysize, self->seed);
+	usize pos = hash & (self->slots - 1);
 
-	if (*ht_occupied(ht, pos) && ht->cmp_func(key, ht_key(ht, pos)) != 0) {
+	i32 cmp;
+	if (self->with_data) {
+		cmp = self->cmpd_func(key, ht_key(self, pos), self->data);
+	} else {
+		cmp = self->cmp_func(key, ht_key(self, pos));
+	}
+
+	if (*ht_occupied(self, pos) && cmp != 0) {
 		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (ht->slots - 1);
+		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
 
 		while (1) {
-			if (*ht_occupied(ht, slot) == FALSE) {
+			if (*ht_occupied(self, slot) == FALSE) {
 				pos = slot;
 				break;
 			}
 
-			if (ht->cmp_func(key, ht_key(ht, slot)) == 0) {
+			if (self->with_data) {
+				cmp = self->cmpd_func(key, ht_key(self, pos), self->data);
+			} else {
+				cmp = self->cmpd_func(key, ht_key(self, pos), self->data);
+			}
+
+			i32 cmp;
+			if (self->with_data) {
+				cmp = self->cmpd_func(key, ht_key(self, slot), self->data);
+			} else {
+				cmp = self->cmp_func(key, ht_key(self, slot));
+			}
+
+			if (cmp == 0) {
 				only_change_value = TRUE;
 				pos = slot;
 				break;
 			}
 
-			if (i >= ht->slots)
+			if (i >= self->slots)
 				i = 0;
 
-			slot = ((i + i * i) >> 1) & (ht->slots - 1);
+			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 
 	if (!only_change_value) {
-		memcpy(ht_key(ht, pos), key, ht->keysize);
-		ht->used++;
+		memcpy(ht_key(self, pos), key, self->keysize);
+		self->used++;
 	}
 
 	if (value != NULL)
-		memcpy(ht_value(ht, pos), value, ht->valuesize);
+		memcpy(ht_value(self, pos), value, self->valuesize);
 	else
-		memset(ht_value(ht, pos), 0, ht->valuesize);
+		memset(ht_value(self, pos), 0, self->valuesize);
 
-	memset(ht_occupied(ht, pos), 1, 1);
+	memset(ht_occupied(self, pos), 1, 1);
 
 	return TRUE;
 }
 
-bool ht_add(HashTable *ht, const void *key, const void *value)
+bool trb_hash_table_add(TrbHashTable *self, const void *key, const void *value)
 {
-	return_val_if_fail(ht != NULL, FALSE);
-	return_val_if_fail(key != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(key != NULL, FALSE);
 
-	if (ht->slots == 0) {
-		if (!ht_resize(ht, HT_INIT_SLOTS))
+	if (self->slots == 0) {
+		if (!trb_hash_table_resize(self, HT_INIT_SLOTS))
 			return FALSE;
 	} else {
-		f64 load_factor = (f64) ht->used / (f64) ht->slots;
+		f64 load_factor = (f64) self->used / (f64) self->slots;
 		if (load_factor >= 0.6) {
-			usize new_slots = ht->slots << 1;
-			if (ht->slots > new_slots) {
-				msg_error("hash table capacity overflow!");
+			usize new_slots = self->slots << 1;
+			if (self->slots > new_slots) {
+				trb_msg_error("hash table capacity overflow!");
 				return FALSE;
 			}
 
-			if (!ht_resize(ht, new_slots))
+			if (!trb_hash_table_resize(self, new_slots))
 				return FALSE;
 		}
 	}
 
-	if (__ht_add(ht, ht->slots, ht->buckets, key, value)) {
-		ht->used++;
+	if (__trb_hash_table_add(self, self->slots, self->buckets, key, value)) {
+		self->used++;
 		return TRUE;
 	}
 
 	return FALSE;
 }
 
-bool ht_remove(HashTable *ht, const void *key, void *ret)
+bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret)
 {
-	return_val_if_fail(ht != NULL, FALSE);
-	return_val_if_fail(key != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(key != NULL, FALSE);
 
-	if (ht->slots == 0) {
-		msg_warn("hash table capacity is zero!");
+	if (self->slots == 0) {
+		trb_msg_warn("hash table capacity is zero!");
 		return FALSE;
 	}
 
-	if (ht->slots > HT_INIT_SLOTS) {
-		f64 load_factor = (f64) ht->used / (f64) ht->slots;
+	if (self->slots > HT_INIT_SLOTS) {
+		f64 load_factor = (f64) self->used / (f64) self->slots;
 		if (load_factor <= 0.4) {
-			if (!ht_resize(ht, ht->slots >> 1))
+			if (!trb_hash_table_resize(self, self->slots >> 1))
 				return FALSE;
 		}
 	}
 
-	usize hash = ht->hash_func(key, ht->keysize, ht->seed);
-	usize pos = hash & (ht->slots - 1);
+	usize hash = self->hash_func(key, self->keysize, self->seed);
+	usize pos = hash & (self->slots - 1);
 
-	if (*ht_occupied(ht, pos) == FALSE)
+	if (*ht_occupied(self, pos) == FALSE)
 		return FALSE;
 
-	if (ht->cmp_func(key, ht_key(ht, pos))) {
+	i32 cmp;
+	if (self->with_data) {
+		cmp = self->cmpd_func(key, ht_key(self, pos), self->data);
+	} else {
+		cmp = self->cmp_func(key, ht_key(self, pos));
+	}
+
+	if (cmp != 0) {
 		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (ht->slots - 1);
+		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
 
 		while (1) {
-			if (*ht_occupied(ht, slot) == FALSE)
+			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
 
-			if (ht->cmp_func(key, ht_key(ht, slot)) == 0) {
+			i32 cmp;
+			if (self->with_data) {
+				cmp = self->cmpd_func(key, ht_key(self, slot), self->data);
+			} else {
+				cmp = self->cmp_func(key, ht_key(self, slot));
+			}
+
+			if (cmp == 0) {
 				pos = slot;
 				break;
 			}
 
-			if (i++ >= ht->slots)
+			if (i++ >= self->slots)
 				i = 0;
 
-			slot = ((i + i * i) >> 1) & (ht->slots - 1);
+			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 
 	if (ret != NULL)
-		memcpy(ret, ht_value(ht, pos), ht->valuesize);
+		memcpy(ret, ht_value(self, pos), self->valuesize);
 
-	memset(ht_occupied(ht, pos), 0, 1);
+	memset(ht_occupied(self, pos), 0, 1);
 
-	ht->used--;
+	self->used--;
 
 	return TRUE;
 }
 
-bool ht_lookup(const HashTable *ht, const void *key, void *ret)
+bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 {
-	return_val_if_fail(ht != NULL, FALSE);
-	return_val_if_fail(key != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(key != NULL, FALSE);
+	trb_return_val_if_fail(ret != NULL, FALSE);
 
-	if (ht->slots == 0) {
-		msg_warn("hash table capacity is zero!");
+	if (self->slots == 0) {
+		trb_msg_warn("hash table capacity is zero!");
 		return FALSE;
 	}
 
-	usize hash = ht->hash_func(key, ht->keysize, ht->seed);
-	usize pos = hash & (ht->slots - 1);
+	usize hash = self->hash_func(key, self->keysize, self->seed);
+	usize pos = hash & (self->slots - 1);
 
-	if (*ht_occupied(ht, pos)) {
-		if (ht->cmp_func(key, ht_key(ht, pos)) == 0) {
+	if (*ht_occupied(self, pos)) {
+		i32 cmp;
+		if (self->with_data) {
+			cmp = self->cmpd_func(key, ht_key(self, pos), self->data);
+		} else {
+			cmp = self->cmp_func(key, ht_key(self, pos));
+		}
+
+		if (cmp == 0) {
 			if (ret != NULL)
-				memcpy(ret, ht_value(ht, pos), ht->valuesize);
+				memcpy(ret, ht_value(self, pos), self->valuesize);
 			return TRUE;
 		}
 
 		usize i = pos;
-		usize slot = ((i + i * i) >> 1) & (ht->slots - 1);
+		usize slot = ((i + i * i) >> 1) & (self->slots - 1);
 
 		while (1) {
-			if (*ht_occupied(ht, slot) == FALSE)
+			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
 
-			if (ht->cmp_func(key, ht_key(ht, slot)) == 0) {
+			i32 cmp;
+			if (self->with_data) {
+				cmp = self->cmpd_func(key, ht_key(self, slot), self->data);
+			} else {
+				cmp = self->cmp_func(key, ht_key(self, slot));
+			}
+
+			if (cmp == 0) {
 				if (ret != NULL)
-					memcpy(ret, ht_value(ht, slot), ht->valuesize);
+					memcpy(ret, ht_value(self, slot), self->valuesize);
 				return TRUE;
 			}
 
-			if (i++ >= ht->slots)
+			if (i++ >= self->slots)
 				i = 0;
 
-			slot = ((i + i * i) >> 1) & (ht->slots - 1);
+			slot = ((i + i * i) >> 1) & (self->slots - 1);
 		}
 	}
 
 	return FALSE;
 }
 
-bool ht_remove_all(HashTable *ht, usize padding, void *ret, usize *len)
+bool trb_hash_table_remove_all(TrbHashTable *self, usize padding, void *ret, usize *len)
 {
-	return_val_if_fail(ht != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(ret != NULL, FALSE);
 
-	if (ht->keysize + ht->valuesize > USIZE_MAX - padding) {
-		msg_error("bucket size overflow: the padding is too big!");
+	if (self->keysize + self->valuesize > USIZE_MAX - padding) {
+		trb_msg_error("bucket size overflow: the padding is too big!");
 		return FALSE;
 	}
 
 	u8 *data = ret;
 
-	for (usize i = 0, j = 0; i < ht->slots; ++i) {
-		if (*ht_occupied(ht, i)) {
-			u8 *elem = data + (ht->keysize + padding + ht->valuesize) * j++;
-			memcpy(elem, ht_key(ht, i), ht->keysize);
+	for (usize i = 0, j = 0; i < self->slots; ++i) {
+		if (*ht_occupied(self, i)) {
+			u8 *elem = data + (self->keysize + padding + self->valuesize) * j++;
+			memcpy(elem, ht_key(self, i), self->keysize);
 
-			elem += ht->keysize + padding;
-			memcpy(elem, ht_value(ht, i), ht->valuesize);
+			elem += self->keysize + padding;
+			memcpy(elem, ht_value(self, i), self->valuesize);
 
-			*ht_occupied(ht, i) = FALSE;
+			*ht_occupied(self, i) = FALSE;
 		}
 	}
 
 	if (len != NULL)
-		*len = ht->used;
+		*len = self->used;
 
-	ht->used = 0;
+	self->used = 0;
 
 	return TRUE;
 }
 
-void ht_destroy(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)
+void trb_hash_table_destroy(TrbHashTable *self, TrbFreeFunc key_free_func, TrbFreeFunc value_free_func)
 {
-	return_if_fail(ht != NULL);
+	trb_return_if_fail(self != NULL);
 
-	if (ht->buckets == NULL)
+	if (self->buckets == NULL)
 		return;
 
 	if (key_free_func != NULL || value_free_func != NULL) {
-		for (usize i = 0; i < ht->slots; ++i) {
-			if (*ht_occupied(ht, i)) {
+		for (usize i = 0; i < self->slots; ++i) {
+			if (*ht_occupied(self, i)) {
 				if (key_free_func != NULL)
-					key_free_func(ht_key(ht, i));
+					key_free_func(ht_key(self, i));
 				if (value_free_func != NULL)
-					value_free_func(ht_value(ht, i));
+					value_free_func(ht_value(self, i));
 			}
 		}
 	}
 
-	free(ht->buckets);
+	free(self->buckets);
 
-	ht->buckets = NULL;
-	ht->slots = 0;
-	ht->used = 0;
+	self->buckets = NULL;
+	self->slots = 0;
+	self->used = 0;
 }
 
-void ht_free(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func)
+void trb_hash_table_free(TrbHashTable *self, TrbFreeFunc key_free_func, TrbFreeFunc value_free_func)
 {
-	return_if_fail(ht != NULL);
-	ht_destroy(ht, key_free_func, value_free_func);
-	free(ht);
+	trb_return_if_fail(self != NULL);
+	trb_hash_table_destroy(self, key_free_func, value_free_func);
+	free(self);
 }

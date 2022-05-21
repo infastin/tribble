@@ -9,7 +9,6 @@
 #define htb_value(ht, buckets, i) ((void *) (((char *) htb_bucket(ht, buckets, i)) + (ht)->keysize))
 #define htb_occupied(ht, buckets, i) ((bool *) (((char *) htb_bucket(ht, buckets, i)) + (ht)->keysize + (ht)->valuesize))
 
-#define ht_bucket(ht, i) (htb_bucket(ht, (ht)->buckets, i))
 #define ht_key(ht, i) (htb_key(ht, (ht)->buckets, i))
 #define ht_value(ht, i) (htb_value(ht, (ht)->buckets, i))
 #define ht_occupied(ht, i) (htb_occupied(ht, (ht)->buckets, i))
@@ -20,127 +19,127 @@ enum {
 	FINISHED
 };
 
-HashTableIter *ht_iter_init(HashTableIter *hti, HashTable *ht)
+TrbHashTableIter *trb_hash_table_iter_init(TrbHashTableIter *self, TrbHashTable *ht)
 {
-	return_val_if_fail(ht != NULL, NULL);
+	trb_return_val_if_fail(ht != NULL, NULL);
 
-	if (hti == NULL) {
-		hti = talloc(HashTableIter, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbHashTableIter, 1);
 
-		if (hti == NULL) {
-			msg_error("couldn't allocate memory for the hash table iterator!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the hash table iterator!");
 			return NULL;
 		}
 	}
 
-	hti->ht = ht;
-	hti->slot = -1;
-	hti->status = NONE;
+	self->ht = ht;
+	self->slot = -1;
+	self->status = NONE;
 
-	return hti;
+	return self;
 }
 
-bool ht_iter_next(HashTableIter *hti, const void **key, void **value)
+bool trb_hash_table_iter_next(TrbHashTableIter *self, const void **key, void **value)
 {
-	return_val_if_fail(hti != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (hti->status == FINISHED) {
-		msg_warn("end of the hash table already has been reached!");
+	if (self->status == FINISHED) {
+		trb_msg_warn("end of the hash table already has been reached!");
 		return FALSE;
 	} else {
-		hti->status = STARTED;
+		self->status = STARTED;
 	}
 
-	for (usize i = hti->slot + 1; i < hti->ht->slots; ++i) {
-		if (*ht_occupied(hti->ht, i)) {
+	for (usize i = self->slot + 1; i < self->ht->slots; ++i) {
+		if (*ht_occupied(self->ht, i)) {
 			if (key != NULL)
-				*key = ht_key(hti->ht, i);
+				*key = ht_key(self->ht, i);
 
 			if (value != NULL)
-				*value = ht_value(hti->ht, i);
+				*value = ht_value(self->ht, i);
 
-			hti->slot = i;
+			self->slot = i;
 
 			return TRUE;
 		}
 	}
 
-	hti->status = FINISHED;
+	self->status = FINISHED;
 
 	return FALSE;
 }
 
-bool ht_iter_replace(HashTableIter *hti, const void *value)
+bool trb_hash_table_iter_replace(TrbHashTableIter *self, const void *value)
 {
-	return_val_if_fail(hti != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	switch (hti->status) {
+	switch (self->status) {
 	case NONE:
-		msg_warn("iteration hasn't even started yet!");
+		trb_msg_warn("iteration hasn't even started yet!");
 		return FALSE;
 	case FINISHED:
-		msg_warn("end of the hash table already has been reached!");
+		trb_msg_warn("end of the hash table already has been reached!");
 		return FALSE;
 	default:
 		break;
 	}
 
 	if (value == NULL)
-		memset(ht_value(hti->ht, hti->slot), 0, hti->ht->valuesize);
+		memset(ht_value(self->ht, self->slot), 0, self->ht->valuesize);
 	else
-		memcpy(ht_value(hti->ht, hti->slot), value, hti->ht->valuesize);
+		memcpy(ht_value(self->ht, self->slot), value, self->ht->valuesize);
 
 	return TRUE;
 }
 
-bool ht_iter_get(HashTableIter *hti, void *key, void *value)
+bool trb_hash_table_iter_get(TrbHashTableIter *self, void *key, void *value)
 {
-	return_val_if_fail(hti != NULL, FALSE);
-	return_val_if_fail(key != NULL, FALSE);
-	return_val_if_fail(value != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(key != NULL, FALSE);
+	trb_return_val_if_fail(value != NULL, FALSE);
 
-	switch (hti->status) {
+	switch (self->status) {
 	case NONE:
-		msg_warn("iteration hasn't even started yet!");
+		trb_msg_warn("iteration hasn't even started yet!");
 		return FALSE;
 	case FINISHED:
-		msg_warn("end of the hash table already has been reached!");
+		trb_msg_warn("end of the hash table already has been reached!");
 		return FALSE;
 	default:
 		break;
 	}
 
 	if (key != NULL)
-		memcpy(key, ht_key(hti->ht, hti->slot), hti->ht->keysize);
+		memcpy(key, ht_key(self->ht, self->slot), self->ht->keysize);
 
 	if (value != NULL)
-		memcpy(value, ht_value(hti->ht, hti->slot), hti->ht->valuesize);
+		memcpy(value, ht_value(self->ht, self->slot), self->ht->valuesize);
 
 	return TRUE;
 }
 
-bool ht_iter_remove(HashTableIter *hti, void *key, void *value)
+bool trb_hash_table_iter_remove(TrbHashTableIter *self, void *key, void *value)
 {
-	return_val_if_fail(hti != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	switch (hti->status) {
+	switch (self->status) {
 	case NONE:
-		msg_warn("iteration hasn't even started yet!");
+		trb_msg_warn("iteration hasn't even started yet!");
 		return FALSE;
 	case FINISHED:
-		msg_warn("end of the hash table already has been reached!");
+		trb_msg_warn("end of the hash table already has been reached!");
 		return FALSE;
 	default:
 		break;
 	}
 
 	if (key != NULL)
-		memcpy(key, ht_key(hti->ht, hti->slot), hti->ht->keysize);
+		memcpy(key, ht_key(self->ht, self->slot), self->ht->keysize);
 
 	if (value != NULL)
-		memcpy(value, ht_value(hti->ht, hti->slot), hti->ht->valuesize);
+		memcpy(value, ht_value(self->ht, self->slot), self->ht->valuesize);
 
-	*ht_occupied(hti->ht, hti->slot) = FALSE;
+	*ht_occupied(self->ht, self->slot) = FALSE;
 
 	return TRUE;
 }

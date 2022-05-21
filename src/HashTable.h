@@ -3,96 +3,150 @@
 
 #include "Types.h"
 
-typedef struct _HashTable HashTable;
+typedef struct _TrbHashTable TrbHashTable;
 
-struct _HashTable {
+/**
+ * TrbHashTable:
+ * @slots: The number of buckets.
+ * @used: The number of used buckets.
+ * @keysize: The key size.
+ * @valuesize: The value size.
+ * @seed: The seed for the @hash_func.
+ * @hash_func: The function for hashing keys.
+ * @cmp_func: The function for comparing keys.
+ * @cmpd_func: The function for comparing keys using user data.
+ * @data: User data.
+ * @with_data: Indicates whether #TrbHashTable has been initialized with data or not.
+ *
+ * A hash table with quadratic probing and size 2^n.
+ **/
+struct _TrbHashTable {
 	usize slots;
 	usize used;
 	usize keysize;
 	usize valuesize;
 	usize seed;
+	TrbHashFunc hash_func;
+
+	union {
+		TrbCmpFunc cmp_func;
+		TrbCmpDataFunc cmpd_func;
+	};
+
+	void *data;
+	bool with_data;
+
+	/* <private> */
 	usize bucketsize;
-	HashFunc hash_func;
-	CmpFunc cmp_func;
 	void *buckets;
 };
 
 /**
- * ht_init:
- * @ht: The pointer to the hash table to be initialized (can be `NULL`).
+ * trb_hash_table_init:
+ * @self: The pointer to the hash table to be initialized.
  * @keysize: The size of keys in the hash table.
  * @valuesize: The size of values in the hash table.
  * @hash_func: The function for hashing keys.
  * @cmp_func: The function for comparing keys.
  *
- * Creates a new hash table.
+ * Creates a new #TrbHashTable.
  *
- * Returns: A new hash table. Can return `NULL` if an error occurs
+ * Returns: A new #TrbHashTable. Can return %NULL if an error occurs
  **/
-HashTable *ht_init(HashTable *ht, usize keysize, usize valuesize, usize seed, HashFunc hash_func, CmpFunc cmp_func);
+TrbHashTable *trb_hash_table_init(
+	TrbHashTable *self,
+	usize keysize,
+	usize valuesize,
+	usize seed,
+	TrbHashFunc hash_func,
+	TrbCmpFunc cmp_func
+);
 
 /**
- * ht_add:
- * @ht: The hash table where to add a new entry.
+ * trb_hash_table_init_data:
+ * @self: The pointer to the hash table to be initialized.
+ * @keysize: The size of keys in the hash table.
+ * @valuesize: The size of values in the hash table.
+ * @hash_func: The function for hashing keys.
+ * @cmpd_func: The function for comparing keys using user data.
+ * @data: User data.
+ *
+ * Creates a new #TrbHashTable with the comparison function that accepts user data.
+ *
+ * Returns: A new #TrbHashTable. Can return %NULL if an error occurs
+ **/
+TrbHashTable *trb_hash_table_init_data(
+	TrbHashTable *self,
+	usize keysize,
+	usize valuesize,
+	usize seed,
+	TrbHashFunc hash_func,
+	TrbCmpDataFunc cmpd_func,
+	void *data
+);
+
+/**
+ * trb_hash_table_add:
+ * @self: The hash table where to add a new entry.
  * @key: The key of the entry.
- * @value: The value of the entry (can be `NULL`).
+ * @value: The value of the entry.
  *
  * Adds a new entry to the hash table.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_add(HashTable *ht, const void *key, const void *value);
+bool trb_hash_table_add(TrbHashTable *self, const void *key, const void *value);
 
 /**
- * ht_insert:
- * @ht: The hash table where to insert an entry.
+ * trb_hash_table_insert:
+ * @self: The hash table where to insert an entry.
  * @key: The key of the entry.
- * @value: The value of the entry (can be `NULL`).
+ * @value: The value of the entry.
  *
  * Inserts an entry to the hash table.
  * If the entry exists in the table, then replaces
  * its value with the given one.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_insert(HashTable *ht, const void *key, const void *value);
+bool trb_hash_table_insert(TrbHashTable *self, const void *key, const void *value);
 
 /**
- * ht_remove:
- * @ht: The hash table where to remove the entry.
+ * trb_hash_table_remove:
+ * @self: The hash table where to remove the entry.
  * @key: The key of the entry.
- * @ret: The pointer to retrieve the value of removed entry (can be `NULL`).
+ * @ret: (optional) (out): The pointer to retrieve the value of removed entry.
  *
  * Removes the entry from the hash table.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_remove(HashTable *ht, const void *key, void *ret);
+bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret);
 
 /**
- * ht_remove_all:
- * @ht: The hash table where to remove all entries.
+ * trb_hash_table_remove_all:
+ * @self: The hash table where to remove all entries.
  * @padding: The padding between the key and the value.
- * @ret: The pointer to retrieve removed entries (can be `NULL`).
+ * @ret: (optional) (out): The pointer to retrieve removed entries.
  *       The retrieved data will be an unaligned array of key:value pairs.
- * @len: The pointer to retrieve the number of entries (can be `NULL`).
+ * @len: (optional) (out): The pointer to retrieve the number of entries.
  *
  * Removes all entries from the hash table.
  *
  * This example shows how to use this function:
- * ```c
- * HashTable ht;
- * ht_init(&ht, 30, 8, 0xdeadbeef, jhash, (CmpFunc) strcmp);
+ * |[<!-- language="C" -->
+ * TrbHashTable ht;
+ * trb_hash_table_init(&ht, 30, 8, 0xdeadbeef, jhash, (TrbCmpFunc) strcmp);
  *
- * ht_insert(&ht, get_arr(char, 30, "Mike Urasawa"), get_ptr(u64, 42));
- * ht_insert(&ht, get_arr(char, 32, "Mario Franco"), get_ptr(u64, 12));
+ * trb_hash_table_insert(&ht, trb_get_arr(char, 30, "Mike Urasawa"), trb_get_ptr(u64, 42));
+ * trb_hash_table_insert(&ht, trb_get_arr(char, 32, "Mario Franco"), trb_get_ptr(u64, 12));
  *
  * struct entry {
  *     char key[30];
  *
  *     // In this case the padding between the key and the value is 2.
  *     // You can manually pass 2 in the function or
- *     // use the distance_of(type, m1, m2) macro.
+ *     // use the trb_distance_of(type, m1, m2) macro.
  *
  *     u64 age;
  * };
@@ -102,7 +156,7 @@ bool ht_remove(HashTable *ht, const void *key, void *ret);
  *                             // Because this way you can get a stack overflow error,
  *                             // if the buffer is too big.
  *
- * ht_remove_all(&ht, distance_of(struct entry, key, age), buf, &len);
+ * trb_hash_table_remove_all(&ht, trb_distance_of(struct entry, key, age), buf, &len);
  *
  * for (usize i = 0; i < len; ++i) {
  *     printf("--------------------\n");
@@ -111,11 +165,11 @@ bool ht_remove(HashTable *ht, const void *key, void *ret);
  *     printf("--------------------\n");
  * }
  *
- * ht_destroy(&ht, NULL, NULL);
- * ```
+ * trb_hash_table_destroy(&ht, NULL, NULL);
+ * ]|
  *
  * You should get an output similar to the following:
- * ```
+ * |[
  * --------------------
  *  Name: Mario Franco
  *  Age: 12
@@ -124,42 +178,42 @@ bool ht_remove(HashTable *ht, const void *key, void *ret);
  *  Name: Mike Urasawa
  *  Age: 42
  * --------------------
- * ```
+ * ]|
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_remove_all(HashTable *ht, usize padding, void *ret, usize *len);
+bool trb_hash_table_remove_all(TrbHashTable *self, usize padding, void *ret, usize *len);
 
 /**
- * ht_lookup:
- * @ht: The hash table where to search for the entry.
+ * trb_hash_table_lookup:
+ * @self: The hash table where to search for the entry.
  * @key: The key of the entry.
- * @ret: The pointer to retrieve the value of the entry (can be `NULL`).
+ * @ret: (optional) (out): The pointer to retrieve the value of the entry.
  *
  * Searches for the entry in the hash table.
  *
- * Returns: `TRUE` if entry is found.
+ * Returns: %TRUE if entry is found.
  **/
-bool ht_lookup(const HashTable *ht, const void *key, void *ret);
+bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret);
 
 /**
- * ht_destroy:
- * @ht: The hash table which buckets will be freed.
- * @key_free_func: The function for freeing keys (can be `NULL`).
- * @value_free_func: The function for freeing values (can be `NULL`).
+ * trb_hash_table_destroy:
+ * @self: The hash table which buckets will be freed.
+ * @key_free_func: The function for freeing keys.
+ * @value_free_func: The function for freeing values.
  *
  * Frees the hash table buckets.
  **/
-void ht_destroy(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func);
+void trb_hash_table_destroy(TrbHashTable *self, TrbFreeFunc key_free_func, TrbFreeFunc value_free_func);
 
 /**
- * ht_free:
- * @ht: The hash table to be freed.
- * @key_free_func: The function for freeing keys (can be `NULL`).
- * @value_free_func: The function for freeing values (can be `NULL`).
+ * trb_hash_table_free:
+ * @self: The hash table to be freed.
+ * @key_free_func: The function for freeing keys.
+ * @value_free_func: The function for freeing values.
  *
  * Frees the hash table completely.
  **/
-void ht_free(HashTable *ht, FreeFunc key_free_func, FreeFunc value_free_func);
+void trb_hash_table_free(TrbHashTable *self, TrbFreeFunc key_free_func, TrbFreeFunc value_free_func);
 
 #endif /* end of include guard: HASHTABLE_H_3HOTI89N */

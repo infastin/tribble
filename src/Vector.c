@@ -12,22 +12,22 @@
 
 #define vector_cell(a, i) ((void *) &((char *) ((a)->data))[(i) * (a)->elemsize])
 
-Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsize)
+TrbVector *trb_vector_init(TrbVector *self, bool clear, bool zero_terminated, usize elemsize)
 {
-	return_val_if_fail(elemsize != 0, NULL);
+	trb_return_val_if_fail(elemsize != 0, NULL);
 
 	if (elemsize > USIZE_MAX / VECTOR_INIT_CAP) {
-		msg_error("array capacity overflow!");
+		trb_msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
 	bool was_allocated = FALSE;
 
-	if (vec == NULL) {
-		vec = talloc(Vector, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbVector, 1);
 
-		if (vec == NULL) {
-			msg_error("couldn't allocate memory for the array!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the array!");
 			return NULL;
 		}
 
@@ -35,419 +35,431 @@ Vector *vector_init(Vector *vec, bool clear, bool zero_terminated, usize elemsiz
 	}
 
 	if (clear)
-		vec->data = calloc(VECTOR_INIT_CAP, elemsize);
+		self->data = calloc(VECTOR_INIT_CAP, elemsize);
 	else
-		vec->data = malloc(VECTOR_INIT_CAP * elemsize);
+		self->data = malloc(VECTOR_INIT_CAP * elemsize);
 
-	if (vec->data == NULL) {
+	if (self->data == NULL) {
 		if (was_allocated)
-			free(vec);
+			free(self);
 
-		msg_error("couldn't allocate memory for the array buffer!");
+		trb_msg_error("couldn't allocate memory for the array buffer!");
 		return NULL;
 	}
 
 	if (!clear && zero_terminated)
-		memset(vec->data, 0, elemsize);
+		memset(self->data, 0, elemsize);
 
-	vec->len = 0;
-	vec->capacity = VECTOR_INIT_CAP;
-	vec->elemsize = elemsize;
-	vec->clear = clear;
-	vec->zero_terminated = zero_terminated;
-	vec->sorted = 0;
+	self->len = 0;
+	self->capacity = VECTOR_INIT_CAP;
+	self->elemsize = elemsize;
+	self->clear = clear;
+	self->zero_terminated = zero_terminated;
+	self->sorted = FALSE;
 
-	return vec;
+	return self;
 }
 
-static bool __vector_newcap(Vector *vec, usize newcap)
+static bool __trb_vector_newcap(TrbVector *self, usize newcap)
 {
 	usize new_allocated = (newcap >> 3) + (newcap < 9 ? 3 : 6);
 
 	if (newcap > USIZE_MAX - new_allocated) {
-		msg_error("array capacity overflow!");
+		trb_msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
 	newcap += new_allocated;
 
-	if (newcap > USIZE_MAX / vec->elemsize) {
-		msg_error("array capacity overflow!");
+	if (newcap > USIZE_MAX / self->elemsize) {
+		trb_msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
-	void *data = (void *) realloc(vec->data, newcap * vec->elemsize);
+	void *data = (void *) realloc(self->data, newcap * self->elemsize);
 
 	if (data == NULL) {
-		msg_error("couldn't reallocate memory for the array buffer!");
+		trb_msg_error("couldn't reallocate memory for the array buffer!");
 		return FALSE;
 	}
 
-	vec->data = data;
+	self->data = data;
 
-	if (vec->clear) {
+	if (self->clear) {
 		memset(
-			vector_cell(vec, vec->capacity), 0,
-			(newcap - vec->capacity) * vec->elemsize
+			vector_cell(self, self->capacity), 0,
+			(newcap - self->capacity) * self->elemsize
 		);
 	}
 
-	vec->capacity = newcap;
+	self->capacity = newcap;
 
 	return TRUE;
 }
 
-static bool __vector_insert_many(Vector *vec, usize index, const void *data, usize len)
+static bool __trb_vector_insert_many(TrbVector *self, usize index, const void *data, usize len)
 {
 	if (len == 0)
 		return TRUE;
 
-	usize zt = vec->zero_terminated;
+	usize zt = self->zero_terminated;
 
 	if (
 		(index > USIZE_MAX - len) ||
 		(index + len > USIZE_MAX - zt) ||
-		(vec->len > USIZE_MAX - len) ||
-		(vec->len + len > USIZE_MAX - zt)
+		(self->len > USIZE_MAX - len) ||
+		(self->len + len > USIZE_MAX - zt)
 	) {
-		msg_error("array capacity overflow!");
+		trb_msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
-	if (index >= vec->len && index + len + zt > vec->capacity) {
-		if (__vector_newcap(vec, index + len + zt) == FALSE)
+	if (index >= self->len && index + len + zt > self->capacity) {
+		if (__trb_vector_newcap(self, index + len + zt) == FALSE)
 			return FALSE;
-	} else if (index < vec->len && vec->len + len + zt > vec->capacity) {
-		if (__vector_newcap(vec, vec->len + len + zt) == FALSE)
+	} else if (index < self->len && self->len + len + zt > self->capacity) {
+		if (__trb_vector_newcap(self, self->len + len + zt) == FALSE)
 			return FALSE;
 	}
 
-	if (index >= vec->len) {
-		vec->len = index + len;
+	if (index >= self->len) {
+		self->len = index + len;
 	} else {
 		memmove(
-			vector_cell(vec, index + len), vector_cell(vec, index),
-			(vec->len - index) * vec->elemsize
+			vector_cell(self, index + len), vector_cell(self, index),
+			(self->len - index) * self->elemsize
 		);
 
-		vec->len += len;
+		self->len += len;
 	}
 
 	if (zt)
-		memset(vector_cell(vec, vec->len), 0, vec->elemsize);
+		memset(vector_cell(self, self->len), 0, self->elemsize);
 
 	if (data == NULL)
-		memset(vector_cell(vec, index), 0, len * vec->elemsize);
+		memset(vector_cell(self, index), 0, len * self->elemsize);
 	else
-		memcpy(vector_cell(vec, index), data, len * vec->elemsize);
+		memcpy(vector_cell(self, index), data, len * self->elemsize);
 
-	vec->sorted = 0;
+	self->sorted = FALSE;
 
 	return TRUE;
 }
 
-bool vector_push_back(Vector *vec, const void *data)
+bool trb_vector_push_back(TrbVector *self, const void *data)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert_many(vec, vec->len, data, 1);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_insert_many(self, self->len, data, 1);
 }
 
-bool vector_push_back_many(Vector *vec, const void *data, usize len)
+bool trb_vector_push_back_many(TrbVector *self, const void *data, usize len)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert_many(vec, vec->len, data, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_insert_many(self, self->len, data, len);
 }
 
-bool vector_push_front(Vector *vec, const void *data)
+bool trb_vector_push_front(TrbVector *self, const void *data)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert_many(vec, 0, data, 1);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_insert_many(self, 0, data, 1);
 }
 
-bool vector_push_front_many(Vector *vec, const void *data, usize len)
+bool trb_vector_push_front_many(TrbVector *self, const void *data, usize len)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert_many(vec, 0, data, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_insert_many(self, 0, data, len);
 }
 
-bool vector_insert(Vector *vec, usize index, const void *data)
+bool trb_vector_insert(TrbVector *self, usize index, const void *data)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert_many(vec, index, data, 1);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_insert_many(self, index, data, 1);
 }
 
-bool vector_insert_many(Vector *vec, usize index, const void *data, usize len)
+bool trb_vector_insert_many(TrbVector *self, usize index, const void *data, usize len)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_insert_many(vec, index, data, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_insert_many(self, index, data, len);
 }
 
-static bool __vector_set_range(Vector *vec, usize index, const void *data, usize len)
+static bool __trb_vector_set_range(TrbVector *self, usize index, const void *data, usize len)
 {
 	if (len == 0)
 		return TRUE;
 
-	usize zt = vec->zero_terminated;
+	usize zt = self->zero_terminated;
 
 	if ((index > USIZE_MAX - len) || (index + len > USIZE_MAX - zt)) {
-		msg_error("array capacity overflow!");
+		trb_msg_error("array capacity overflow!");
 		return FALSE;
 	}
 
-	if (index + len + zt > vec->capacity) {
-		if (__vector_newcap(vec, index + len + zt) == FALSE)
+	if (index + len + zt > self->capacity) {
+		if (__trb_vector_newcap(self, index + len + zt) == FALSE)
 			return FALSE;
 	}
 
-	if (index + len > vec->len) {
-		vec->len = index + len;
+	if (index + len > self->len) {
+		self->len = index + len;
 
 		if (zt)
-			memset(vector_cell(vec, vec->len), 0, vec->elemsize);
+			memset(vector_cell(self, self->len), 0, self->elemsize);
 	}
 
 	if (data == NULL)
-		memset(vector_cell(vec, index), 0, len * vec->elemsize);
+		memset(vector_cell(self, index), 0, len * self->elemsize);
 	else
-		memcpy(vector_cell(vec, index), data, len * vec->elemsize);
+		memcpy(vector_cell(self, index), data, len * self->elemsize);
 
-	vec->sorted = 0;
+	self->sorted = FALSE;
 
 	return TRUE;
 }
 
-bool vector_set(Vector *vec, usize index, const void *data)
+bool trb_vector_set(TrbVector *self, usize index, const void *data)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_set_range(vec, index, data, 1);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_set_range(self, index, data, 1);
 }
 
-bool vector_set_range(Vector *vec, usize index, const void *data, usize len)
+bool trb_vector_set_range(TrbVector *self, usize index, const void *data, usize len)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_set_range(vec, index, data, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_set_range(self, index, data, len);
 }
 
-bool vector_get(const Vector *vec, usize index, void *ret)
+bool trb_vector_get(const TrbVector *self, usize index, void *ret)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(ret != NULL, FALSE);
 
-	if (index >= vec->len) {
-		msg_warn("element at [%zu] is out of bounds!", index);
+	if (index >= self->len) {
+		trb_msg_warn("element at [%zu] is out of bounds!", index);
 		return FALSE;
 	}
 
-	memcpy(ret, vector_cell(vec, index), vec->elemsize);
+	memcpy(ret, vector_cell(self, index), self->elemsize);
 
 	return TRUE;
 }
 
-bool vector_get_range(const Vector *vec, usize index, usize len, void *ret)
+bool trb_vector_get_range(const TrbVector *self, usize index, usize len, void *ret)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(ret != NULL, FALSE);
 
 	if (len == 0)
 		return TRUE;
 
-	if (index + len > vec->len) {
-		msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
+	if (index + len > self->len) {
+		trb_msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
 		return FALSE;
 	}
 
-	memcpy(ret, vector_cell(vec, index), len * vec->elemsize);
+	memcpy(ret, vector_cell(self, index), len * self->elemsize);
 
 	return TRUE;
 }
 
-static bool __vector_remove_range(Vector *vec, usize index, usize len, void *ret)
+static bool __trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
 {
 	if (len == 0)
 		return TRUE;
 
 	if (index > USIZE_MAX - len) {
-		msg_error("array index overflow!");
+		trb_msg_error("array index overflow!");
 		return FALSE;
 	}
 
-	if (index + len > vec->len) {
+	if (index + len > self->len) {
 		if (len == 1) {
-			msg_warn("element at [%zu] is out of bounds!", index);
+			trb_msg_warn("element at [%zu] is out of bounds!", index);
 		} else {
-			msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
+			trb_msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
 		}
 
 		return FALSE;
 	}
 
-	usize zt = vec->zero_terminated;
+	usize zt = self->zero_terminated;
 
 	if (ret != NULL)
-		memcpy(ret, vector_cell(vec, index), len * vec->elemsize);
+		memcpy(ret, vector_cell(self, index), len * self->elemsize);
 
-	if (index + len != vec->len)
+	if (index + len != self->len)
 		memmove(
-			vector_cell(vec, index), vector_cell(vec, index + len),
-			((vec->len + zt) - len - index) * vec->elemsize
+			vector_cell(self, index), vector_cell(self, index + len),
+			((self->len + zt) - len - index) * self->elemsize
 		);
 	else if (zt)
-		memset(vector_cell(vec, index), 0, vec->elemsize);
+		memset(vector_cell(self, index), 0, self->elemsize);
 
-	vec->len -= len;
+	self->len -= len;
 
 	return TRUE;
 }
 
-bool vector_remove_index(Vector *vec, usize index, void *ret)
+bool trb_vector_remove_index(TrbVector *self, usize index, void *ret)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_remove_range(vec, index, 1, ret);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_remove_range(self, index, 1, ret);
 }
 
-bool vector_remove_all(Vector *vec, void *ret)
+bool trb_vector_remove_all(TrbVector *self, void *ret)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_remove_range(vec, 0, vec->len, ret);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_remove_range(self, 0, self->len, ret);
 }
 
-bool vector_pop_back(Vector *vec, void *ret)
+bool trb_vector_pop_back(TrbVector *self, void *ret)
 {
-	return_val_if_fail(vec != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (vec->len == 0) {
-		msg_warn("array is empty!");
+	if (self->len == 0) {
+		trb_msg_warn("array is empty!");
 		return FALSE;
 	}
 
-	return __vector_remove_range(vec, vec->len - 1, 1, ret);
+	return __trb_vector_remove_range(self, self->len - 1, 1, ret);
 }
 
-bool vector_pop_front(Vector *vec, void *ret)
+bool trb_vector_pop_front(TrbVector *self, void *ret)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_remove_range(vec, 0, 1, ret);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_remove_range(self, 0, 1, ret);
 }
 
-bool vector_remove_range(Vector *vec, usize index, usize len, void *ret)
+bool trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return __vector_remove_range(vec, index, len, ret);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_vector_remove_range(self, index, len, ret);
 }
 
-void vector_reverse(Vector *vec)
+void trb_vector_reverse(TrbVector *self)
 {
-	return_if_fail(vec != NULL);
+	trb_return_if_fail(self != NULL);
 
-	if (vec->len < 2)
+	if (self->len < 2)
 		return;
 
-	for (usize lo = 0, hi = vec->len - 1; lo < hi; ++lo, --hi) {
-		array_swap(vector_cell(vec, lo), vector_cell(vec, hi), vec->elemsize);
+	for (usize lo = 0, hi = self->len - 1; lo < hi; ++lo, --hi) {
+		trb_array_swap(vector_cell(self, lo), vector_cell(self, hi), self->elemsize);
 	}
 }
 
-void vector_sort(Vector *vec, CmpFunc cmp_func)
+void trb_vector_sort(TrbVector *self, TrbCmpFunc cmp_func)
 {
-	return_if_fail(vec != NULL);
-	return_if_fail(cmp_func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(cmp_func != NULL);
 
-	if (vec->len <= 1 || vec->sorted)
+	if (self->len <= 1 || self->sorted)
 		return;
 
-	quicksort(vec->data, vec->len, vec->elemsize, cmp_func);
-	vec->sorted = 1;
+	trb_quicksort(self->data, self->len, self->elemsize, cmp_func);
+	self->sorted = TRUE;
 }
 
-void *vector_steal(Vector *vec, usize *len)
+void trb_vector_sort_data(TrbVector *self, TrbCmpDataFunc cmpd_func, void *data)
 {
-	return_val_if_fail(vec != NULL, FALSE);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(cmpd_func != NULL);
 
-	if (vec->data == NULL) {
-		msg_warn("array buffer is NULL!");
+	if (self->len <= 1 || self->sorted)
+		return;
+
+	trb_quicksort_data(self->data, self->len, self->elemsize, cmpd_func, data);
+	self->sorted = TRUE;
+}
+
+void *trb_vector_steal(TrbVector *self, usize *len)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->data == NULL) {
+		trb_msg_warn("array buffer is NULL!");
 		return FALSE;
 	}
 
-	void *ret = vec->data;
+	void *ret = self->data;
 
 	if (len != NULL)
-		*len = vec->len;
+		*len = self->len;
 
-	vec->len = 0;
-	vec->capacity = VECTOR_INIT_CAP;
+	self->len = 0;
+	self->capacity = VECTOR_INIT_CAP;
 
-	if (vec->clear)
-		vec->data = calloc(VECTOR_INIT_CAP, vec->elemsize);
+	if (self->clear)
+		self->data = calloc(VECTOR_INIT_CAP, self->elemsize);
 	else
-		vec->data = malloc(VECTOR_INIT_CAP * vec->elemsize);
+		self->data = malloc(VECTOR_INIT_CAP * self->elemsize);
 
-	if (vec->data == NULL) {
-		vec->capacity = 0;
-		msg_error("couldn't allocate memory for a new buffer of the array!");
+	if (self->data == NULL) {
+		self->capacity = 0;
+		trb_msg_error("couldn't allocate memory for a new buffer of the array!");
 	}
 
 	return ret;
 }
 
-void vector_destroy(Vector *vec, FreeFunc free_func)
+void trb_vector_destroy(TrbVector *self, TrbFreeFunc free_func)
 {
-	return_if_fail(vec != NULL);
+	trb_return_if_fail(self != NULL);
 
-	if (vec->data == NULL)
+	if (self->data == NULL)
 		return;
 
 	if (free_func != NULL) {
-		for (usize i = 0; i < vec->len; ++i) {
-			free_func(vector_cell(vec, i));
+		for (usize i = 0; i < self->len; ++i) {
+			free_func(vector_cell(self, i));
 		}
 	}
 
-	free(vec->data);
+	free(self->data);
 
-	vec->data = NULL;
-	vec->capacity = 0;
-	vec->len = 0;
+	self->data = NULL;
+	self->capacity = 0;
+	self->len = 0;
 }
 
-void *vector_steal0(Vector *vec, usize *len)
+void *trb_vector_steal0(TrbVector *self, usize *len)
 {
-	return_val_if_fail(vec != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (vec->data == NULL) {
-		msg_warn("array buffer is NULL!");
+	if (self->data == NULL) {
+		trb_msg_warn("array buffer is NULL!");
 		return FALSE;
 	}
 
-	void *ret = vec->data;
+	void *ret = self->data;
 
 	if (len != NULL)
-		*len = vec->len;
+		*len = self->len;
 
-	vec->len = 0;
-	vec->capacity = 0;
-	vec->data = NULL;
+	self->len = 0;
+	self->capacity = 0;
+	self->data = NULL;
 
 	return ret;
 }
 
-void vector_free(Vector *vec, FreeFunc free_func)
+void trb_vector_free(TrbVector *self, TrbFreeFunc free_func)
 {
-	return_if_fail(vec != NULL);
-	vector_destroy(vec, free_func);
-	free(vec);
+	trb_return_if_fail(self != NULL);
+	trb_vector_destroy(self, free_func);
+	free(self);
 }
 
-bool vector_search(Vector *vec, const void *target, CmpFunc cmp_func, usize *index)
+bool trb_vector_search(TrbVector *self, const void *target, TrbCmpFunc cmp_func, usize *index)
 {
-	return_val_if_fail(vec != NULL, FALSE);
-	return_val_if_fail(cmp_func != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(cmp_func != NULL, FALSE);
 
-	if (vec->len == 0)
+	if (self->len == 0)
 		return FALSE;
 
-	if (vec->len < BINARY_SEARCH_LEN_THRESHOLD) {
-		for (usize i = 0; i < vec->len; ++i) {
-			if (cmp_func(vector_cell(vec, i), target) == 0) {
+	if (self->len < BINARY_SEARCH_LEN_THRESHOLD) {
+		for (usize i = 0; i < self->len; ++i) {
+			if (cmp_func(vector_cell(self, i), target) == 0) {
 				if (index != NULL)
 					*index = i;
 				return TRUE;
@@ -457,32 +469,58 @@ bool vector_search(Vector *vec, const void *target, CmpFunc cmp_func, usize *ind
 		return FALSE;
 	}
 
-	if (vec->sorted == 0) {
-		quicksort(vec->data, vec->len, vec->elemsize, cmp_func);
-		vec->sorted = 1;
+	if (!self->sorted) {
+		trb_quicksort(self->data, self->len, self->elemsize, cmp_func);
+		self->sorted = TRUE;
 	}
 
-	return binary_search(
-		vec->data, target, vec->len, vec->elemsize, cmp_func, index
-	);
+	return trb_binary_search(self->data, target, self->len, self->elemsize, cmp_func, index);
 }
 
-Vector *vector_copy(Vector *dst, const Vector *src)
+bool trb_vector_search_data(TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index)
 {
-	return_val_if_fail(src != NULL, NULL);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(cmpd_func != NULL, FALSE);
+
+	if (self->len == 0)
+		return FALSE;
+
+	if (self->len < BINARY_SEARCH_LEN_THRESHOLD) {
+		for (usize i = 0; i < self->len; ++i) {
+			if (cmpd_func(vector_cell(self, i), target, data) == 0) {
+				if (index != NULL)
+					*index = i;
+				return TRUE;
+			}
+		}
+
+		return FALSE;
+	}
+
+	if (!self->sorted) {
+		trb_quicksort_data(self->data, self->len, self->elemsize, cmpd_func, data);
+		self->sorted = TRUE;
+	}
+
+	return trb_binary_search_data(self->data, target, self->len, self->elemsize, cmpd_func, data, index);
+}
+
+TrbVector *trb_vector_copy(TrbVector *dst, const TrbVector *src)
+{
+	trb_return_val_if_fail(src != NULL, NULL);
 
 	if (src->data == NULL) {
-		msg_warn("source array buffer is NULL!");
+		trb_msg_warn("source array buffer is NULL!");
 		return NULL;
 	}
 
 	bool was_allocated = FALSE;
 
 	if (dst == NULL) {
-		dst = talloc(Vector, 1);
+		dst = trb_talloc(TrbVector, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for a copy of the array!");
+			trb_msg_error("couldn't allocate memory for a copy of the array!");
 			return NULL;
 		}
 
@@ -498,7 +536,7 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 		if (was_allocated)
 			free(dst);
 
-		msg_error("couldn't allocate memory for a buffer of a copy of the array!");
+		trb_msg_error("couldn't allocate memory for a buffer of a copy of the array!");
 		return NULL;
 	}
 
@@ -515,31 +553,31 @@ Vector *vector_copy(Vector *dst, const Vector *src)
 	return dst;
 }
 
-bool vector_require(Vector *vec, usize newcap)
+bool trb_vector_require(TrbVector *self, usize newcap)
 {
-	return_val_if_fail(vec != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (newcap <= vec->capacity)
+	if (newcap <= self->capacity)
 		return TRUE;
 
-	return __vector_newcap(vec, newcap);
+	return __trb_vector_newcap(self, newcap);
 }
 
-bool vector_shrink(Vector *vec)
+bool trb_vector_shrink(TrbVector *self)
 {
-	return_val_if_fail(vec != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	usize zt = vec->zero_terminated;
+	usize zt = self->zero_terminated;
 
-	void *data = (void *) realloc(vec->data, (vec->len + zt) * vec->elemsize);
+	void *data = (void *) realloc(self->data, (self->len + zt) * self->elemsize);
 
 	if (data == NULL) {
-		msg_error("couldn't shrink memory of the array buffer!");
+		trb_msg_error("couldn't shrink memory of the array buffer!");
 		return FALSE;
 	}
 
-	vec->data = data;
-	vec->capacity = vec->len + zt;
+	self->data = data;
+	self->capacity = self->len + zt;
 
 	return TRUE;
 }

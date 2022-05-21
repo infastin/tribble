@@ -2,7 +2,7 @@
 
 #include "Macros.h"
 
-u32 murmurhash3_32(const void *key, u32 keysize, u32 seed)
+u32 trb_murmurhash3_32(const void *key, u32 keysize, u32 seed)
 {
 	const u8 *data = key;
 	const i32 nblocks = keysize / 4;
@@ -18,11 +18,11 @@ u32 murmurhash3_32(const void *key, u32 keysize, u32 seed)
 		u32 k = blocks[i];
 
 		k *= c1;
-		k = rotl32(k, 15);
+		k = trb_rotl32(k, 15);
 		k *= c2;
 
 		h ^= k;
-		h = rotl32(h, 13);
+		h = trb_rotl32(h, 13);
 		h = h * 5 + 0xe6546b64;
 	}
 
@@ -36,7 +36,7 @@ u32 murmurhash3_32(const void *key, u32 keysize, u32 seed)
 	case 1:
 		k ^= tail[0];
 		k *= c1;
-		k = rotl32(k, 15);
+		k = trb_rotl32(k, 15);
 		k *= c2;
 		h ^= k;
 	};
@@ -52,7 +52,7 @@ u32 murmurhash3_32(const void *key, u32 keysize, u32 seed)
 	return h;
 }
 
-u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
+u64 trb_murmurhash3_64(const void *key, u64 keysize, u64 seed)
 {
 	const u8 *data = key;
 	const int nblocks = keysize / 16;
@@ -70,20 +70,20 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 		u64 k2 = blocks[i * 2 + 1];
 
 		k1 *= c1;
-		k1 = rotl64(k1, 31);
+		k1 = trb_rotl64(k1, 31);
 		k1 *= c2;
 		h1 ^= k1;
 
-		h1 = rotl64(h1, 27);
+		h1 = trb_rotl64(h1, 27);
 		h1 += h2;
 		h1 = h1 * 5 + 0x52dce729;
 
 		k2 *= c2;
-		k2 = rotl64(k2, 33);
+		k2 = trb_rotl64(k2, 33);
 		k2 *= c1;
 		h2 ^= k2;
 
-		h2 = rotl64(h2, 31);
+		h2 = trb_rotl64(h2, 31);
 		h2 += h1;
 		h2 = h2 * 5 + 0x38495ab5;
 	}
@@ -103,7 +103,7 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 	case 9:
 		k2 ^= ((u64) tail[8]) << 0;
 		k2 *= c2;
-		k2 = rotl64(k2, 33);
+		k2 = trb_rotl64(k2, 33);
 		k2 *= c1;
 		h2 ^= k2;
 	case 8: k1 ^= ((u64) tail[7]) << 56;
@@ -116,7 +116,7 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 	case 1:
 		k1 ^= ((u64) tail[0]) << 0;
 		k1 *= c1;
-		k1 = rotl64(k1, 31);
+		k1 = trb_rotl64(k1, 31);
 		k1 *= c2;
 		h1 ^= k1;
 	};
@@ -145,47 +145,47 @@ u64 murmurhash3_64(const void *key, u64 keysize, u64 seed)
 	return h1;
 }
 
-usize murmurhash3(const void *key, usize keysize, usize seed)
+usize trb_murmurhash3(const void *key, usize keysize, usize seed)
 {
 #if USIZE_WIDTH == 64
-	return murmurhash3_64(key, keysize, seed);
+	return trb_murmurhash3_64(key, keysize, seed);
 #else
-	return murmurhash3_32(key, keysize, seed);
+	return trb_murmurhash3_32(key, keysize, seed);
 #endif
 }
 
-#define jhash32_mix(a, b, c) \
-	{                        \
-		a -= b;              \
-		a -= c;              \
-		a ^= c >> 13;        \
-		b -= c;              \
-		b -= a;              \
-		b ^= a << 8;         \
-		c -= a;              \
-		c -= b;              \
-		c ^= b >> 13;        \
-		a -= b;              \
-		a -= c;              \
-		a ^= c >> 12;        \
-		b -= c;              \
-		b -= a;              \
-		b ^= a << 16;        \
-		c -= a;              \
-		c -= b;              \
-		c ^= b >> 5;         \
-		a -= b;              \
-		a -= c;              \
-		a ^= c >> 3;         \
-		b -= c;              \
-		b -= a;              \
-		b ^= a << 10;        \
-		c -= a;              \
-		c -= b;              \
-		c ^= b >> 15;        \
+#define trb_jhash32_mix(a, b, c) \
+	{                            \
+		a -= b;                  \
+		a -= c;                  \
+		a ^= c >> 13;            \
+		b -= c;                  \
+		b -= a;                  \
+		b ^= a << 8;             \
+		c -= a;                  \
+		c -= b;                  \
+		c ^= b >> 13;            \
+		a -= b;                  \
+		a -= c;                  \
+		a ^= c >> 12;            \
+		b -= c;                  \
+		b -= a;                  \
+		b ^= a << 16;            \
+		c -= a;                  \
+		c -= b;                  \
+		c ^= b >> 5;             \
+		a -= b;                  \
+		a -= c;                  \
+		a ^= c >> 3;             \
+		b -= c;                  \
+		b -= a;                  \
+		b ^= a << 10;            \
+		c -= a;                  \
+		c -= b;                  \
+		c ^= b >> 15;            \
 	}
 
-u32 jhash32(const void *key, u32 keysize, u32 seed)
+u32 trb_jhash32(const void *key, u32 keysize, u32 seed)
 {
 	const u8 *k = key;
 	u32 a, b, c;
@@ -198,7 +198,7 @@ u32 jhash32(const void *key, u32 keysize, u32 seed)
 		a += k[0] + ((u32) k[1] << 8) + ((u32) k[2] << 16) + ((u32) k[3] << 24);
 		b += k[4] + ((u32) k[5] << 8) + ((u32) k[6] << 16) + ((u32) k[7] << 24);
 		c += k[8] + ((u32) k[9] << 8) + ((u32) k[10] << 16) + ((u32) k[11] << 24);
-		jhash32_mix(a, b, c);
+		trb_jhash32_mix(a, b, c);
 		k += 12;
 		len -= 12;
 	}
@@ -219,52 +219,52 @@ u32 jhash32(const void *key, u32 keysize, u32 seed)
 	case 0: break;
 	}
 
-	jhash32_mix(a, b, c);
+	trb_jhash32_mix(a, b, c);
 
 	return c;
 }
 
-#define jhash64_mix(a, b, c) \
-	{                        \
-		a -= b;              \
-		a -= c;              \
-		a ^= c >> 43;        \
-		b -= c;              \
-		b -= a;              \
-		b ^= a << 9;         \
-		c -= a;              \
-		c -= b;              \
-		c ^= b >> 8;         \
-		a -= b;              \
-		a -= c;              \
-		a ^= c >> 38;        \
-		b -= c;              \
-		b -= a;              \
-		b ^= a << 23;        \
-		c -= a;              \
-		c -= b;              \
-		c ^= b >> 5;         \
-		a -= b;              \
-		a -= c;              \
-		a ^= c >> 35;        \
-		b -= c;              \
-		b -= a;              \
-		b ^= a << 49;        \
-		c -= a;              \
-		c -= b;              \
-		c ^= b >> 11;        \
-		a -= b;              \
-		a -= c;              \
-		a ^= c >> 12;        \
-		b -= c;              \
-		b -= a;              \
-		b ^= a << 18;        \
-		c -= a;              \
-		c -= b;              \
-		c ^= b >> 22;        \
+#define trb_jhash64_mix(a, b, c) \
+	{                            \
+		a -= b;                  \
+		a -= c;                  \
+		a ^= c >> 43;            \
+		b -= c;                  \
+		b -= a;                  \
+		b ^= a << 9;             \
+		c -= a;                  \
+		c -= b;                  \
+		c ^= b >> 8;             \
+		a -= b;                  \
+		a -= c;                  \
+		a ^= c >> 38;            \
+		b -= c;                  \
+		b -= a;                  \
+		b ^= a << 23;            \
+		c -= a;                  \
+		c -= b;                  \
+		c ^= b >> 5;             \
+		a -= b;                  \
+		a -= c;                  \
+		a ^= c >> 35;            \
+		b -= c;                  \
+		b -= a;                  \
+		b ^= a << 49;            \
+		c -= a;                  \
+		c -= b;                  \
+		c ^= b >> 11;            \
+		a -= b;                  \
+		a -= c;                  \
+		a ^= c >> 12;            \
+		b -= c;                  \
+		b -= a;                  \
+		b ^= a << 18;            \
+		c -= a;                  \
+		c -= b;                  \
+		c ^= b >> 22;            \
 	}
 
-u64 jhash64(const void *key, u64 keysize, u64 seed)
+u64 trb_jhash64(const void *key, u64 keysize, u64 seed)
 {
 	const u8 *k = key;
 	u64 a, b, c;
@@ -277,7 +277,7 @@ u64 jhash64(const void *key, u64 keysize, u64 seed)
 		a += k[0] + ((u64) k[1] << 8) + ((u64) k[2] << 16) + ((u64) k[3] << 24) + ((u64) k[4] << 32) + ((u64) k[5] << 40) + ((u64) k[6] << 48) + ((u64) k[7] << 56);
 		b += k[8] + ((u64) k[9] << 8) + ((u64) k[10] << 16) + ((u64) k[11] << 24) + ((u64) k[12] << 32) + ((u64) k[13] << 40) + ((u64) k[14] << 48) + ((u64) k[15] << 56);
 		c += k[16] + ((u64) k[17] << 8) + ((u64) k[18] << 16) + ((u64) k[19] << 24) + ((u64) k[20] << 32) + ((u64) k[21] << 40) + ((u64) k[22] << 48) + ((u64) k[23] << 56);
-		jhash64_mix(a, b, c);
+		trb_jhash64_mix(a, b, c);
 		k += 24;
 		len -= 24;
 	}
@@ -310,42 +310,42 @@ u64 jhash64(const void *key, u64 keysize, u64 seed)
 	case 0: break;
 	}
 
-	jhash64_mix(a, b, c);
+	trb_jhash64_mix(a, b, c);
 
 	return c;
 }
 
-usize jhash(const void *key, usize keysize, usize seed)
+usize trb_jhash(const void *key, usize keysize, usize seed)
 {
 #if USIZE_WIDTH == 64
-	return jhash64(key, keysize, seed);
+	return trb_jhash64(key, keysize, seed);
 #else
-	return jhash32(key, keysize, seed);
+	return trb_jhash32(key, keysize, seed);
 #endif
 }
 
 #define HALF_SIPHASH_CROUNDS 1
 #define HALF_SIPHASH_DROUNDS 3
 
-#define HALF_SIPROUND        \
-	do {                     \
-		v0 += v1;            \
-		v1 = rotl32(v1, 5);  \
-		v1 ^= v0;            \
-		v0 = rotl32(v0, 16); \
-		v2 += v3;            \
-		v3 = rotl32(v3, 8);  \
-		v3 ^= v2;            \
-		v0 += v3;            \
-		v3 = rotl32(v3, 7);  \
-		v3 ^= v0;            \
-		v2 += v1;            \
-		v1 = rotl32(v1, 13); \
-		v1 ^= v2;            \
-		v2 = rotl32(v2, 16); \
+#define HALF_SIPROUND            \
+	do {                         \
+		v0 += v1;                \
+		v1 = trb_rotl32(v1, 5);  \
+		v1 ^= v0;                \
+		v0 = trb_rotl32(v0, 16); \
+		v2 += v3;                \
+		v3 = trb_rotl32(v3, 8);  \
+		v3 ^= v2;                \
+		v0 += v3;                \
+		v3 = trb_rotl32(v3, 7);  \
+		v3 ^= v0;                \
+		v2 += v1;                \
+		v1 = trb_rotl32(v1, 13); \
+		v1 ^= v2;                \
+		v2 = trb_rotl32(v2, 16); \
 	} while (0)
 
-u32 siphash32(const void *key, u32 keysize, u32 seed)
+u32 trb_siphash32(const void *key, u32 keysize, u32 seed)
 {
 	const u8 *d = key;
 
@@ -406,25 +406,25 @@ u32 siphash32(const void *key, u32 keysize, u32 seed)
 #define SIPHASH_CROUNDS 1
 #define SIPHASH_DROUNDS 3
 
-#define SIPROUND             \
-	do {                     \
-		v0 += v1;            \
-		v1 = rotl64(v1, 13); \
-		v1 ^= v0;            \
-		v0 = rotl64(v0, 32); \
-		v2 += v3;            \
-		v3 = rotl64(v3, 16); \
-		v3 ^= v2;            \
-		v0 += v3;            \
-		v3 = rotl64(v3, 21); \
-		v3 ^= v0;            \
-		v2 += v1;            \
-		v1 = rotl64(v1, 17); \
-		v1 ^= v2;            \
-		v2 = rotl64(v2, 32); \
+#define SIPROUND                 \
+	do {                         \
+		v0 += v1;                \
+		v1 = trb_rotl64(v1, 13); \
+		v1 ^= v0;                \
+		v0 = trb_rotl64(v0, 32); \
+		v2 += v3;                \
+		v3 = trb_rotl64(v3, 16); \
+		v3 ^= v2;                \
+		v0 += v3;                \
+		v3 = trb_rotl64(v3, 21); \
+		v3 ^= v0;                \
+		v2 += v1;                \
+		v1 = trb_rotl64(v1, 17); \
+		v1 ^= v2;                \
+		v2 = trb_rotl64(v2, 32); \
 	} while (0)
 
-u64 siphash64(const void *key, u64 keysize, u64 seed)
+u64 trb_siphash64(const void *key, u64 keysize, u64 seed)
 {
 	const u8 *d = key;
 
@@ -481,11 +481,11 @@ u64 siphash64(const void *key, u64 keysize, u64 seed)
 	return b;
 }
 
-usize siphash(const void *key, usize keysize, usize seed)
+usize trb_siphash(const void *key, usize keysize, usize seed)
 {
 #if USIZE_WIDTH == 64
-	return siphash64(key, keysize, seed);
+	return trb_siphash64(key, keysize, seed);
 #else
-	return siphash32(key, keysize, seed);
+	return trb_siphash32(key, keysize, seed);
 #endif
 }

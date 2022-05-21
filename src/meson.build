@@ -39,3 +39,15 @@ libtribble_dep = declare_dependency(
   link_with: libtribble,
   include_directories: include_directories('.'),
 )
+
+libtribble_gir = gnome.generate_gir(libtribble,
+  sources: header_files,
+  namespace: 'Tribble',
+  identifier_prefix: 'Trb',
+  symbol_prefix: 'trb',
+  export_packages: pkg_api_name,
+  nsversion: apiversion,
+  install: true,
+  install_dir_gir: girdir,
+  extra_args: ['--quiet', '--c-include=Tribble.h'],
+)

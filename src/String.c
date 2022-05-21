@@ -8,33 +8,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-String *string_init0(String *string)
+TrbString *trb_string_init0(TrbString *self)
 {
-	if (string == NULL) {
-		string = talloc(String, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbString, 1);
 
-		if (string == NULL) {
-			msg_error("couldn't allocate memory for the string!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the string!");
 			return NULL;
 		}
 	}
 
-	string->data = NULL;
-	string->len = 0;
-	string->capacity = 0;
+	self->data = NULL;
+	self->len = 0;
+	self->capacity = 0;
 
-	return string;
+	return self;
 }
 
-String *string_init(String *string, const char *c_str)
+TrbString *trb_string_init(TrbString *self, const char *c_str)
 {
 	bool was_allocated = FALSE;
 
-	if (string == NULL) {
-		string = talloc(String, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbString, 1);
 
-		if (string == NULL) {
-			msg_error("couldn't allocate memory for the string!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the string!");
 			return NULL;
 		}
 
@@ -49,38 +49,38 @@ String *string_init(String *string, const char *c_str)
 		capacity = len + 1;
 	}
 
-	string->data = malloc(capacity);
+	self->data = malloc(capacity);
 
-	if (string->data == NULL) {
+	if (self->data == NULL) {
 		if (was_allocated)
-			free(string);
+			free(self);
 
-		msg_error("couldn't allocate memory for the string buffer!");
+		trb_msg_error("couldn't allocate memory for the string buffer!");
 		return NULL;
 	}
 
 	if (c_str != NULL)
-		memcpy(string->data, c_str, len);
+		memcpy(self->data, c_str, len);
 
-	string->data[len] = '\0';
+	self->data[len] = '\0';
 
-	string->len = len;
-	string->capacity = capacity;
+	self->len = len;
+	self->capacity = capacity;
 
-	return string;
+	return self;
 }
 
-String *string_init_len(String *string, const char *str, usize len)
+TrbString *trb_string_init_len(TrbString *self, const char *str, usize len)
 {
-	return_val_if_fail(str != NULL, NULL);
+	trb_return_val_if_fail(str != NULL, NULL);
 
 	bool was_allocated = FALSE;
 
-	if (string == NULL) {
-		string = talloc(String, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbString, 1);
 
-		if (string == NULL) {
-			msg_error("couldn't allocate memory for the string!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the string!");
 			return NULL;
 		}
 
@@ -89,101 +89,101 @@ String *string_init_len(String *string, const char *str, usize len)
 
 	usize capacity = len ?: 1;
 
-	string->data = malloc(capacity);
+	self->data = malloc(capacity);
 
-	if (string->data == NULL) {
+	if (self->data == NULL) {
 		if (was_allocated)
-			free(string);
+			free(self);
 
-		msg_error("couldn't allocate memory for the string buffer!");
+		trb_msg_error("couldn't allocate memory for the string buffer!");
 		return NULL;
 	}
 
 	if (len != 0)
-		memcpy(string->data, str, len);
+		memcpy(self->data, str, len);
 
-	string->data[len] = '\0';
+	self->data[len] = '\0';
 
-	string->len = len;
-	string->capacity = capacity;
+	self->len = len;
+	self->capacity = capacity;
 
-	return string;
+	return self;
 }
 
-String *string_init_sized(String *string, usize cap)
+TrbString *trb_string_init_sized(TrbString *self, usize cap)
 {
 	bool was_allocated = FALSE;
 
-	if (string == NULL) {
-		string = talloc(String, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbString, 1);
 
-		if (string == NULL) {
-			msg_error("couldn't allocate memory for the string!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the string!");
 			return NULL;
 		}
 
 		was_allocated = TRUE;
 	}
 
-	string->data = malloc(cap);
+	self->data = malloc(cap);
 
-	if (string->data == NULL) {
+	if (self->data == NULL) {
 		if (was_allocated)
-			free(string);
+			free(self);
 
-		msg_error("couldn't allocate memory for the string buffer!");
+		trb_msg_error("couldn't allocate memory for the string buffer!");
 		return NULL;
 	}
 
-	string->data[0] = '\0';
+	self->data[0] = '\0';
 
-	string->len = 0;
-	string->capacity = cap;
+	self->len = 0;
+	self->capacity = cap;
 
-	return string;
+	return self;
 }
 
-String *string_init_fmt(String *string, const char *fmt, ...)
+TrbString *trb_string_init_fmt(TrbString *self, const char *fmt, ...)
 {
 	va_list args;
 	va_start(args, fmt);
 
 	char *buf;
-	usize len = vstrfmt(&buf, fmt, args);
+	usize len = trb_vstrfmt(&buf, fmt, args);
 
 	if (len == -1) {
-		msg_error("%s", strerror(errno));
+		trb_msg_error("%s", strerror(errno));
 		return NULL;
 	}
 
-	String *result = string_init_len(string, buf, len);
+	TrbString *result = trb_string_init_len(self, buf, len);
 	free(buf);
 
 	return result;
 }
 
-String *string_init_vfmt(String *string, const char *fmt, va_list args)
+TrbString *trb_string_init_vfmt(TrbString *self, const char *fmt, va_list args)
 {
 	char *buf;
-	usize len = vstrfmt(&buf, fmt, args);
+	usize len = trb_vstrfmt(&buf, fmt, args);
 
 	if (len == -1) {
-		msg_error("%s", strerror(errno));
+		trb_msg_error("%s", strerror(errno));
 		return NULL;
 	}
 
-	String *result = string_init_len(string, buf, len);
+	TrbString *result = trb_string_init_len(self, buf, len);
 	free(buf);
 
 	return result;
 }
 
-static bool __string_newcap(String *string, usize newcap)
+static bool __trb_string_newcap(TrbString *string, usize newcap)
 {
 	usize new_allocated = (newcap >> 3) + (newcap < 9 ? 3 : 6);
 
 	if (newcap > USIZE_MAX - new_allocated) {
-		msg_error("string capacity overflow!");
+		trb_msg_error("string capacity overflow!");
 		return FALSE;
 	}
 
@@ -192,7 +192,7 @@ static bool __string_newcap(String *string, usize newcap)
 	char *data = (void *) realloc(string->data, newcap);
 
 	if (data == NULL) {
-		msg_error("couldn't reallocate memory for the string buffer!");
+		trb_msg_error("couldn't reallocate memory for the string buffer!");
 		return FALSE;
 	}
 
@@ -202,18 +202,18 @@ static bool __string_newcap(String *string, usize newcap)
 	return TRUE;
 }
 
-static bool __string_insert_c(String *string, usize index, char c)
+static bool __trb_string_insert_c(TrbString *string, usize index, char c)
 {
 	if (index > USIZE_MAX - 1 || string->len > USIZE_MAX - 1) {
-		msg_error("string capacity overflow!");
+		trb_msg_error("string capacity overflow!");
 		return FALSE;
 	}
 
 	if (index >= string->len && index + 2 > string->capacity) {
-		if (__string_newcap(string, index + 2) == FALSE)
+		if (__trb_string_newcap(string, index + 2) == FALSE)
 			return FALSE;
 	} else if (index < string->len && string->len + 2 > string->capacity) {
-		if (__string_newcap(string, string->len + 2) == FALSE)
+		if (__trb_string_newcap(string, string->len + 2) == FALSE)
 			return FALSE;
 	}
 
@@ -230,7 +230,7 @@ static bool __string_insert_c(String *string, usize index, char c)
 	return TRUE;
 }
 
-static bool __string_insert(String *string, usize index, const char *str, usize len)
+static bool __trb_string_insert(TrbString *string, usize index, const char *str, usize len)
 {
 	if (len == 0)
 		return TRUE;
@@ -241,15 +241,15 @@ static bool __string_insert(String *string, usize index, const char *str, usize 
 		(string->len > USIZE_MAX - len) ||
 		(string->len + len > USIZE_MAX - 1)
 	) {
-		msg_error("string capacity overflow!");
+		trb_msg_error("string capacity overflow!");
 		return FALSE;
 	}
 
 	if (index >= string->len && index + len + 1 > string->capacity) {
-		if (__string_newcap(string, index + len + 1) == FALSE)
+		if (__trb_string_newcap(string, index + len + 1) == FALSE)
 			return FALSE;
 	} else if (index < string->len && string->len + len + 1 > string->capacity) {
-		if (__string_newcap(string, string->len + len + 1) == FALSE)
+		if (__trb_string_newcap(string, string->len + len + 1) == FALSE)
 			return FALSE;
 	}
 
@@ -270,317 +270,317 @@ static bool __string_insert(String *string, usize index, const char *str, usize 
 	return TRUE;
 }
 
-static bool __string_insert_vfmt(String *string, usize index, const char *fmt, va_list args)
+static bool __trb_string_insert_vfmt(TrbString *self, usize index, const char *fmt, va_list args)
 {
 	va_list args_copy;
 	va_copy(args_copy, args);
 
 	char *buf;
-	usize len = vstrfmt(&buf, fmt, args);
+	usize len = trb_vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error("%s", strerror(errno));
+		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
-	bool res = __string_insert(string, index, buf, len);
+	bool res = __trb_string_insert(self, index, buf, len);
 	free(buf);
 
 	return res;
 }
 
-bool string_push_back(String *string, const char *c_str)
+bool trb_string_push_back(TrbString *self, const char *c_str)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(c_str != NULL, FALSE);
-	return __string_insert(string, string->len, c_str, strlen(c_str));
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(c_str != NULL, FALSE);
+	return __trb_string_insert(self, self->len, c_str, strlen(c_str));
 }
 
-bool string_push_back_len(String *string, const char *str, usize len)
+bool trb_string_push_back_len(TrbString *self, const char *str, usize len)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_insert(string, string->len, str, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_insert(self, self->len, str, len);
 }
 
-bool string_push_back_fmt(String *string, const char *fmt, ...)
+bool trb_string_push_back_fmt(TrbString *self, const char *fmt, ...)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
 
 	va_list args;
 	va_start(args, fmt);
-	bool res = __string_insert_vfmt(string, string->len, fmt, args);
+	bool res = __trb_string_insert_vfmt(self, self->len, fmt, args);
 	va_end(args);
 	return res;
 }
 
-bool string_push_back_vfmt(String *string, const char *fmt, va_list args)
+bool trb_string_push_back_vfmt(TrbString *self, const char *fmt, va_list args)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
-	return __string_insert_vfmt(string, string->len, fmt, args);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
+	return __trb_string_insert_vfmt(self, self->len, fmt, args);
 }
 
-bool string_push_back_c(String *string, char c)
+bool trb_string_push_back_c(TrbString *self, char c)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_insert_c(string, string->len, c);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_insert_c(self, self->len, c);
 }
 
-bool string_push_front(String *string, const char *c_str)
+bool trb_string_push_front(TrbString *self, const char *c_str)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(c_str != NULL, FALSE);
-	return __string_insert(string, 0, c_str, strlen(c_str));
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(c_str != NULL, FALSE);
+	return __trb_string_insert(self, 0, c_str, strlen(c_str));
 }
 
-bool string_push_front_len(String *string, const char *str, usize len)
+bool trb_string_push_front_len(TrbString *self, const char *str, usize len)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_insert(string, 0, str, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_insert(self, 0, str, len);
 }
 
-bool string_push_front_c(String *string, char c)
+bool trb_string_push_front_c(TrbString *self, char c)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_insert_c(string, 0, c);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_insert_c(self, 0, c);
 }
 
-bool string_push_front_fmt(String *string, const char *fmt, ...)
+bool trb_string_push_front_fmt(TrbString *self, const char *fmt, ...)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
 
 	va_list args;
 	va_start(args, fmt);
-	bool res = __string_insert_vfmt(string, 0, fmt, args);
+	bool res = __trb_string_insert_vfmt(self, 0, fmt, args);
 	va_end(args);
 	return res;
 }
 
-bool string_push_front_vfmt(String *string, const char *fmt, va_list args)
+bool trb_string_push_front_vfmt(TrbString *self, const char *fmt, va_list args)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
-	return __string_insert_vfmt(string, 0, fmt, args);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
+	return __trb_string_insert_vfmt(self, 0, fmt, args);
 }
 
-bool string_insert(String *string, usize index, const char *c_str)
+bool trb_string_insert(TrbString *self, usize index, const char *c_str)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(c_str != NULL, FALSE);
-	return __string_insert(string, index, c_str, strlen(c_str));
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(c_str != NULL, FALSE);
+	return __trb_string_insert(self, index, c_str, strlen(c_str));
 }
 
-bool string_insert_len(String *string, usize index, const char *str, usize len)
+bool trb_string_insert_len(TrbString *self, usize index, const char *str, usize len)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_insert(string, index, str, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_insert(self, index, str, len);
 }
 
-bool string_insert_c(String *string, usize index, char c)
+bool trb_string_insert_c(TrbString *self, usize index, char c)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_insert_c(string, index, c);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_insert_c(self, index, c);
 }
 
-bool string_insert_fmt(String *string, usize index, const char *fmt, ...)
+bool trb_string_insert_fmt(TrbString *self, usize index, const char *fmt, ...)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
 
 	va_list args;
 	va_start(args, fmt);
-	bool res = __string_insert_vfmt(string, index, fmt, args);
+	bool res = __trb_string_insert_vfmt(self, index, fmt, args);
 	va_end(args);
 	return res;
 }
 
-bool string_insert_vfmt(String *string, usize index, const char *fmt, va_list args)
+bool trb_string_insert_vfmt(TrbString *self, usize index, const char *fmt, va_list args)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
-	return __string_insert_vfmt(string, index, fmt, args);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
+	return __trb_string_insert_vfmt(self, index, fmt, args);
 }
 
-static bool __string_erase(String *string, usize index, usize len, char *ret)
+static bool __trb_string_erase(TrbString *self, usize index, usize len, char *ret)
 {
 	if (len == 0)
 		return TRUE;
 
 	if (index > USIZE_MAX - len) {
-		msg_error("string index overflow!");
+		trb_msg_error("string index overflow!");
 		return FALSE;
 	}
 
-	if (index + len > string->len) {
+	if (index + len > self->len) {
 		if (len == 1) {
-			msg_warn("character at [%zu] is out of bounds!", index);
+			trb_msg_warn("character at [%zu] is out of bounds!", index);
 		} else {
-			msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
+			trb_msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
 		}
 
 		return FALSE;
 	}
 
 	if (ret != NULL)
-		memcpy(ret, &string->data[index], len);
+		memcpy(ret, &self->data[index], len);
 
-	if (index + len != string->len)
-		memmove(&string->data[index], &string->data[index + len], (string->len + 1) - len - index);
+	if (index + len != self->len)
+		memmove(&self->data[index], &self->data[index + len], (self->len + 1) - len - index);
 	else
-		string->data[index] = '\0';
+		self->data[index] = '\0';
 
-	string->len -= len;
+	self->len -= len;
 
 	return TRUE;
 }
 
-bool string_erase(String *string, usize index, usize len, char *ret)
+bool trb_string_erase(TrbString *self, usize index, usize len, char *ret)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_erase(string, index, len, ret);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_erase(self, index, len, ret);
 }
 
-bool string_erase_c(String *string, usize index, char *ret)
+bool trb_string_erase_c(TrbString *self, usize index, char *ret)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_erase(string, index, 1, ret);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_erase(self, index, 1, ret);
 }
 
-static bool __string_overwrite(String *string, usize index, const char *str, usize len)
+static bool __trb_string_overwrite(TrbString *self, usize index, const char *str, usize len)
 {
 	if (len == 0)
 		return TRUE;
 
 	if (index > USIZE_MAX - len) {
-		msg_error("string capacity overflow!");
+		trb_msg_error("string capacity overflow!");
 		return FALSE;
 	}
 
-	if (index + len + 1 > string->capacity) {
-		if (__string_newcap(string, index + len + 1) == FALSE)
+	if (index + len + 1 > self->capacity) {
+		if (__trb_string_newcap(self, index + len + 1) == FALSE)
 			return FALSE;
 	}
 
-	if (index + len > string->len) {
-		string->len = index + len;
-		string->data[string->len] = '\0';
+	if (index + len > self->len) {
+		self->len = index + len;
+		self->data[self->len] = '\0';
 	}
 
 	if (str == NULL)
-		memset(&string->data[index], 0, len);
+		memset(&self->data[index], 0, len);
 	else
-		memcpy(&string->data[index], str, len);
+		memcpy(&self->data[index], str, len);
 
 	return TRUE;
 }
 
-static bool __string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args)
+static bool __trb_string_overwrite_vfmt(TrbString *self, usize index, const char *fmt, va_list args)
 {
 	va_list args_copy;
 	va_copy(args_copy, args);
 
 	char *buf;
-	usize len = vstrfmt(&buf, fmt, args);
+	usize len = trb_vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error("%s", strerror(errno));
+		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
-	bool res = __string_overwrite(string, index, buf, len);
+	bool res = __trb_string_overwrite(self, index, buf, len);
 	free(buf);
 
 	return res;
 }
 
-bool string_overwrite(String *string, usize index, const char *c_str)
+bool trb_string_overwrite(TrbString *self, usize index, const char *c_str)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(c_str != NULL, FALSE);
-	return __string_overwrite(string, index, c_str, strlen(c_str));
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(c_str != NULL, FALSE);
+	return __trb_string_overwrite(self, index, c_str, strlen(c_str));
 }
 
-bool string_overwrite_len(String *string, usize index, const char *str, usize len)
+bool trb_string_overwrite_len(TrbString *self, usize index, const char *str, usize len)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_overwrite(string, index, str, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_overwrite(self, index, str, len);
 }
 
-bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...)
+bool trb_string_overwrite_fmt(TrbString *self, usize index, const char *fmt, ...)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
 
 	va_list args;
 	va_start(args, fmt);
-	bool res = __string_overwrite_vfmt(string, index, fmt, args);
+	bool res = __trb_string_overwrite_vfmt(self, index, fmt, args);
 	va_end(args);
 	return res;
 }
 
-bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args)
+bool trb_string_overwrite_vfmt(TrbString *self, usize index, const char *fmt, va_list args)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
-	return __string_overwrite_vfmt(string, index, fmt, args);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
+	return __trb_string_overwrite_vfmt(self, index, fmt, args);
 }
 
-bool string_overwrite_c(String *string, usize index, char c)
+bool trb_string_overwrite_c(TrbString *self, usize index, char c)
 {
-	return_val_if_fail(string != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
 	if (index > USIZE_MAX - 1) {
-		msg_error("string capacity overflow!");
+		trb_msg_error("string capacity overflow!");
 		return FALSE;
 	}
 
-	if (index + 2 > string->capacity) {
-		if (__string_newcap(string, index + 2) == FALSE)
+	if (index + 2 > self->capacity) {
+		if (__trb_string_newcap(self, index + 2) == FALSE)
 			return FALSE;
 	}
 
-	if (index + 1 > string->len) {
-		string->len = index + 1;
-		string->data[string->len] = '\0';
+	if (index + 1 > self->len) {
+		self->len = index + 1;
+		self->data[self->len] = '\0';
 	}
 
-	string->data[index] = c;
+	self->data[index] = c;
 
 	return TRUE;
 }
 
-static bool __string_assign(String *string, const char *str, usize len)
+static bool __trb_string_assign(TrbString *self, const char *str, usize len)
 {
-	if (len + 1 > string->capacity) {
-		if (__string_newcap(string, len + 1) == FALSE)
+	if (len + 1 > self->capacity) {
+		if (__trb_string_newcap(self, len + 1) == FALSE)
 			return FALSE;
 	}
 
-	string->len = len;
-	string->data[string->len] = '\0';
+	self->len = len;
+	self->data[self->len] = '\0';
 
 	if (str == NULL)
-		memset(string->data, 0, len);
+		memset(self->data, 0, len);
 	else
-		memcpy(string->data, str, len);
+		memcpy(self->data, str, len);
 
 	return TRUE;
 }
 
-bool string_assign(String *string, const char *c_str)
+bool trb_string_assign(TrbString *self, const char *c_str)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(c_str != NULL, FALSE);
-	return __string_assign(string, c_str, strlen(c_str));
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(c_str != NULL, FALSE);
+	return __trb_string_assign(self, c_str, strlen(c_str));
 }
 
-bool string_assign_len(String *string, const char *str, usize len)
+bool trb_string_assign_len(TrbString *self, const char *str, usize len)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return __string_assign(string, str, len);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_string_assign(self, str, len);
 }
 
-i32 string_cmp(const String *a, const String *b)
+i32 trb_string_cmp(const TrbString *a, const TrbString *b)
 {
 	if (a == NULL && b == NULL)
 		return 0;
@@ -607,184 +607,184 @@ i32 string_cmp(const String *a, const String *b)
 	return 0;
 }
 
-bool string_assign_fmt(String *string, const char *fmt, ...)
+bool trb_string_assign_fmt(TrbString *self, const char *fmt, ...)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
 
 	char *buf;
 	va_list args;
 	va_start(args, fmt);
 
-	usize len = vstrfmt(&buf, fmt, args);
+	usize len = trb_vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error("%s", strerror(errno));
+		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
-	if (len + 1 > string->capacity) {
-		if (__string_newcap(string, len + 1) == FALSE) {
+	if (len + 1 > self->capacity) {
+		if (__trb_string_newcap(self, len + 1) == FALSE) {
 			free(buf);
 			return FALSE;
 		}
 	}
 
-	memcpy(string->data, buf, len + 1);
-	string->len = len;
+	memcpy(self->data, buf, len + 1);
+	self->len = len;
 
 	free(buf);
 
 	return TRUE;
 }
 
-bool string_assign_vfmt(String *string, const char *fmt, va_list args)
+bool trb_string_assign_vfmt(TrbString *self, const char *fmt, va_list args)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(fmt != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(fmt != NULL, FALSE);
 
 	char *buf;
 
-	usize len = vstrfmt(&buf, fmt, args);
+	usize len = trb_vstrfmt(&buf, fmt, args);
 	if (len == -1) {
-		msg_error("%s", strerror(errno));
+		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}
 
-	if (len + 1 > string->capacity) {
-		if (__string_newcap(string, len + 1) == FALSE) {
+	if (len + 1 > self->capacity) {
+		if (__trb_string_newcap(self, len + 1) == FALSE) {
 			free(buf);
 			return FALSE;
 		}
 	}
 
-	memcpy(string->data, buf, len + 1);
-	string->len = len;
+	memcpy(self->data, buf, len + 1);
+	self->len = len;
 
 	free(buf);
 
 	return TRUE;
 }
 
-char *string_steal(String *string, usize *len)
+char *trb_string_steal(TrbString *self, usize *len)
 {
-	return_val_if_fail(string != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (string->data == NULL) {
-		msg_warn("string buffer is NULL!");
+	if (self->data == NULL) {
+		trb_msg_warn("string buffer is NULL!");
 		return FALSE;
 	}
 
-	char *ret = string->data;
+	char *ret = self->data;
 
 	if (len != NULL)
-		*len = string->len;
+		*len = self->len;
 
-	string->len = 0;
-	string->capacity = 1;
+	self->len = 0;
+	self->capacity = 1;
 
-	string->data = malloc(1);
+	self->data = malloc(1);
 
-	if (string->data == NULL) {
-		string->capacity = 0;
-		msg_error("couldn't allocate memory for a new buffer of the string!");
+	if (self->data == NULL) {
+		self->capacity = 0;
+		trb_msg_error("couldn't allocate memory for a new buffer of the string!");
 	}
 
-	string->data[0] = '\0';
+	self->data[0] = '\0';
 
 	return ret;
 }
 
-char *string_steal0(String *string, usize *len)
+char *trb_string_steal0(TrbString *self, usize *len)
 {
-	return_val_if_fail(string != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (string->data == NULL) {
-		msg_warn("string buffer is NULL!");
+	if (self->data == NULL) {
+		trb_msg_warn("string buffer is NULL!");
 		return FALSE;
 	}
 
-	char *ret = string->data;
+	char *ret = self->data;
 
 	if (len != NULL)
-		*len = string->len;
+		*len = self->len;
 
-	string->data = NULL;
-	string->len = 0;
-	string->capacity = 0;
+	self->data = NULL;
+	self->len = 0;
+	self->capacity = 0;
 
 	return ret;
 }
 
-bool string_get(String *string, usize index, usize len, char *ret)
+bool trb_string_get(TrbString *self, usize index, usize len, char *ret)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(ret != NULL, FALSE);
 
 	if (len == 0)
 		return TRUE;
 
-	if (index + len > string->len) {
-		msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
+	if (index + len > self->len) {
+		trb_msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
 		return FALSE;
 	}
 
-	memcpy(ret, &string->data[index], len);
+	memcpy(ret, &self->data[index], len);
 
 	return TRUE;
 }
 
-bool string_get_c(String *string, usize index, char *ret)
+bool trb_string_get_c(TrbString *self, usize index, char *ret)
 {
-	return_val_if_fail(string != NULL, FALSE);
-	return_val_if_fail(ret != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(ret != NULL, FALSE);
 
-	if (index > string->len) {
-		msg_warn("character at [%zu] is out of bounds!", index);
+	if (index > self->len) {
+		trb_msg_warn("character at [%zu] is out of bounds!", index);
 		return FALSE;
 	}
 
-	*ret = string->data[index];
+	*ret = self->data[index];
 
 	return TRUE;
 }
 
-void string_destroy(String *string)
+void trb_string_destroy(TrbString *self)
 {
-	return_if_fail(string != NULL);
+	trb_return_if_fail(self != NULL);
 
-	if (string->data == NULL)
+	if (self->data == NULL)
 		return;
 
-	free(string->data);
+	free(self->data);
 
-	string->data = NULL;
-	string->len = 0;
-	string->capacity = 0;
+	self->data = NULL;
+	self->len = 0;
+	self->capacity = 0;
 }
 
-void string_free(String *string)
+void trb_string_free(TrbString *self)
 {
-	return_if_fail(string != NULL);
-	string_destroy(string);
-	free(string);
+	trb_return_if_fail(self != NULL);
+	trb_string_destroy(self);
+	free(self);
 }
 
-String *string_copy(String *dst, const String *src)
+TrbString *trb_string_copy(TrbString *dst, const TrbString *src)
 {
-	return_val_if_fail(src != NULL, NULL);
+	trb_return_val_if_fail(src != NULL, NULL);
 
 	if (src->data == NULL) {
-		msg_warn("source string buffer is NULL!");
+		trb_msg_warn("source string buffer is NULL!");
 		return NULL;
 	}
 
 	bool was_allocated = FALSE;
 
 	if (dst == NULL) {
-		dst = talloc(String, 1);
+		dst = trb_talloc(TrbString, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for a copy of the string!");
+			trb_msg_error("couldn't allocate memory for a copy of the string!");
 			return NULL;
 		}
 	}
@@ -795,7 +795,7 @@ String *string_copy(String *dst, const String *src)
 		if (was_allocated)
 			free(dst);
 
-		msg_error("couldn't allocate memory for a buffer of a copy of the string!");
+		trb_msg_error("couldn't allocate memory for a buffer of a copy of the string!");
 		return NULL;
 	}
 

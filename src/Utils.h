@@ -7,7 +7,7 @@
 #include <stdarg.h>
 
 /**
- * strfmt:
+ * trb_strfmt:
  * @buf: The buffer where the formatted string is to be placed.
  * @fmt: The format of the string.
  * @...: Arguments.
@@ -17,10 +17,10 @@
  *
  * Returns: The length of the formatted string. Can return -1 if an error occurs.
  **/
-usize strfmt(char **buf, const char *fmt, ...) FORMAT(printf, 2, 3);
+usize trb_strfmt(char **buf, const char *fmt, ...) TRB_FORMAT(printf, 2, 3);
 
 /**
- * vstrfmt:
+ * trb_vstrfmt:
  * @buf: The buffer where the formatted string is to be placed.
  * @fmt: The format of the string.
  * @args: The argument list.
@@ -30,264 +30,340 @@ usize strfmt(char **buf, const char *fmt, ...) FORMAT(printf, 2, 3);
  *
  * Returns: The length of the formatted string. Can return -1 if an error occurs.
  **/
-usize vstrfmt(char **buf, const char *fmt, va_list args) FORMAT(printf, 2, 0);
+usize trb_vstrfmt(char **buf, const char *fmt, va_list args) TRB_FORMAT(printf, 2, 0);
 
 /**
- * strdup_fmt:
+ * trb_strdup_fmt:
  * @fmt: The format of the string.
  * @...: Arguments.
  *
  * It is analogous to `snprintf()`, except it allocates a string large enough to
  * hold the output including terminating null byte.
  *
- * Returns: The string with terminating null byte. Can return `NULL` if an error occurs.
+ * Returns: The string with terminating null byte. Can return %NULL if an error occurs.
  **/
-char *strdup_fmt(const char *fmt, ...) FORMAT(printf, 1, 2);
+char *trb_strdup_fmt(const char *fmt, ...) TRB_FORMAT(printf, 1, 2);
 
 /**
- * strdup_vfmt:
+ * trb_strdup_vfmt:
  * @fmt: The format of the string.
  * @args: The argument list.
  *
  * It is analogous to `vsnprintf()`, except it allocates a string large enough to
  * hold the output including terminating null byte.
  *
- * Returns: The string with terminating null byte. Can return `NULL` if error occurs.
+ * Returns: The string with terminating null byte. Can return %NULL if error occurs.
  **/
-char *strdup_vfmt(const char *fmt, va_list args) FORMAT(printf, 1, 0);
+char *trb_strdup_vfmt(const char *fmt, va_list args) TRB_FORMAT(printf, 1, 0);
 
 /**
- * pow2_32:
+ * trb_pow2_32:
  * @value: The 32-bit integer.
  *
  * Rounds up to the next power of 2.
  *
  * Returns: The next power of 2.
  **/
-u32 pow2_32(u32 value);
+u32 trb_pow2_32(u32 value);
 
 /**
- * pow2_64:
+ * trb_pow2_64:
  * @value: The 64-bit integer.
  *
  * Rounds up to the next power of 2.
  *
  * Returns: The next power of 2.
  **/
-u64 pow2_64(u64 value);
+u64 trb_pow2_64(u64 value);
 
 /**
- * pow2:
+ * trb_pow2:
  * @value: The 32/64-bit integer.
  *
  * Rounds up to the next power of 2.
  *
  * Returns: The next power of 2.
  **/
-usize pow2(usize value);
+usize trb_pow2(usize value);
 
 /**
- * heapify;
+ * trb_heapify:
  * @array: The array to be heapified.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The compare function for comparing elements.
+ * @cmp_func: The function for comparing elements.
  *
  * Heapifies the array.
  **/
-void heapify(void *array, usize len, usize elemsize, CmpFunc cmp_func);
+void trb_heapify(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
 
 /**
- * inssort:
+ * trb_heapify_data:
+ * @array: The array to be heapified.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmpd_func: The function for comparing elements using user data.
+ * @data: User data.
+ *
+ * Heapifies the array using user data.
+ **/
+void trb_heapify_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmp_func, void *data);
+
+/**
+ * trb_inssort:
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The compare function for comparing elements.
+ * @cmp_func: The function for comparing elements.
  *
  * Sorts the array using Insertion Sort.
  **/
-void inssort(void *array, usize len, usize elemsize, CmpFunc cmp_func);
+void trb_inssort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
 
 /**
- * heapsort:
+ * trb_inssort_data:
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The compare function for comparing elements.
+ * @cmpd_func: The function for comparing elements.
+ * @data: User data.
+ *
+ * Sorts the array using Insertion Sort and user data.
+ **/
+void trb_inssort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
+
+/**
+ * trb_heapsort:
+ * @array: The array to be sorted.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmp_func: The function for comparing elements.
  *
  * Sorts the array using Heap Sort.
  **/
-void heapsort(void *array, usize len, usize elemsize, CmpFunc cmp_func);
+void trb_heapsort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
 
 /**
- * quicksort:
+ * trb_heapsort_data:
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The compare function for comparing elements.
+ * @cmpd_func: The function for comparing elements.
+ * @data: User data.
  *
- * Sorts the array using Quicksort by Knuth.
- * [Reference](http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/quicksort.pdf).
+ * Sorts the array using Heap Sort and user data.
  **/
-void quicksort(void *array, usize len, usize elemsize, CmpFunc cmp_func);
+void trb_heapsort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
- * binary_search:
- * @array: The array to be searchen.
- * @target: The pointer to the data to be found (can be `NULL`).
+ * trb_quicksort:
+ * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The compare function for comparing elements.
- * @index: The pointer to retrieve the index of found value (can be `NULL`).
+ * @cmp_func: The function for comparing elements.
+ *
+ * Sorts the array using Quicksort by Knuth.
+ * [Reference](http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf).
+ **/
+void trb_quicksort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
+
+/**
+ * trb_quicksort_data:
+ * @array: The array to be sorted.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmpd_func: The function for comparing elements.
+ * @data: User data.
+ *
+ * Sorts the array using Quicksort by Knuth.
+ * [Reference](http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf).
+ **/
+void trb_quicksort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
+
+/**
+ * trb_binary_search:
+ * @array: The array to be searchen.
+ * @target: The pointer to the data to be found.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmp_func: The function for comparing elements.
+ * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
  * Searches for the entry in the array using binary search.
+ *
  * The array should be sorted if you want to use this function.
  *
- * Returns: `TRUE` if found, `FALSE` if not.
+ * Returns: %TRUE if found, %FALSE if not.
  **/
-bool binary_search(const void *array, const void *target, usize len, usize elemsize, CmpFunc cmp_func, usize *index);
+bool trb_binary_search(const void *array, const void *target, usize len, usize elemsize, TrbCmpFunc cmp_func, usize *index);
 
 /**
- * u8cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_binary_search_data:
+ * @array: The array to be searchen.
+ * @target: The pointer to the data to be found.
+ * @len: The length of the array.
+ * @elemsize: The size of each element in the array.
+ * @cmpd_func: The function for comparing elements.
+ * @data: User data.
+ * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
- * Compares two %u8.
+ * Searches for the entry in the array using binary search and user data.
+ *
+ * The array should be sorted if you want to use this function.
+ *
+ * Returns: %TRUE if found, %FALSE if not.
+ **/
+bool trb_binary_search_data(
+	const void *array,
+	const void *target,
+	usize len,
+	usize elemsize,
+	TrbCmpDataFunc cmpd_func,
+	void *data,
+	usize *index
+);
+
+/**
+ * trb_u8cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
+ *
+ * Compares two `u8`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 u8cmp(const u8 *a, const u8 *b);
+i32 trb_u8cmp(const u8 *a, const u8 *b);
 
 /**
- * u16cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_u16cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %u16.
+ * Compares two `u16`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 u16cmp(const u16 *a, const u16 *b);
+i32 trb_u16cmp(const u16 *a, const u16 *b);
 
 /**
- * u32cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_u32cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %u32.
+ * Compares two `u32`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 u32cmp(const u32 *a, const u32 *b);
+i32 trb_u32cmp(const u32 *a, const u32 *b);
 
 /**
- * u64cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_u64cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %u64.
+ * Compares two `u64`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 u64cmp(const u64 *a, const u64 *b);
+i32 trb_u64cmp(const u64 *a, const u64 *b);
 
 /**
- * usizecmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_usizecmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %usize.
+ * Compares two `usize`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 usizecmp(const usize *a, const usize *b);
+i32 trb_usizecmp(const usize *a, const usize *b);
 
 /**
- * i8cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_i8cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %i8.
+ * Compares two `i8`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 i8cmp(const i8 *a, const i8 *b);
+i32 trb_i8cmp(const i8 *a, const i8 *b);
 
 /**
- * i16cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_i16cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %i16.
+ * Compares two `i16`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 i16cmp(const i16 *a, const i16 *b);
+i32 trb_i16cmp(const i16 *a, const i16 *b);
 
 /**
- * i32cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_i32cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %i32.
+ * Compares two `i32`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 i32cmp(const i32 *a, const i32 *b);
+i32 trb_i32cmp(const i32 *a, const i32 *b);
 
 /**
- * i64cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_i64cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %i64.
+ * Compares two `i64`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 i64cmp(const i64 *a, const i64 *b);
+i32 trb_i64cmp(const i64 *a, const i64 *b);
 
 /**
- * isizecmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_isizecmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %isize.
+ * Compares two `isize`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 isizecmp(const isize *a, const isize *b);
+i32 trb_isizecmp(const isize *a, const isize *b);
 
 /**
- * f32cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_f32cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %f32.
+ * Compares two `f32`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 f32cmp(const f32 *a, const f32 *b);
+i32 trb_f32cmp(const f32 *a, const f32 *b);
 
 /**
- * f64cmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_f64cmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %f64.
+ * Compares two `f64`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 f64cmp(const f64 *a, const f64 *b);
+i32 trb_f64cmp(const f64 *a, const f64 *b);
 
 /**
- * realcmp:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * trb_realcmp:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
- * Compares two %real.
+ * Compares two `real`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 realcmp(const real *a, const real *b);
+i32 trb_realcmp(const real *a, const real *b);
 
 #endif /* end of include guard: UTILS_H_ATMQZMHO */

@@ -3,36 +3,41 @@
 
 #include "HashTable.h"
 
+typedef struct _TrbHashTableIter TrbHashTableIter;
+
 /**
- * SECTION: HashTableIter
- * @title: HashTableIter
+ * TrbHashTableIter:
+ * @ht: A pointer to the #TrbHashTable.
+ * @slot: The current position in the hash table.
+ *
+ * An iterator over hash table.
  *
  * This example show how to iterate over a hash table:
- * ```c
- * HashTable ht;
- * ht_init(&ht, 32, 8, 0xdeadbeef, jhash, (CmpFunc) strcmp);
+ * |[<!-- language="C" -->
+ * TrbHashTable ht;
+ * trb_hash_table_init(&ht, 32, 8, 0xdeadbeef, jhash, (TrbCmpFunc) strcmp);
  *
- * ht_insert(&ht, get_arr(char, 32, "Mike Urasawa"), get_ptr(u64, 42));
- * ht_insert(&ht, get_arr(char, 32, "Mario Franco"), get_ptr(u64, 12));
+ * trb_hash_table_insert(&ht, trb_get_arr(char, 32, "Mike Urasawa"), trb_get_ptr(u64, 42));
+ * trb_hash_table_insert(&ht, trb_get_arr(char, 32, "Mario Franco"), trb_get_ptr(u64, 12));
  *
- * HashTableIter iter;
- * ht_iter_init(&iter, &ht);
+ * TrbHashTableIter iter;
+ * trb_hash_table_iter_init(&iter, &ht);
  *
  * const char *name;
  * u64 *age;
  *
- * while (ht_iter_next(&iter, (const void **) &name, (void **) &age)) {
+ * while (trb_hash_table_iter_next(&iter, (const void **) &name, (void **) &age)) {
  *     printf("--------------------\n");
  *     printf(" Name: %s\n", name);
  *     printf(" Age: %lu\n", *age);
  *     printf("--------------------\n");
  * }
  *
- * ht_destroy(&ht, NULL, NULL);
- * ```
+ * trb_hash_table_destroy(&ht, NULL, NULL);
+ * ]|
  *
  * You should get an output similar to the following:
- * ```
+ * |[
  * --------------------
  *  Name: Mike Urasawa
  *  Age: 42
@@ -41,74 +46,72 @@
  *  Name: Mario Franco
  *  Age: 12
  * --------------------
- * ```
+ * ]|
  **/
-
-typedef struct _HashTableIter HashTableIter;
-
-struct _HashTableIter {
-	HashTable *ht;
+struct _TrbHashTableIter {
+	TrbHashTable *ht;
 	usize slot;
+	/* <private> */
 	u8 status;
 };
 
 /**
- * ht_iter_init:
- * @hti: The pointer to the hash table iterator to be initialized (can be `NULL`).
+ * trb_hash_table_iter_init:
+ * @self: The pointer to the hash table iterator to be initialized.
  * @ht: The hash table to be iterated.
  *
- * Creates a new hash table iterator.
+ * Creates a new #HashTableIter.
  *
- * Returns: A new hash table iterator.
+ * Returns: A new #HashTableIter.
  **/
-HashTableIter *ht_iter_init(HashTableIter *hti, HashTable *ht);
+TrbHashTableIter *trb_hash_table_iter_init(TrbHashTableIter *self, TrbHashTable *ht);
 
 /**
- * ht_iter_next:
- * @hti: The hash table iterator.
- * @key: The pointer to retrieve the key of the entry (can be `NULL`).
- * @value: The pointer to retrieve the value of the entry (can be `NULL`).
+ * trb_hash_table_iter_next:
+ * @self: The hash table iterator.
+ * @key: (optional) (out): The pointer to retrieve the key of the entry.
+ * @value: (optional) (out): The pointer to retrieve the value of the entry.
  *
- * Advances the @hti and retrieves the key and/or the value (or nothing)
+ * Advances the @self and retrieves the key and/or the value (or nothing)
  * that are now pointed to as a result of this advancement.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_iter_next(HashTableIter *hti, const void **key, void **value);
+bool trb_hash_table_iter_next(TrbHashTableIter *self, const void **key, void **value);
 
 /**
- * ht_iter_replace:
- * @hti: The hast table iterator.
+ * trb_hash_table_iter_replace:
+ * @self: The hast table iterator.
  * @value: The value to replace with.
  *
  * Replaces the value currently pointed to by the iterator.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_iter_replace(HashTableIter *hti, const void *value);
+bool trb_hash_table_iter_replace(TrbHashTableIter *self, const void *value);
 
 /**
- * ht_iter_get:
- * @hti: The hash table iterator.
- * @key: The pointer to retrieve the key of the entry (can be `NULL`).
- * @value: The pointer to retrieve the value of the entry (can be `NULL`).
+ * trb_hash_table_iter_get:
+ * @self: The hash table iterator.
+ * @key: (optional) (out): The pointer to retrieve the key of the entry.
+ * @value: (optional) (out): The pointer to retrieve the value of the entry.
  *
  * Retrieves the key and the value.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_iter_get(HashTableIter *hti, void *key, void *value);
+bool trb_hash_table_iter_get(TrbHashTableIter *self, void *key, void *value);
 
 /**
- * ht_iter_remove:
- * @hti: The hash table iterator.
- * @key: The pointer to retrieve the key of removed entry (can be `NULL`).
- * @value: The pointer to retrieve the value of removed entry (can be `NULL`).
+ * trb_hash_table_iter_remove:
+ * @self: The hash table iterator.
+ * @key: (optional) (out): The pointer to retrieve the key of removed entry.
+ * @value: (optional) (out): The pointer to retrieve the value of removed entry.
  *
  * Removes the entry currently pointer to by the iterator.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool ht_iter_remove(HashTableIter *hti, void *key, void *value);
+bool trb_hash_table_iter_remove(TrbHashTableIter *self, void *key, void *value);
 
 #endif /* end of include guard: HASHTABLEITER_H_MCORN7PA */

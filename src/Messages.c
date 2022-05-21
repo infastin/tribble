@@ -6,52 +6,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static const char *message_flag_to_color(MessageFlags flag)
+static const char *message_flag_to_color(TrbMessageFlags flag)
 {
 	switch (flag) {
-	case MESSAGE_ERROR:
+	case TRB_MESSAGE_ERROR:
 		return "\033[1;31m";
-	case MESSAGE_CRITICAL:
+	case TRB_MESSAGE_CRITICAL:
 		return "\033[1;35m";
-	case MESSAGE_WARNING:
+	case TRB_MESSAGE_WARNING:
 		return "\033[1;33m";
-	case MESSAGE_PRINT:
+	case TRB_MESSAGE_PRINT:
 		return "\033[1;32m";
-	case MESSAGE_INFO:
+	case TRB_MESSAGE_INFO:
 		return "\033[1;36m";
-	case MESSAGE_DEBUG:
+	case TRB_MESSAGE_DEBUG:
 		return "\033[1;34m";
 	}
 
 	return "";
 }
 
-static const char *message_flag_to_prefix(MessageFlags flag, bool *to_stdout)
+static const char *message_flag_to_prefix(TrbMessageFlags flag, bool *to_stdout)
 {
 	*to_stdout = true;
 
 	switch (flag) {
-	case MESSAGE_ERROR:
+	case TRB_MESSAGE_ERROR:
 		*to_stdout = false;
 		return "ERROR";
-	case MESSAGE_CRITICAL:
+	case TRB_MESSAGE_CRITICAL:
 		*to_stdout = false;
 		return "CRITICAL";
-	case MESSAGE_WARNING:
+	case TRB_MESSAGE_WARNING:
 		*to_stdout = false;
 		return "WARNING";
-	case MESSAGE_PRINT:
+	case TRB_MESSAGE_PRINT:
 		return "MESSAGE";
-	case MESSAGE_INFO:
+	case TRB_MESSAGE_INFO:
 		return "INFO";
-	case MESSAGE_DEBUG:
+	case TRB_MESSAGE_DEBUG:
 		return "DEBUG";
 	}
 
 	return "";
 }
 
-void message(MessageFlags flag, const char *msg, ...)
+void trb_message(TrbMessageFlags flag, const char *msg, ...)
 {
 	const char *color;
 	const char *prefix;
@@ -70,7 +70,7 @@ void message(MessageFlags flag, const char *msg, ...)
 
 	va_list args;
 	va_start(args, msg);
-	char *parsed = strdup_vfmt(msg, args);
+	char *parsed = trb_strdup_vfmt(msg, args);
 	va_end(args);
 
 	if (parsed == NULL) {
@@ -82,11 +82,11 @@ void message(MessageFlags flag, const char *msg, ...)
 	free(parsed);
 }
 
-void message_func(MessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...)
+void trb_message_func(TrbMessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...)
 {
 	va_list args;
 	va_start(args, msg);
-	char *parsed = strdup_vfmt(msg, args);
+	char *parsed = trb_strdup_vfmt(msg, args);
 	va_end(args);
 
 	if (parsed == NULL) {
@@ -97,23 +97,23 @@ void message_func(MessageFlags flag, const char *file, usize line, const char *f
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(flag, "%s%s:%zu:%s%s: %s", white, file, line, func, reset, parsed);
+	trb_message(flag, "%s%s:%zu:%s%s: %s", white, file, line, func, reset, parsed);
 
 	free(parsed);
 }
 
-void return_if_fail_warning(const char *file, usize line, const char *func, const char *expr)
+void trb_return_if_fail_warning(const char *file, usize line, const char *func, const char *expr)
 {
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(MESSAGE_WARNING, "%s%s:%zu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
+	trb_message(TRB_MESSAGE_WARNING, "%s%s:%zu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
 }
 
-void exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr)
+void trb_exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr)
 {
 	const char *white = "\033[1;37m";
 	const char *reset = "\033[0m";
 
-	message(MESSAGE_CRITICAL, "%s%s:%zu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
+	trb_message(TRB_MESSAGE_CRITICAL, "%s%s:%zu:%s%s: assertion '%s' is failed!", white, file, line, func, reset, expr);
 }

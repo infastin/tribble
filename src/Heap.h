@@ -4,122 +4,152 @@
 #include "Types.h"
 #include "Vector.h"
 
-typedef struct _Heap Heap;
+typedef struct _TrbHeap TrbHeap;
 
-struct _Heap {
-	Vector vector;
-	CmpFunc cmp_func;
+/**
+ * TrbHeap:
+ * @vector: A #Vector representation of the heap.
+ * @cmp_func: The function for comparing elements.
+ * @cmpd_func: The function for comparing elements using user data.
+ * @data: User data.
+ * @with_data: Indicates whether #TrbHeap has been initialized with data or not.
+ *
+ * A heap data structure represented as an array.
+ **/
+struct _TrbHeap {
+	TrbVector vector;
+
+	union {
+		TrbCmpFunc cmp_func;
+		TrbCmpDataFunc cmpd_func;
+	};
+
+	void *data;
+	bool with_data;
 };
 
 /**
- * heap_init:
- * @heap: The pointer to the `Heap` to be initialized (can be `NULL`).
+ * trb_heap_init:
+ * @self: The pointer to the `TrbHeap` to be initialized.
  * @elemsize: The size of each element in bytes.
- * @cmp_func: The compare function for comparing elements.
+ * @cmp_func: The function for comparing elements.
  *
- * Creates a new #Heap.
+ * Creates a new #TrbHeap.
  *
- * Returns: A new #Heap. Can return `NULL` if an error occurs.
+ * Returns: A new #TrbHeap. Can return `NULL` if an error occurs.
  **/
-Heap *heap_init(Heap *heap, usize elemsize, CmpFunc cmp_func);
+TrbHeap *trb_heap_init(TrbHeap *self, usize elemsize, TrbCmpFunc cmp_func);
 
 /**
- * heap_insert:
- * @heap: The heap where to insert the element.
- * @data: The element to be inserted (can be `NULL`).
+ * trb_heap_init_data:
+ * @self: The pointer to the `TrbHeap` to be initialized.
+ * @elemsize: The size of each element in bytes.
+ * @cmpd_func: The function for comparing elements.
+ * @data: User data.
+ *
+ * Creates a new #TrbHeap with the comparison function that accepts user data.
+ *
+ * Returns: A new #TrbHeap. Can return `NULL` if an error occurs.
+ **/
+TrbHeap *trb_heap_init_data(TrbHeap *self, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
+
+/**
+ * trb_heap_insert:
+ * @self: The heap where to insert the element.
+ * @data: The element to be inserted.
  *
  * Inserts the element in the heap.
  *
  * Returns: `TRUE` on success.
  **/
-bool heap_insert(Heap *heap, const void *data);
+bool trb_heap_insert(TrbHeap *self, const void *data);
 
 /**
- * heap_remove:
- * @heap: The heap where to remove the element.
+ * trb_heap_remove:
+ * @self: The heap where to remove the element.
  * @index: The index of the element to be removed.
- * @ret: The pointer to retrieve removed data (can be `NULL`).
+ * @ret: (optional) (out): The pointer to retrieve removed data.
  *
  * Removes the element from the heap.
  *
  * Returns: `TRUE` on success.
  **/
-bool heap_remove(Heap *heap, usize index, void *ret);
+bool trb_heap_remove(TrbHeap *self, usize index, void *ret);
 
 /**
- * heap_pop_back:
- * @heap: The heap where to remove the element.
- * @ret: The pointer to retrieve removed data (can be `NULL`).
+ * trb_heap_pop_back:
+ * @self: The heap where to remove the element.
+ * @ret: (optional) (out): The pointer to retrieve removed data.
  *
  * Removes the last element from the heap.
  *
  * Returns: `TRUE` on success.
  **/
-bool heap_pop_back(Heap *heap, void *ret);
+bool trb_heap_pop_back(TrbHeap *self, void *ret);
 
 /**
- * heap_pop_front:
- * @heap: The heap where to remove the element.
- * @ret: The pointer to retrieve removed data (can be `NULL`).
+ * trb_heap_pop_front:
+ * @self: The heap where to remove the element.
+ * @ret: (optional) (out): The pointer to retrieve removed data.
  *
  * Removes the first element from the heap.
  *
  * Returns: `TRUE` on success.
  **/
-bool heap_pop_front(Heap *heap, void *ret);
+bool trb_heap_pop_front(TrbHeap *self, void *ret);
 
 /**
- * heap_get:
- * @heap: The heap where to get.
+ * trb_heap_get:
+ * @self: The heap where to get.
  * @index: The position of the entry which value is to be got.
- * @ret: The pointer to retrieve value of the entry.
+ * @ret: (out): The pointer to retrieve value of the entry.
  *
  * Gets the value of the entry in the heap at the given index.
  *
  * Returns: `TRUE` on success.
  **/
-bool heap_get(const Heap *heap, usize index, void *ret);
+bool trb_heap_get(const TrbHeap *self, usize index, void *ret);
 
 /**
- * heap_search:
- * @heap: The heap where to search.
- * @target: The pointer to the data to be found (can be `NULL`).
- * @index: The pointer to retrieve the index of found value (can be `NULL`).
+ * trb_heap_search:
+ * @self: The heap where to search.
+ * @target: The pointer to the data to be found.
+ * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
  * Searches for the entry in the heap.
  *
  * Returns: `TRUE` if found, `FALSE` if not.
  **/
-bool heap_search(const Heap *heap, const void *target, usize *index);
+bool trb_heap_search(const TrbHeap *self, const void *target, usize *index);
 
 /**
- * heap_destroy:
- * @heap: The heap which buffer is to be freed.
- * @free_func: The function for freeing elements (can be `NULL`).
+ * trb_heap_destroy:
+ * @self: The heap which buffer is to be freed.
+ * @free_func: The function for freeing elements.
  *
  * Frees the heap buffer.
  **/
-void heap_destroy(Heap *heap, FreeFunc free_func);
+void trb_heap_destroy(TrbHeap *self, TrbFreeFunc free_func);
 
 /**
- * heap_free:
- * @heap: The heap to be freed.
- * @free_func: The function for freeing elements (can be `NULL`).
+ * trb_heap_free:
+ * @self: The heap to be freed.
+ * @free_func: The function for freeing elements.
  *
  * Frees the heap completely.
  **/
-void heap_free(Heap *heap, FreeFunc free_func);
+void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
 
 /**
- * heap_get_unsafe:
- * @heap: The heap where to get.
+ * trb_heap_get_unsafe:
+ * @self: The heap where to get.
  * @type: The type to be got.
  * @index: The position of the entry which value is to be got.
  *
- * Unsafe version of vector_heap.
+ * Unsafe version of `trb_heap_get()`.
  *
  * Returns: The value of the entry.
  **/
-#define heap_get_unsafe(heap, type, index) (vector_get_unsafe(&(heap)->vector, type, index))
+#define trb_heap_get_unsafe(self, type, index) (vector_get_unsafe(&(self)->vector, type, index))
 
 #endif /* end of include guard: HEAP_H_MGLIJUQF */

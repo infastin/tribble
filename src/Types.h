@@ -77,19 +77,34 @@ typedef _Bool bool;
 /* Functions */
 
 /**
- * CmpFunc:
- * @a: The first value to be compared (can be `NULL`).
- * @b: The second value to be compared (can be `NULL`).
+ * TrbCmpFunc:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
  *
  * The function for comparing two values.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-typedef i32 (*CmpFunc)(const void *a, const void *b);
+typedef i32 (*TrbCmpFunc)(const void *a, const void *b);
 
-typedef void *(*CopyFunc)(const void *src);
-typedef void (*FreeFunc)(void *ptr);
-typedef void (*UserFunc)(void *data, void *userdata);
-typedef usize (*HashFunc)(const void *key, usize keysize, usize seed);
+/**
+ * TrbCmpDataFunc:
+ * @a: The first value to be compared.
+ * @b: The second value to be compared.
+ * @data: User data.
+ *
+ * The function for comparing two values using user data.
+ *
+ * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
+ **/
+typedef i32 (*TrbCmpDataFunc)(const void *a, const void *b, void *data);
+
+typedef void *(*TrbCopyFunc)(const void *src);
+
+typedef void (*TrbFreeFunc)(void *ptr);
+
+typedef void (*TrbUserFunc)(void *data, void *userdata);
+
+typedef usize (*TrbHashFunc)(const void *key, usize keysize, usize seed);
 
 #endif /* end of include guard: DEFINITIONS_H_N6TPGG3D */

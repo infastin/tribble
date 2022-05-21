@@ -2,53 +2,53 @@
 
 #include "Messages.h"
 
-List *list_init(List *list)
+TrbList *trb_list_init(TrbList *self)
 {
-	if (list == NULL) {
-		list = talloc(List, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbList, 1);
 
-		if (list == NULL) {
-			msg_error("couldn't allocate memory for the list!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the list!");
 			return NULL;
 		}
 	}
 
-	list->next = list;
-	list->prev = list;
+	self->next = self;
+	self->prev = self;
 
-	return list;
+	return self;
 }
 
-void list_push_back(List *list, List *node)
+void trb_list_push_back(TrbList *self, TrbList *node)
 {
-	return_if_fail(list != NULL);
-	return_if_fail(node != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(node != NULL);
 
-	List *end = list->prev;
+	TrbList *end = self->prev;
 
 	end->next = node;
 	node->prev = end;
-	node->next = list;
-	list->prev = node;
+	node->next = self;
+	self->prev = node;
 }
 
-void list_push_front(List *list, List *node)
+void trb_list_push_front(TrbList *self, TrbList *node)
 {
-	return_if_fail(list != NULL);
-	return_if_fail(node != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(node != NULL);
 
-	List *start = list->next;
+	TrbList *start = self->next;
 
 	start->prev = node;
 	node->next = start;
-	node->prev = list;
-	list->next = node;
+	node->prev = self;
+	self->next = node;
 }
 
-void list_insert_after(List *sibling, List *node)
+void trb_list_insert_after(TrbList *sibling, TrbList *node)
 {
-	return_if_fail(sibling != NULL);
-	return_if_fail(node != NULL);
+	trb_return_if_fail(sibling != NULL);
+	trb_return_if_fail(node != NULL);
 
 	node->prev = sibling;
 	node->next = sibling->next;
@@ -56,10 +56,10 @@ void list_insert_after(List *sibling, List *node)
 	sibling->next = node;
 }
 
-void list_insert_before(List *sibling, List *node)
+void trb_list_insert_before(TrbList *sibling, TrbList *node)
 {
-	return_if_fail(sibling != NULL);
-	return_if_fail(node != NULL);
+	trb_return_if_fail(sibling != NULL);
+	trb_return_if_fail(node != NULL);
 
 	node->next = sibling;
 	node->prev = sibling->prev;
@@ -67,37 +67,37 @@ void list_insert_before(List *sibling, List *node)
 	sibling->prev = node;
 }
 
-bool list_empty(const List *list)
+bool trb_list_empty(const TrbList *self)
 {
-	return_val_if_fail(list != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
-	return list->next == list;
+	return self->next == self;
 }
 
-usize list_len(const List *list)
+usize trb_list_len(const TrbList *self)
 {
-	return_val_if_fail(list != NULL, 0);
+	trb_return_val_if_fail(self != NULL, 0);
 
-	if (list->next == list)
+	if (self->next == self)
 		return 0;
 
 	usize len = 0;
-	List *iter;
+	TrbList *iter;
 
-	list_foreach (iter, list)
+	trb_list_foreach (iter, self)
 		len++;
 
 	return len;
 }
 
-List *list_pop_back(List *list)
+TrbList *trb_list_pop_back(TrbList *self)
 {
-	return_val_if_fail(list != NULL, NULL);
+	trb_return_val_if_fail(self != NULL, NULL);
 
-	if (list->next == list)
+	if (self->next == self)
 		return NULL;
 
-	List *last = list->prev;
+	TrbList *last = self->prev;
 
 	last->prev->next = last->next;
 	last->next->prev = last->prev;
@@ -107,14 +107,14 @@ List *list_pop_back(List *list)
 	return last;
 }
 
-List *list_pop_front(List *list)
+TrbList *trb_list_pop_front(TrbList *self)
 {
-	return_val_if_fail(list != NULL, NULL);
+	trb_return_val_if_fail(self != NULL, NULL);
 
-	if (list->prev == list)
+	if (self->prev == self)
 		return NULL;
 
-	List *first = list->next;
+	TrbList *first = self->next;
 
 	first->prev->next = first->next;
 	first->next->prev = first->prev;
@@ -124,38 +124,38 @@ List *list_pop_front(List *list)
 	return first;
 }
 
-void list_reverse(List *list)
+void trb_list_reverse(TrbList *self)
 {
-	return_if_fail(list != NULL);
+	trb_return_if_fail(self != NULL);
 
-	if (list->next == list)
+	if (self->next == self)
 		return;
 
-	List *current = list->next;
+	TrbList *current = self->next;
 
-	while (current != list) {
-		List *next = current->next;
+	while (current != self) {
+		TrbList *next = current->next;
 		current->next = current->prev;
 		current->prev = next;
 		current = next;
 	}
 
-	List *oldstart = list->next;
-	list->next = list->prev;
-	list->prev = oldstart;
+	TrbList *oldstart = self->next;
+	self->next = self->prev;
+	self->prev = oldstart;
 }
 
-void list_splice(List *list, List *node)
+void trb_list_splice(TrbList *self, TrbList *node)
 {
-	return_if_fail(list != NULL);
-	return_if_fail(node != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(node != NULL);
 
-	if (list->next == list)
+	if (self->next == self)
 		return;
 
-	List *start = list->next;
-	List *end = list->prev;
-	List *at = node->next;
+	TrbList *start = self->next;
+	TrbList *end = self->prev;
+	TrbList *at = node->next;
 
 	start->prev = node;
 	node->next = start;
@@ -163,31 +163,31 @@ void list_splice(List *list, List *node)
 	end->next = at;
 	at->prev = end;
 
-	list->next = list;
-	list->prev = list;
+	self->next = self;
+	self->prev = self;
 }
 
-static List *__list_merge(List *list, List *first, List *second, CmpFunc cmp_func)
+static TrbList *__trb_list_merge(TrbList *self, TrbList *first, TrbList *second, TrbCmpFunc cmp_func)
 {
-	List *result = list;
-	List *prev = list;
-	List **linkp = &result;
+	TrbList *result = self;
+	TrbList *prev = self;
+	TrbList **linkp = &result;
 
-	List *f = first;
-	List *s = second;
+	TrbList *f = first;
+	TrbList *s = second;
 
 	while (1) {
-		if (f == list && s == list)
+		if (f == self && s == self)
 			break;
 
-		if (f == list) {
+		if (f == self) {
 			s->prev = prev;
 			*linkp = s;
 
 			break;
 		}
 
-		if (s == list) {
+		if (s == self) {
 			f->prev = prev;
 			*linkp = f;
 
@@ -210,27 +210,27 @@ static List *__list_merge(List *list, List *first, List *second, CmpFunc cmp_fun
 	return result;
 }
 
-void list_sort(List *list, CmpFunc cmp_func)
+void trb_list_sort(TrbList *self, TrbCmpFunc cmp_func)
 {
-	return_if_fail(list != NULL);
-	return_if_fail(cmp_func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(cmp_func != NULL);
 
-	if (list->next == list)
+	if (self->next == self)
 		return;
 
-	List *array[USIZE_WIDTH] = { [0 ...(USIZE_WIDTH - 1)] = list };
-	List *result;
+	TrbList *array[USIZE_WIDTH] = { [0 ...(USIZE_WIDTH - 1)] = self };
+	TrbList *result;
 	u32 max_i = 0;
 	u32 i;
 
-	result = list->next;
+	result = self->next;
 
-	while (result != list) {
-		List *next;
+	while (result != self) {
+		TrbList *next;
 
-		for (next = result->next; next != list;) {
+		for (next = result->next; next != self;) {
 			if (cmp_func(result, next) > 0) {
-				result->next = list;
+				result->next = self;
 				break;
 			} else {
 				result = next;
@@ -238,9 +238,9 @@ void list_sort(List *list, CmpFunc cmp_func)
 			}
 		}
 
-		for (i = 0; (i < USIZE_WIDTH) && (array[i] != list); ++i) {
-			result = __list_merge(list, array[i], result, cmp_func);
-			array[i] = list;
+		for (i = 0; (i < USIZE_WIDTH) && (array[i] != self); ++i) {
+			result = __trb_list_merge(self, array[i], result, cmp_func);
+			array[i] = self;
 		}
 
 		if (i == USIZE_WIDTH)
@@ -254,25 +254,123 @@ void list_sort(List *list, CmpFunc cmp_func)
 	}
 
 	for (u32 j = 0; j <= max_i; ++j)
-		result = __list_merge(list, array[j], result, cmp_func);
+		result = __trb_list_merge(self, array[j], result, cmp_func);
 
-	list->next = result;
+	self->next = result;
 
-	List *end;
-	for (end = list->next; end->next != list; end = end->next)
+	TrbList *end;
+	for (end = self->next; end->next != self; end = end->next)
 		continue;
 
-	list->prev = end;
+	self->prev = end;
 }
 
-List *list_nth(List *list, usize n)
+static TrbList *__trb_list_merge_data(TrbList *self, TrbList *first, TrbList *second, TrbCmpDataFunc cmpd_func, void *data)
 {
-	return_val_if_fail(list != NULL, NULL);
+	TrbList *result = self;
+	TrbList *prev = self;
+	TrbList **linkp = &result;
+
+	TrbList *f = first;
+	TrbList *s = second;
+
+	while (1) {
+		if (f == self && s == self)
+			break;
+
+		if (f == self) {
+			s->prev = prev;
+			*linkp = s;
+
+			break;
+		}
+
+		if (s == self) {
+			f->prev = prev;
+			*linkp = f;
+
+			break;
+		}
+
+		if (cmpd_func(f, s, data) <= 0) {
+			f->prev = prev;
+			prev = *linkp = f;
+			linkp = &f->next;
+			f = f->next;
+		} else {
+			s->prev = prev;
+			prev = *linkp = s;
+			linkp = &s->next;
+			s = s->next;
+		}
+	}
+
+	return result;
+}
+
+void trb_list_sort_data(TrbList *self, TrbCmpDataFunc cmpd_func, void *data)
+{
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(cmpd_func != NULL);
+
+	if (self->next == self)
+		return;
+
+	TrbList *array[USIZE_WIDTH] = { [0 ...(USIZE_WIDTH - 1)] = self };
+	TrbList *result;
+	u32 max_i = 0;
+	u32 i;
+
+	result = self->next;
+
+	while (result != self) {
+		TrbList *next;
+
+		for (next = result->next; next != self;) {
+			if (cmpd_func(result, next, data) > 0) {
+				result->next = self;
+				break;
+			} else {
+				result = next;
+				next = next->next;
+			}
+		}
+
+		for (i = 0; (i < USIZE_WIDTH) && (array[i] != self); ++i) {
+			result = __trb_list_merge_data(self, array[i], result, cmpd_func, data);
+			array[i] = self;
+		}
+
+		if (i == USIZE_WIDTH)
+			i--;
+
+		if (i > max_i)
+			max_i = i;
+
+		array[i] = result;
+		result = next;
+	}
+
+	for (u32 j = 0; j <= max_i; ++j)
+		result = __trb_list_merge_data(self, array[j], result, cmpd_func, data);
+
+	self->next = result;
+
+	TrbList *end;
+	for (end = self->next; end->next != self; end = end->next)
+		continue;
+
+	self->prev = end;
+}
+
+TrbList *trb_list_nth(TrbList *self, usize n)
+{
+	trb_return_val_if_fail(self != NULL, NULL);
 
 	usize i = 0;
-	List *iter;
+	TrbList *iter;
 
-	list_foreach (iter, list) {
+	trb_list_foreach (iter, self) {
 		if (i++ == n) {
 			return iter;
 		}
@@ -281,14 +379,14 @@ List *list_nth(List *list, usize n)
 	return NULL;
 }
 
-usize list_position(List *list, List *node)
+usize trb_list_position(TrbList *self, TrbList *node)
 {
-	return_val_if_fail(list != NULL, -1);
+	trb_return_val_if_fail(self != NULL, -1);
 
 	usize i = 0;
-	List *iter;
+	TrbList *iter;
 
-	list_foreach (iter, list) {
+	trb_list_foreach (iter, self) {
 		if (iter == node) {
 			return i;
 		}
@@ -299,15 +397,15 @@ usize list_position(List *list, List *node)
 	return -1;
 }
 
-List *list_lookup(List *list, const List *node, CmpFunc cmp_func, usize *index)
+TrbList *trb_list_lookup(TrbList *self, const TrbList *node, TrbCmpFunc cmp_func, usize *index)
 {
-	return_val_if_fail(list != NULL, NULL);
-	return_val_if_fail(cmp_func != NULL, NULL);
+	trb_return_val_if_fail(self != NULL, NULL);
+	trb_return_val_if_fail(cmp_func != NULL, NULL);
 
 	usize i = 0;
-	List *iter;
+	TrbList *iter;
 
-	list_foreach (iter, list) {
+	trb_list_foreach (iter, self) {
 		if (cmp_func(iter, node) == 0) {
 			if (index != NULL)
 				*index = i;
@@ -320,9 +418,30 @@ List *list_lookup(List *list, const List *node, CmpFunc cmp_func, usize *index)
 	return NULL;
 }
 
-void list_remove(List *node)
+TrbList *trb_list_lookup_data(TrbList *self, const TrbList *node, TrbCmpDataFunc cmpd_func, void *data, usize *index)
 {
-	return_if_fail(node != NULL);
+	trb_return_val_if_fail(self != NULL, NULL);
+	trb_return_val_if_fail(cmpd_func != NULL, NULL);
+
+	usize i = 0;
+	TrbList *iter;
+
+	trb_list_foreach (iter, self) {
+		if (cmpd_func(iter, node, data) == 0) {
+			if (index != NULL)
+				*index = i;
+			return iter;
+		}
+
+		i++;
+	}
+
+	return NULL;
+}
+
+void trb_list_remove(TrbList *node)
+{
+	trb_return_if_fail(node != NULL);
 
 	node->prev->next = node->next;
 	node->next->prev = node->prev;
@@ -331,16 +450,16 @@ void list_remove(List *node)
 	node->prev = node;
 }
 
-List *list_copy(List *dst, const List *src, CopyFunc copy_func, bool *status)
+TrbList *trb_list_copy(TrbList *dst, const TrbList *src, TrbCopyFunc copy_func, bool *status)
 {
-	return_val_if_fail(src != NULL, FALSE);
-	return_val_if_fail(copy_func != NULL, FALSE);
+	trb_return_val_if_fail(src != NULL, FALSE);
+	trb_return_val_if_fail(copy_func != NULL, FALSE);
 
 	if (dst == NULL) {
-		dst = talloc(List, 1);
+		dst = trb_talloc(TrbList, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for a copy of the list!");
+			trb_msg_error("couldn't allocate memory for a copy of the list!");
 
 			if (status != NULL)
 				*status = FALSE;
@@ -355,9 +474,9 @@ List *list_copy(List *dst, const List *src, CopyFunc copy_func, bool *status)
 	if (src->next == src)
 		return dst;
 
-	List *fast = src->next;
-	List *slow = dst;
-	List *copy = NULL;
+	TrbList *fast = src->next;
+	TrbList *slow = dst;
+	TrbList *copy = NULL;
 
 	while (fast != src) {
 		copy = copy_func(fast);
@@ -375,38 +494,38 @@ List *list_copy(List *dst, const List *src, CopyFunc copy_func, bool *status)
 	dst->prev = slow;
 	slow->next = dst;
 
-	do_if_fail (copy != NULL)
+	trb_do_if_fail (copy != NULL)
 		if (status != NULL)
 			*status = FALSE;
 
 	return dst;
 }
 
-void list_destroy(List *list, FreeFunc free_func)
+void trb_list_destroy(TrbList *self, TrbFreeFunc free_func)
 {
-	return_if_fail(list != NULL);
-	return_if_fail(free_func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(free_func != NULL);
 
-	if (list->next == list)
+	if (self->next == self)
 		return;
 
-	List *current = list->next;
+	TrbList *current = self->next;
 
-	while (current != list) {
-		List *next = current->next;
+	while (current != self) {
+		TrbList *next = current->next;
 		free_func(current);
 		current = next;
 	}
 
-	list->next = list;
-	list->prev = list;
+	self->next = self;
+	self->prev = self;
 }
 
-void list_free(List *list, FreeFunc free_func)
+void trb_list_free(TrbList *self, TrbFreeFunc free_func)
 {
-	return_if_fail(list != NULL);
-	return_if_fail(free_func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(free_func != NULL);
 
-	list_destroy(list, free_func);
-	free(list);
+	trb_list_destroy(self, free_func);
+	free(self);
 }

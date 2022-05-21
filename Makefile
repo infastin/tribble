@@ -18,12 +18,9 @@ compdb:
 install:
 	ninja -C $(BUILD_DIR) install
 
-docs:
-	cd docs/ && hotdoc run
-
-open_docs:
-	xdg-open docs/built_doc/html/index.html
+test:
+	meson test -C $(BUILD_DIR)
 
 all: build ctags compdb
 
-.PHONY: all build ctags compdb clean install docs
+.PHONY: all build ctags compdb clean install test

@@ -6,423 +6,426 @@
 
 #include <stdarg.h>
 
+typedef struct _TrbString TrbString;
+
 /**
- * SECTION: String
- * @title: String
+ * TrbString:
+ * @data: The string buffer.
+ * @len: The string length.
+ * @capacity: The capacity of the string buffer.
+ *
+ * A dynamic size string.
  *
  * This example shows how to init and print the string to stdout:
- * ```c
- * String example_string;
- * string_init(&example_string, "I am an example!");
+ * |[<!-- language="C" -->
+ * TrbString example_string;
+ * trb_string_init(&example_string, "I am an example!");
  *
  * printf("%s\n", example_string.data);
  *
- * string_destroy(&example_string);
- * ```
+ * trb_string_destroy(&example_string);
+ * ]|
  *
  * You should get an output similar to the following:
- * ```
+ * |[
  * I am an example!
- * ```
+ * ]|
  **/
-
-typedef struct _String String;
-
-struct _String {
+struct _TrbString {
 	char *data;
 	usize len;
 	usize capacity;
 };
 
 /**
- * string_init0:
- * @string: The pointer to the string to be initialized (can be `NULL`).
+ * trb_string_init0:
+ * @self: The pointer to the string to be initialized.
  *
- * Creates a new #String.
+ * Creates a new #TrbString.
  *
- * Returns: A new #String. Can return `NULL` if an alloction error occurs.
+ * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
  **/
-String *string_init0(String *string);
+TrbString *trb_string_init0(TrbString *self);
 
 /**
- * string_init:
- * @string: The pointer to the string to be initialized (can be `NULL`).
- * @c_str: The inital contents of the #String.
+ * trb_string_init:
+ * @self: The pointer to the string to be initialized.
+ * @c_str: The inital contents of the #TrbString.
  *
- * Creates a new #String from @str.
+ * Creates a new #TrbString from @str.
  *
- * Returns: A new #String. Can return `NULL` if an alloction error occurs.
+ * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
  **/
-String *string_init(String *string, const char *c_str);
+TrbString *trb_string_init(TrbString *self, const char *c_str);
 
 /**
- * string_init_len:
- * @string: The pointer to the string to be initialized (can be `NULL`).
- * @str: The initial contents of the #String.
+ * trb_string_init_len:
+ * @self: The pointer to the string to be initialized.
+ * @str: The initial contents of the #TrbString.
  * @len: The number of bytes in the @str to use.
  *
- * Creates a new #String with @len bytes of the @str.
+ * Creates a new #TrbString with @len bytes of the @str.
  *
- * Returns: A new #String. Can return `NULL` if an alloction error occurs.
+ * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
  **/
-String *string_init_len(String *string, const char *str, usize len);
+TrbString *trb_string_init_len(TrbString *self, const char *str, usize len);
 
 /**
- * string_init_sized:
- * @string: The pointer to the string to be initialized (can be `NULL`).
+ * trb_string_init_sized:
+ * @self: The pointer to the string to be initialized.
  * @cap: The initial capacity of the string.
  *
- * Creates a new #String with capacity of @cap bytes.
+ * Creates a new #TrbString with capacity of @cap bytes.
  *
- * Returns: A new #String. Can return `NULL` if an alloction error occurs.
+ * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
  **/
-String *string_init_sized(String *string, usize cap);
+TrbString *trb_string_init_sized(TrbString *self, usize cap);
 
 /**
- * string_init_fmt:
- * @string: The pointer to the string to be initialized (can be `NULL`).
- * @fmt: The format of the string that wiil be used as the initial contents of the #String.
+ * trb_string_init_fmt:
+ * @self: The pointer to the string to be initialized.
+ * @fmt: The format of the string that wiil be used as the initial contents of the #TrbString.
  * @...: Arguments.
  *
- * Creates a new #String from the formatted string.
+ * Creates a new #TrbString from the formatted string.
  *
- * Returns: A new #String. Can return `NULL` if an allocate error occurs.
+ * Returns: A new #TrbString. Can return %NULL if an allocate error occurs.
  **/
-String *string_init_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
+TrbString *trb_string_init_fmt(TrbString *self, const char *fmt, ...) TRB_FORMAT(printf, 2, 3);
 
 /**
- * string_init_vfmt:
- * @string: The pointer to the string to be initialized (can be `NULL`).
- * @fmt: The format of the string that will be used as the initial contents of the #String.
+ * trb_string_init_vfmt:
+ * @self: The pointer to the string to be initialized.
+ * @fmt: The format of the string that will be used as the initial contents of the #TrbString.
  * @args: The argument list.
  *
- * Creates a new #String from the formatted string.
+ * Creates a new #TrbString from the formatted string.
  *
- * Returns: A new #String. Can return `NULL` if an alloction error occurs.
+ * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
  **/
-String *string_init_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
+TrbString *trb_string_init_vfmt(TrbString *self, const char *fmt, va_list args) TRB_FORMAT(printf, 2, 0);
 
 /**
- * string_push_front:
- * @string: The string where to add the other string.
+ * trb_string_push_back:
+ * @self: The string where to add the other string.
  * @c_str: The string to be added.
  *
- * Adds the @str to the end of the @string.
+ * Adds the @str to the end of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_back(String *string, const char *c_str);
+bool trb_string_push_back(TrbString *self, const char *c_str);
 
 /**
- * string_push_back_len:
- * @string: The string where to add the other string.
- * @str: The string to be added (can be `NULL`).
+ * trb_string_push_back_len:
+ * @self: The string where to add the other string.
+ * @str: The string to be added.
  * @len: The number of bytes in the @str to use.
  *
- * Adds @len bytes of the @str to the end of the @string.
- * If @str is `NULL`, adds @len zeros to the end of the @string.
+ * Adds @len bytes of the @str to the end of the @self.
+ * If @str is %NULL, adds @len zeros to the end of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_back_len(String *string, const char *str, usize len);
+bool trb_string_push_back_len(TrbString *self, const char *str, usize len);
 
 /**
- * string_push_back_c:
- * @string: The string where to add the character.
+ * trb_string_push_back_c:
+ * @self: The string where to add the character.
  * @c: The character to be added.
  *
  * Adds the character to the end of the string.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_back_c(String *string, char c);
+bool trb_string_push_back_c(TrbString *self, char c);
 
 /**
- * string_push_back_fmt:
- * @string: The string where to add the formatted string
+ * trb_string_push_back_fmt:
+ * @self: The string where to add the formatted string
  * @fmt: The format of the string to be added.
  * @...: Arguments.
  *
- * Adds the formatted string to the end of the @string.
+ * Adds the formatted string to the end of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_back_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
+bool trb_string_push_back_fmt(TrbString *self, const char *fmt, ...) TRB_FORMAT(printf, 2, 3);
 
 /**
- * string_push_back_vfmt:
- * @string: The string where to add the formatted string
+ * trb_string_push_back_vfmt:
+ * @self: The string where to add the formatted string
  * @fmt: The format of the string to be added.
  * @args: The argument list.
  *
- * Adds the formatted string to the end of the @string.
+ * Adds the formatted string to the end of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_back_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
+bool trb_string_push_back_vfmt(TrbString *self, const char *fmt, va_list args) TRB_FORMAT(printf, 2, 0);
 
 /**
- * string_push_front:
- * @string: The string where to add the other string.
+ * trb_string_push_front:
+ * @self: The string where to add the other string.
  * @c_str: The string to be added.
  *
- * Adds the @str to the beginning of the @string.
+ * Adds the @str to the beginning of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_front(String *string, const char *c_str);
+bool trb_string_push_front(TrbString *self, const char *c_str);
 
 /**
- * string_push_front_len:
- * @string: The string where to add the other string.
- * @str: The string to be added (can be `NULL`).
+ * trb_string_push_front_len:
+ * @self: The string where to add the other string.
+ * @str: The string to be added.
  * @len: The number of bytes in @str to use.
  *
- * Adds @len bytes of the @str to the beginning of the @string.
- * If @str is `NULL`, adds @len zeros to the beginning of the @string.
+ * Adds @len bytes of the @str to the beginning of the @self.
+ * If @str is %NULL, adds @len zeros to the beginning of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_front_len(String *string, const char *str, usize len);
+bool trb_string_push_front_len(TrbString *self, const char *str, usize len);
 
 /**
- * string_push_front_c:
- * @string: The string where to add the character.
+ * trb_string_push_front_c:
+ * @self: The string where to add the character.
  * @c: The character to be added.
  *
  * Adds the character to the beginning of the string.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_front_c(String *string, char c);
+bool trb_string_push_front_c(TrbString *self, char c);
 
 /**
- * string_push_front_fmt:
- * @string: The string where to add the formatted string
+ * trb_string_push_front_fmt:
+ * @self: The string where to add the formatted string
  * @fmt: The format of the string to be added.
  * @...: Arguments.
  *
- * Adds the formatted string to the beginning of the @string.
+ * Adds the formatted string to the beginning of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_front_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
+bool trb_string_push_front_fmt(TrbString *self, const char *fmt, ...) TRB_FORMAT(printf, 2, 3);
 
 /**
- * string_push_front_vfmt:
- * @string: The string where to add the formatted string
+ * trb_string_push_front_vfmt:
+ * @self: The string where to add the formatted string
  * @fmt: The format of the string to be added.
  * @args: The argument list.
  *
- * Adds the formatted string to the beginning of the @string.
+ * Adds the formatted string to the beginning of the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_push_front_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
+bool trb_string_push_front_vfmt(TrbString *self, const char *fmt, va_list args) TRB_FORMAT(printf, 2, 0);
 
 /**
- * string_insert:
- * @string: The string where to insert the other string.
- * @index: The position in the @string where the @str should be inserted.
+ * trb_string_insert:
+ * @self: The string where to insert the other string.
+ * @index: The position in the @self where the @str should be inserted.
  * @c_str: The string to be inserted.
  *
- * Inserts the @str into the @string at the given index.
+ * Inserts the @str into the @self at the given index.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_insert(String *string, usize index, const char *c_str);
+bool trb_string_insert(TrbString *self, usize index, const char *c_str);
 
 /**
- * string_insert_len:
- * @string: The string where to insert the other string.
- * @index: The position in the @string where the @str should be inserted.
- * @str: The string to be inserted (can be `NULL`).
+ * trb_string_insert_len:
+ * @self: The string where to insert the other string.
+ * @index: The position in the @self where the @str should be inserted.
+ * @str: The string to be inserted.
  * @len: The number of bytes in the @str to use.
  *
- * Inserts @len bytes of the @str into the @string at the given index.
- * If @str is `NULL`, inserts @len zeros into the @string.
+ * Inserts @len bytes of the @str into the @self at the given index.
+ * If @str is %NULL, inserts @len zeros into the @self.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_insert_len(String *string, usize index, const char *str, usize len);
+bool trb_string_insert_len(TrbString *self, usize index, const char *str, usize len);
 
 /**
- * string_insert_c:
- * @string: The string where to insert the character.
- * @index: The position in the @string where the @c should be inserted.
+ * trb_string_insert_c:
+ * @self: The string where to insert the character.
+ * @index: The position in the @self where the @c should be inserted.
  * @c: The character to be inserted.
  *
  * Inserts the character into the string at the given index.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_insert_c(String *string, usize index, char c);
+bool trb_string_insert_c(TrbString *self, usize index, char c);
 
 /**
- * string_insert_fmt:
- * @string: The string where to insert the formatted string.
- * @index: The position in the @string where the formatted string should be inserted.
+ * trb_string_insert_fmt:
+ * @self: The string where to insert the formatted string.
+ * @index: The position in the @self where the formatted string should be inserted.
  * @fmt: The format of the string to be inserted.
  * @...: Arguments.
  *
- * Inserts the formatted string into the @string at the given index.
+ * Inserts the formatted string into the @self at the given index.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_insert_fmt(String *string, usize index, const char *fmt, ...) FORMAT(printf, 3, 4);
+bool trb_string_insert_fmt(TrbString *self, usize index, const char *fmt, ...) TRB_FORMAT(printf, 3, 4);
 
 /**
- * string_insert_vfmt:
- * @string: The string where to add the formatted string
- * @index: The position in the @string where the formatted string should be inserted.
+ * trb_string_insert_vfmt:
+ * @self: The string where to add the formatted string
+ * @index: The position in the @self where the formatted string should be inserted.
  * @fmt: The format of the string to be inserted.
  * @args: The argument list.
  *
- * Inserts the formatted string into the @string at the given index.
+ * Inserts the formatted string into the @self at the given index.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_insert_vfmt(String *string, usize index, const char *fmt, va_list args) FORMAT(printf, 3, 0);
+bool trb_string_insert_vfmt(TrbString *self, usize index, const char *fmt, va_list args) TRB_FORMAT(printf, 3, 0);
 
 /**
- * string_get:
- * @string: The string where to get.
+ * trb_string_get:
+ * @self: The string where to get.
  * @index: The index of the first byte to be got.
  * @len: The number of bytes to be got.
- * @ret: The pointer to retrieve the data (can be `NULL`).
+ * @ret: (optional) (out): The pointer to retrieve the data.
  *
  * Gets @len bytes in the string starting from @index.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_get(String *string, usize index, usize len, char *ret);
+bool trb_string_get(TrbString *self, usize index, usize len, char *ret);
 
 /**
- * string_get_c:
- * @string: The string where to get.
+ * trb_string_get_c:
+ * @self: The string where to get.
  * @index: The position of the character.
- * @ret: The pointer to retrieve the character.
+ * @ret: (out): The pointer to retrieve the character.
  *
  * Gets the character from the string.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_get_c(String *string, usize index, char *ret);
+bool trb_string_get_c(TrbString *self, usize index, char *ret);
 
 /**
- * string_overwrite:
- * @string: The string where to overwrite.
+ * trb_string_overwrite:
+ * @self: The string where to overwrite.
  * @index: The index of the first byte to be overwriten.
- * @c_str: The string that should overwrite some part of the @string.
+ * @c_str: The string that should overwrite some part of the @self.
  *
- * Overwrites the @string at the given index with the @str.
+ * Overwrites the @self at the given index with the @str.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_overwrite(String *string, usize index, const char *c_str);
+bool trb_string_overwrite(TrbString *self, usize index, const char *c_str);
 
 /**
- * string_overwrite_len:
- * @string: The string where to overwrite.
+ * trb_string_overwrite_len:
+ * @self: The string where to overwrite.
  * @index: The index of the first byte to be overwriten.
- * @str: The string that should overwrite some part of the @string (can be `NULL`).
+ * @str: The string that should overwrite some part of the @self.
  * @len: The number of bytes in the @str to use.
  *
- * Overwrites @len bytes in the @string at the given index with the @str.
- * If @str is `NULL`, overwrites @len bytes in the @string with zeroes.
+ * Overwrites @len bytes in the @self at the given index with the @str.
+ * If @str is %NULL, overwrites @len bytes in the @self with zeroes.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_overwrite_len(String *string, usize index, const char *str, usize len);
+bool trb_string_overwrite_len(TrbString *self, usize index, const char *str, usize len);
 
 /**
- * string_overwrite_c:
- * @string: The string where to overwrite.
+ * trb_string_overwrite_c:
+ * @self: The string where to overwrite.
  * @index: The index of the character to be overwriten.
- * @c: The character the should overwrite some character in the @string.
+ * @c: The character the should overwrite some character in the @self.
  *
- * Overwrites the character in the @string at the given index with @c.
+ * Overwrites the character in the @self at the given index with @c.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_overwrite_c(String *string, usize index, char c);
+bool trb_string_overwrite_c(TrbString *self, usize index, char c);
 
 /**
- * string_overwrite_fmt:
- * @string: The string where to overwrite.
+ * trb_string_overwrite_fmt:
+ * @self: The string where to overwrite.
  * @index: The index of the first byte to be overwriten.
- * @fmt: The format of the string that should overwrite some part of the @string.
+ * @fmt: The format of the string that should overwrite some part of the @self.
  * @...: Arguments.
  *
- * Overwrites the @string at the given index with the formatted string.
+ * Overwrites the @self at the given index with the formatted string.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_overwrite_fmt(String *string, usize index, const char *fmt, ...) FORMAT(printf, 3, 4);
+bool trb_string_overwrite_fmt(TrbString *self, usize index, const char *fmt, ...) TRB_FORMAT(printf, 3, 4);
 
 /**
- * string_overwrite_vfmt:
- * @string: The string where to overwrite.
+ * trb_string_overwrite_vfmt:
+ * @self: The string where to overwrite.
  * @index: The index of the first byte to be overwriten.
- * @fmt: The format of the string that should overwrite some part of the @string.
+ * @fmt: The format of the string that should overwrite some part of the @self.
  * @args: The argument list.
  *
- * Overwrites the @string at the given index with the formatted string.
+ * Overwrites the @self at the given index with the formatted string.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_overwrite_vfmt(String *string, usize index, const char *fmt, va_list args) FORMAT(printf, 3, 0);
+bool trb_string_overwrite_vfmt(TrbString *self, usize index, const char *fmt, va_list args) TRB_FORMAT(printf, 3, 0);
 
 /**
- * string_assign:
- * @string: The string which contents are to be replaced.
- * @c_str: The string that should replace contents of the @string.
+ * trb_string_assign:
+ * @self: The string which contents are to be replaced.
+ * @c_str: The string that should replace contents of the @self.
  *
- * Replaces contents of the @string with the @str.
+ * Replaces contents of the @self with the @str.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_assign(String *string, const char *c_str);
+bool trb_string_assign(TrbString *self, const char *c_str);
 
 /**
- * string_assign_len:
- * @string: The string which contents are to be replaced.
- * @str: The string that should replace contents of the @string.
+ * trb_string_assign_len:
+ * @self: The string which contents are to be replaced.
+ * @str: The string that should replace contents of the @self.
  * @len: The number of bytes in the @str to use.
  *
- * Replaces contents of the @string with @len bytes of the @str.
+ * Replaces contents of the @self with @len bytes of the @str.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_assign_len(String *string, const char *str, usize len);
+bool trb_string_assign_len(TrbString *self, const char *str, usize len);
 
 /**
- * string_erase:
- * @string: The string where to erase.
+ * trb_string_erase:
+ * @self: The string where to erase.
  * @index: The index of the first byte to be removed.
  * @len: The number of bytes to be removed.
- * @ret: The pointer to retrieve removed data (can be `NULL`).
+ * @ret: (optional) (out): The pointer to retrieve removed data.
  *
  * Erases @len bytes in the string starting from @index.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_erase(String *string, usize index, usize len, char *ret);
+bool trb_string_erase(TrbString *self, usize index, usize len, char *ret);
 
 /**
- * string_erase_c:
- * @string: The string where to erase.
+ * trb_string_erase_c:
+ * @self: The string where to erase.
  * @index: The index of the character to be removed.
- * @ret: The pointer to retrieve removed character (can be `NULL`).
+ * @ret: (optional) (out): The pointer to retrieve removed character.
  *
  * Erases character in the string at the given index.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_erase_c(String *string, usize index, char *ret);
+bool trb_string_erase_c(TrbString *self, usize index, char *ret);
 
 /**
- * string_cmp:
+ * trb_string_cmp:
  * @a: The first string to be compared.
  * @b: The second string to be compared.
  *
@@ -430,81 +433,81 @@ bool string_erase_c(String *string, usize index, char *ret);
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 string_cmp(const String *a, const String *b);
+i32 trb_string_cmp(const TrbString *a, const TrbString *b);
 
 /**
- * string_assign_fmt:
- * @string: The string which contents are to be replaced.
- * @fmt: The format of the string that should replace contents of the @string.
+ * trb_string_assign_fmt:
+ * @self: The string which contents are to be replaced.
+ * @fmt: The format of the string that should replace contents of the @self.
  * @...: Arguments.
  *
- * Replaces contents of the @string with the formatted string.
+ * Replaces contents of the @self with the formatted string.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_assign_fmt(String *string, const char *fmt, ...) FORMAT(printf, 2, 3);
+bool trb_string_assign_fmt(TrbString *self, const char *fmt, ...) TRB_FORMAT(printf, 2, 3);
 
 /**
- * string_assign_vfmt:
- * @string: The string which contents are to be replaced.
- * @fmt: The format of the string that should replace contents of the @string.
+ * trb_string_assign_vfmt:
+ * @self: The string which contents are to be replaced.
+ * @fmt: The format of the string that should replace contents of the @self.
  * @args: The argument list.
  *
- * Replaces contents of the @string with the formatted string.
+ * Replaces contents of the @self with the formatted string.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
-bool string_assign_vfmt(String *string, const char *fmt, va_list args) FORMAT(printf, 2, 0);
+bool trb_string_assign_vfmt(TrbString *self, const char *fmt, va_list args) TRB_FORMAT(printf, 2, 0);
 
 /**
- * string_steal0:
- * @string: The string where to steal the buffer.
- * @len: The pointer to retrieve the length of the string (can be `NULL`).
+ * trb_string_steal0:
+ * @self: The string where to steal the buffer.
+ * @len: (optional) (out): The pointer to retrieve the length of the string.
  *
  * Steals the string buffer.
- * String's buffer becomes `NULL`.
+ * TrbString's buffer becomes %NULL.
  *
  * Returns: The buffer on success.
  **/
-char *string_steal0(String *string, usize *len);
+char *trb_string_steal0(TrbString *self, usize *len);
 
 /**
- * string_steal:
- * @string: The string where to steal the buffer.
- * @len: The pointer to retrieve the length of the string (can be `NULL`).
+ * trb_string_steal:
+ * @self: The string where to steal the buffer.
+ * @len: (optional) (out): The pointer to retrieve the length of the string.
  *
  * Steals the string buffer.
- * String creates a new buffer.
+ * TrbString creates a new buffer.
  *
  * Returns: The buffer on success.
  **/
-char *string_steal(String *string, usize *len);
+char *trb_string_steal(TrbString *self, usize *len);
 
 /**
- * string_destroy:
- * @string: The string which buffer is to be freed.
+ * trb_string_destroy:
+ * @self: The string which buffer is to be freed.
  *
  * Frees the string buffer.
  **/
-void string_destroy(String *string);
+void trb_string_destroy(TrbString *self);
 
 /**
- * string_free:
- * @string: The string to be freed.
+ * trb_string_free:
+ * @self: The string to be freed.
  *
  * Frees the string completely.
  **/
-void string_free(String *string);
+void trb_string_free(TrbString *self);
 
 /**
- * string_copy:
- * @dst: The pointer to the destination string (can be `NULL`).
+ * trb_string_copy:
+ * @dst: The pointer to the destination string.
  * @src: The string to be copied.
  *
  * Creates a copy of the string.
  *
- * Returns: A copy of the array. Can return `NULL` if an allocation error occurs.
+ * Returns: A copy of the array. Can return %NULL if an allocation error occurs.
  **/
-String *string_copy(String *dst, const String *src);
+TrbString *trb_string_copy(TrbString *dst, const TrbString *src);
 
 #endif /* end of include guard: STRING_H_WW4E6R5D */

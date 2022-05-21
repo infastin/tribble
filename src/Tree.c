@@ -12,32 +12,55 @@ typedef enum {
 } dir_t;
 
 #define height(n) ((n) == NULL ? 0 : (n)->height)
-#define update_height(n) ((n)->height = max(height((n)->left), height((n)->right)) + 1)
-#define balance(n) ((n) == NULL ? 0 : height((n)->right) - height((n)->left))
+#define update_height(n) ((n)->height = trb_max(height((n)->left), height((n)->right)) + 1)
+#define balance(n) ((isize) ((n) == NULL ? 0 : height((n)->right) - height((n)->left)))
 
-Tree *tree_init(Tree *tree, CmpFunc cmp_func)
+TrbTree *trb_tree_init(TrbTree *self, TrbCmpFunc cmp_func)
 {
-	return_val_if_fail(cmp_func != NULL, NULL);
+	trb_return_val_if_fail(cmp_func != NULL, NULL);
 
-	if (tree == NULL) {
-		tree = talloc(Tree, 1);
+	if (self == NULL) {
+		self = trb_talloc(TrbTree, 1);
 
-		if (tree == NULL) {
-			msg_error("couldn't allocate memory for the tree!");
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the tree!");
 			return NULL;
 		}
 	}
 
-	tree->root = NULL;
-	tree->cmp_func = cmp_func;
+	self->root = NULL;
+	self->cmp_func = cmp_func;
+	self->with_data = FALSE;
+	self->data = NULL;
 
-	return tree;
+	return self;
 }
 
-static void __tree_rotate(Tree *tree, TreeNode *n, dir_t dir)
+TrbTree *trb_tree_init_data(TrbTree *self, TrbCmpDataFunc cmpd_func, void *data)
 {
-	TreeNode *c;
-	TreeNode *p = n->parent;
+	trb_return_val_if_fail(cmpd_func != NULL, NULL);
+
+	if (self == NULL) {
+		self = trb_talloc(TrbTree, 1);
+
+		if (self == NULL) {
+			trb_msg_error("couldn't allocate memory for the tree!");
+			return NULL;
+		}
+	}
+
+	self->root = NULL;
+	self->cmpd_func = cmpd_func;
+	self->with_data = TRUE;
+	self->data = data;
+
+	return self;
+}
+
+static void __trb_tree_rotate(TrbTree *self, TrbTreeNode *n, dir_t dir)
+{
+	TrbTreeNode *c;
+	TrbTreeNode *p = n->parent;
 
 	if (dir == LEFT) {
 		c = n->right;
@@ -67,25 +90,25 @@ static void __tree_rotate(Tree *tree, TreeNode *n, dir_t dir)
 		else
 			p->right = c;
 	} else {
-		tree->root = c;
+		self->root = c;
 	}
 }
 
-static void __tree_rebalance(Tree *tree, TreeNode *pivot, TreeNode *node)
+static void __trb_tree_rebalance(TrbTree *self, TrbTreeNode *pivot, TrbTreeNode *node)
 {
-	TreeNode *current = node;
-	TreeNode *pivot_parent = (pivot == NULL) ? NULL : pivot->parent;
+	TrbTreeNode *current = node;
+	TrbTreeNode *pivot_parent = (pivot == NULL) ? NULL : pivot->parent;
 
 	while (current != pivot_parent) {
-		current->height = max(height(current->left), height(current->right)) + 1;
+		current->height = trb_max(height(current->left), height(current->right)) + 1;
 		current = current->parent;
 	}
 
 	if (pivot == NULL || (balance(pivot) > -2 && balance(pivot) < 2))
 		return;
 
-	dir_t dir;      // the direction of the imbalance
-	TreeNode *bad;  // the child of the pivot node in the direction of the imbalance
+	dir_t dir;         // the direction of the imbalance
+	TrbTreeNode *bad;  // the child of the pivot node in the direction of the imbalance
 
 	if (balance(pivot) == -2) {
 		dir = LEFT;
@@ -96,32 +119,37 @@ static void __tree_rebalance(Tree *tree, TreeNode *pivot, TreeNode *node)
 	}
 
 	if ((balance(bad) < 0) != dir) {
-		__tree_rotate(tree, pivot, RIGHT - dir);
+		__trb_tree_rotate(self, pivot, RIGHT - dir);
 	} else {
-		__tree_rotate(tree, bad, dir);
+		__trb_tree_rotate(self, bad, dir);
 		update_height(bad);
-		__tree_rotate(tree, pivot, RIGHT - dir);
+		__trb_tree_rotate(self, pivot, RIGHT - dir);
 	}
 
 	update_height(pivot);
 	update_height(pivot->parent);
 }
 
-bool tree_insert(Tree *tree, TreeNode *node)
+bool trb_tree_insert(TrbTree *self, TrbTreeNode *node)
 {
-	return_val_if_fail(tree != NULL, FALSE);
-	return_val_if_fail(node != NULL, FALSE);
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(node != NULL, FALSE);
 
-	if (tree->root == NULL) {
-		tree->root = node;
+	if (self->root == NULL) {
+		self->root = node;
 		return TRUE;
 	}
 
-	TreeNode *current = tree->root;
-	TreeNode *pivot = NULL;
+	TrbTreeNode *current = self->root;
+	TrbTreeNode *pivot = NULL;
 
 	while (1) {
-		i32 cmp = tree->cmp_func(current, node);
+		i32 cmp;
+
+		if (self->with_data)
+			cmp = self->cmpd_func(current, node, self->data);
+		else
+			cmp = self->cmp_func(current, node);
 
 		if (balance(current) != 0)
 			pivot = current;
@@ -146,17 +174,17 @@ bool tree_insert(Tree *tree, TreeNode *node)
 			continue;
 		}
 
-		msg_warn("found the same entry in the tree!");
+		trb_msg_warn("found the same entry in the tree!");
 		return FALSE;
 	}
 
 	node->parent = current;
-	__tree_rebalance(tree, pivot, node->parent);
+	__trb_tree_rebalance(self, pivot, node->parent);
 
 	return TRUE;
 }
 
-static TreeNode *__tree_remove_prepare(Tree *tree, TreeNode *node)
+static TrbTreeNode *__trb_tree_remove_prepare(TrbTree *self, TrbTreeNode *node)
 {
 	if (node->left == NULL && node->right == NULL)
 		return node;
@@ -173,14 +201,14 @@ static TreeNode *__tree_remove_prepare(Tree *tree, TreeNode *node)
 	return node;
 }
 
-void tree_remove(Tree *tree, TreeNode *node)
+void trb_tree_remove(TrbTree *self, TrbTreeNode *node)
 {
-	return_if_fail(tree != NULL);
-	return_if_fail(node != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(node != NULL);
 
-	TreeNode *s = __tree_remove_prepare(tree, node);
-	TreeNode *current = s->parent;
-	TreeNode *pivot = NULL;
+	TrbTreeNode *s = __trb_tree_remove_prepare(self, node);
+	TrbTreeNode *current = s->parent;
+	TrbTreeNode *pivot = NULL;
 
 	while (current != NULL) {
 		if (balance(current) != 0) {
@@ -194,7 +222,7 @@ void tree_remove(Tree *tree, TreeNode *node)
 	if (pivot == node)
 		pivot = s;
 
-	TreeNode *a;
+	TrbTreeNode *a;
 
 	if (node == s) {
 		s = NULL;
@@ -224,14 +252,14 @@ void tree_remove(Tree *tree, TreeNode *node)
 		}
 	}
 
-	if (tree->root == node)
-		tree->root = s;
+	if (self->root == node)
+		self->root = s;
 	else if (node->parent->left == node)
 		node->parent->left = s;
 	else if (node->parent->right == node)
 		node->parent->right = s;
 
-	__tree_rebalance(tree, pivot, a);
+	__trb_tree_rebalance(self, pivot, a);
 
 	node->left = NULL;
 	node->right = NULL;
@@ -239,22 +267,29 @@ void tree_remove(Tree *tree, TreeNode *node)
 	node->height = 1;
 }
 
-Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
+TrbTree *trb_tree_copy(TrbTree *dst, const TrbTree *src, TrbCopyFunc copy_func, bool *status)
 {
-	return_val_if_fail(src != NULL, NULL);
-	return_val_if_fail(copy_func != NULL, NULL);
+	trb_return_val_if_fail(src != NULL, NULL);
+	trb_return_val_if_fail(copy_func != NULL, NULL);
 
 	if (dst == NULL) {
-		dst = talloc(Tree, 1);
+		dst = trb_talloc(TrbTree, 1);
 
 		if (dst == NULL) {
-			msg_error("couldn't allocate memory for a copy of the tree!");
+			trb_msg_error("couldn't allocate memory for a copy of the tree!");
 			return NULL;
 		}
 	}
 
-	dst->cmp_func = src->cmp_func;
 	dst->root = NULL;
+
+	dst->with_data = src->with_data;
+	if (dst->with_data)
+		dst->cmpd_func = src->cmpd_func;
+	else
+		dst->cmp_func = src->cmp_func;
+
+	dst->data = src->data;
 
 	if (status != NULL)
 		*status = TRUE;
@@ -265,7 +300,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 	dst->root = copy_func(src->root);
 
 	if (dst->root == NULL) {
-		msg_error("couldn't allocate memory for a node of a copy of the tree!");
+		trb_msg_error("couldn't allocate memory for a node of a copy of the tree!");
 
 		if (status != NULL)
 			*status = FALSE;
@@ -273,15 +308,15 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 		return dst;
 	}
 
-	TreeNode *copy = dst->root;
-	TreeNode *orig = src->root;
+	TrbTreeNode *copy = dst->root;
+	TrbTreeNode *orig = src->root;
 
 	while (orig != NULL) {
 		if (orig->left != NULL && copy->left == NULL) {
 			copy->left = copy_func(orig->left);
 
 			if (copy->left == NULL) {
-				msg_error("couldn't allocate memory for a node of a copy of the tree!");
+				trb_msg_error("couldn't allocate memory for a node of a copy of the tree!");
 
 				if (status != NULL)
 					*status = FALSE;
@@ -297,7 +332,7 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 			copy->right = copy_func(orig->right);
 
 			if (copy->right == NULL) {
-				msg_error("couldn't allocate memory for a node of a copy of the tree!");
+				trb_msg_error("couldn't allocate memory for a node of a copy of the tree!");
 
 				if (status != NULL)
 					*status = FALSE;
@@ -318,15 +353,15 @@ Tree *tree_copy(Tree *dst, const Tree *src, CopyFunc copy_func, bool *status)
 	return dst;
 }
 
-void tree_inorder(Tree *tree, UserFunc func, void *userdata)
+void trb_tree_inorder(TrbTree *self, TrbUserFunc func, void *userdata)
 {
-	return_if_fail(tree != NULL);
-	return_if_fail(func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(func != NULL);
 
-	if (tree->root == NULL)
+	if (self->root == NULL)
 		return;
 
-	TreeNode *current = tree->root;
+	TrbTreeNode *current = self->root;
 
 	while (current != NULL) {
 		if (current->left == NULL) {
@@ -335,7 +370,7 @@ void tree_inorder(Tree *tree, UserFunc func, void *userdata)
 			continue;
 		}
 
-		TreeNode *pre = current->left;
+		TrbTreeNode *pre = current->left;
 
 		while (pre->right != NULL && pre->right != current)
 			pre = pre->right;
@@ -351,15 +386,15 @@ void tree_inorder(Tree *tree, UserFunc func, void *userdata)
 	}
 }
 
-void tree_preorder(Tree *tree, UserFunc func, void *userdata)
+void trb_tree_preorder(TrbTree *self, TrbUserFunc func, void *userdata)
 {
-	return_if_fail(tree != NULL);
-	return_if_fail(func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(func != NULL);
 
-	if (tree->root == NULL)
+	if (self->root == NULL)
 		return;
 
-	TreeNode *current = tree->root;
+	TrbTreeNode *current = self->root;
 
 	while (current != NULL) {
 		if (current->left == NULL) {
@@ -368,7 +403,7 @@ void tree_preorder(Tree *tree, UserFunc func, void *userdata)
 			continue;
 		}
 
-		TreeNode *pre = current->left;
+		TrbTreeNode *pre = current->left;
 
 		while (pre->right != NULL && pre->right != current)
 			pre = pre->right;
@@ -384,35 +419,35 @@ void tree_preorder(Tree *tree, UserFunc func, void *userdata)
 	}
 }
 
-static void __tree_postorder_reverse(TreeNode *from, TreeNode *to)
+static void __trb_tree_postorder_reverse(TrbTreeNode *from, TrbTreeNode *to)
 {
 	if (from == to)
 		return;
 
-	TreeNode *prev = from;
-	TreeNode *node = from->right;
+	TrbTreeNode *prev = from;
+	TrbTreeNode *node = from->right;
 
 	while (prev != to) {
-		TreeNode *next = node->right;
+		TrbTreeNode *next = node->right;
 		node->right = prev;
 		prev = node;
 		node = next;
 	}
 }
 
-void tree_postorder(Tree *tree, UserFunc func, void *userdata)
+void trb_tree_postorder(TrbTree *self, TrbUserFunc func, void *userdata)
 {
-	return_if_fail(tree != NULL);
-	return_if_fail(func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(func != NULL);
 
-	if (tree->root == NULL)
+	if (self->root == NULL)
 		return;
 
-	TreeNode dummy;
-	tree_node_init(&dummy);
-	dummy.left = tree->root;
+	TrbTreeNode dummy;
+	trb_tree_node_init(&dummy);
+	dummy.left = self->root;
 
-	TreeNode *current = &dummy;
+	TrbTreeNode *current = &dummy;
 
 	while (current != NULL) {
 		if (current->left == NULL) {
@@ -420,15 +455,15 @@ void tree_postorder(Tree *tree, UserFunc func, void *userdata)
 			continue;
 		}
 
-		TreeNode *pre = current->left;
+		TrbTreeNode *pre = current->left;
 
 		while (pre->right != NULL && pre->right != current)
 			pre = pre->right;
 
 		if (pre->right == current) {
-			TreeNode *node = pre;
+			TrbTreeNode *node = pre;
 
-			__tree_postorder_reverse(current->left, pre);
+			__trb_tree_postorder_reverse(current->left, pre);
 
 			while (node != current->left) {
 				func(node, userdata);
@@ -436,7 +471,7 @@ void tree_postorder(Tree *tree, UserFunc func, void *userdata)
 			}
 
 			func(node, userdata);
-			__tree_postorder_reverse(pre, current->left);
+			__trb_tree_postorder_reverse(pre, current->left);
 
 			pre->right = NULL;
 			current = current->right;
@@ -447,15 +482,15 @@ void tree_postorder(Tree *tree, UserFunc func, void *userdata)
 	}
 }
 
-void tree_destroy(Tree *tree, FreeFunc free_func)
+void trb_tree_destroy(TrbTree *self, TrbFreeFunc free_func)
 {
-	return_if_fail(tree != NULL);
-	return_if_fail(free_func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(free_func != NULL);
 
-	if (tree->root == NULL)
+	if (self->root == NULL)
 		return;
 
-	TreeNode *current = tree->root;
+	TrbTreeNode *current = self->root;
 
 	while (current != NULL) {
 		if (current->left != NULL)
@@ -463,7 +498,7 @@ void tree_destroy(Tree *tree, FreeFunc free_func)
 		else if (current->right != NULL)
 			current = current->right;
 		else {
-			TreeNode *parent = current->parent;
+			TrbTreeNode *parent = current->parent;
 
 			if (parent != NULL) {
 				if (parent->left == current)
@@ -477,20 +512,25 @@ void tree_destroy(Tree *tree, FreeFunc free_func)
 		}
 	}
 
-	tree->root = NULL;
+	self->root = NULL;
 }
 
-TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
+TrbTreeNode *trb_tree_lookup(const TrbTree *self, const TrbTreeNode *node)
 {
-	return_val_if_fail(tree != NULL, NULL);
+	trb_return_val_if_fail(self != NULL, NULL);
 
-	if (tree->root == NULL)
+	if (self->root == NULL)
 		return NULL;
 
-	TreeNode *current = tree->root;
+	TrbTreeNode *current = self->root;
 
 	while (current != NULL) {
-		i32 cmp = tree->cmp_func(current, node);
+		i32 cmp;
+
+		if (self->with_data)
+			cmp = self->cmpd_func(current, node, self->data);
+		else
+			cmp = self->cmp_func(current, node);
 
 		if (cmp > 0)
 			current = current->left;
@@ -503,11 +543,11 @@ TreeNode *tree_lookup(const Tree *tree, const TreeNode *node)
 	return NULL;
 }
 
-void tree_free(Tree *tree, FreeFunc free_func)
+void trb_tree_free(TrbTree *self, TrbFreeFunc free_func)
 {
-	return_if_fail(tree != NULL);
-	return_if_fail(free_func != NULL);
+	trb_return_if_fail(self != NULL);
+	trb_return_if_fail(free_func != NULL);
 
-	tree_destroy(tree, free_func);
-	free(tree);
+	trb_tree_destroy(self, free_func);
+	free(self);
 }

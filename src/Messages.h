@@ -17,51 +17,109 @@
  **/
 
 typedef enum {
-	MESSAGE_ERROR,
-	MESSAGE_CRITICAL,
-	MESSAGE_WARNING,
-	MESSAGE_PRINT,
-	MESSAGE_INFO,
-	MESSAGE_DEBUG
-} MessageFlags;
+	TRB_MESSAGE_ERROR,
+	TRB_MESSAGE_CRITICAL,
+	TRB_MESSAGE_WARNING,
+	TRB_MESSAGE_PRINT,
+	TRB_MESSAGE_INFO,
+	TRB_MESSAGE_DEBUG
+} TrbMessageFlags;
 
-void message(MessageFlags flag, const char *msg, ...) FORMAT(printf, 2, 3);
-void message_func(MessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...) FORMAT(printf, 5, 6);
-void return_if_fail_warning(const char *file, usize line, const char *func, const char *expr);
-void exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr);
+/**
+ * trb_message:
+ * @flag: The type of message.
+ * @msg: The format string.
+ * @...: Arguments.
+ *
+ * Prints a message.
+ **/
+void trb_message(TrbMessageFlags flag, const char *msg, ...) TRB_FORMAT(printf, 2, 3);
 
-#define return_if_fail(expr)                                        \
-	if (!(expr)) {                                                  \
-		return_if_fail_warning(STRFILE, USIZELINE, STRFUNC, #expr); \
-		return;                                                     \
+void trb_message_func(TrbMessageFlags flag, const char *file, usize line, const char *func, const char *msg, ...) TRB_FORMAT(printf, 5, 6);
+
+void trb_return_if_fail_warning(const char *file, usize line, const char *func, const char *expr);
+
+void trb_exit_if_fail_critical(const char *file, usize line, const char *func, const char *expr);
+
+/**
+ * trb_msg_error:
+ * @fmt: The format string.
+ * @...: Arguments.
+ *
+ * Prints an error message. The message is printed out to stderr.
+ **/
+#define trb_msg_error(fmt...) (trb_message_func(TRB_MESSAGE_ERROR, TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, fmt))
+
+/**
+ * trb_msg_warn:
+ * @fmt: The format string.
+ * @...: Arguments.
+ *
+ * Prints a warning message. The message is printed out to stderr.
+ **/
+#define trb_msg_warn(fmt...) (trb_message_func(TRB_MESSAGE_WARNING, TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, fmt))
+
+/**
+ * trb_msg_critical:
+ * @fmt: The format string.
+ * @...: Arguments.
+ *
+ * Prints a critical message. The message is printed out to stderr.
+ **/
+#define trb_msg_critical(fmt...) (trb_message_func(TRB_MESSAGE_CRITICAL, TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, fmt))
+
+/**
+ * trb_msg_info:
+ * @fmt: The format string.
+ * @...: Arguments.
+ *
+ * Prints an infomation message. The message is printed out to stdout.
+ **/
+#define trb_msg_info(fmt...) (trb_message_func(TRB_MESSAGE_INFO, TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, fmt))
+
+/**
+ * trb_msg_debug:
+ * @fmt: The format string.
+ * @...: Arguments.
+ *
+ * Prints a debug message. The message is printed out to stdout.
+ **/
+#define trb_msg_debug(fmt...) (trb_message_func(TRB_MESSAGE_DEBUG, TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, fmt))
+
+/**
+ * trb_msg_print:
+ * @fmt: The format string.
+ * @...: Arguments.
+ *
+ * Prints a message. The message is printed out to stdout.
+ **/
+#define trb_msg_print(fmt...) (trb_message_func(TRB_MESSAGE_PRINT, TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, fmt))
+
+#define trb_return_if_fail(expr)                                                    \
+	if (!(expr)) {                                                                  \
+		trb_return_if_fail_warning(TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, #expr); \
+		return;                                                                     \
 	}
 
-#define return_val_if_fail(expr, val)                               \
-	if (!(expr)) {                                                  \
-		return_if_fail_warning(STRFILE, USIZELINE, STRFUNC, #expr); \
-		return (val);                                               \
+#define trb_return_val_if_fail(expr, val)                                           \
+	if (!(expr)) {                                                                  \
+		trb_return_if_fail_warning(TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, #expr); \
+		return (val);                                                               \
 	}
 
-#define do_if_fail(expr) \
-	if (!(expr) && (return_if_fail_warning(STRFILE, USIZELINE, STRFUNC, #expr), 1))
+#define trb_do_if_fail(expr) \
+	if (!(expr) && (trb_return_if_fail_warning(TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, #expr), 1))
 
-#define exit_if_fail(expr)                                         \
-	if (!(expr)) {                                                 \
-		exit_if_fail_critical(STRFILE, USIZELINE, STRFUNC, #expr); \
-		exit(EXIT_FAILURE);                                        \
+#define trb_exit_if_fail(expr)                                                     \
+	if (!(expr)) {                                                                 \
+		trb_exit_if_fail_critical(TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, #expr); \
+		exit(EXIT_FAILURE);                                                        \
 	}
 
-#define exit_with_code_if_fail(expr, code)                         \
-	if (!(expr)) {                                                 \
-		exit_if_fail_critical(STRFILE, USIZELINE, STRFUNC, #expr); \
-		exit(code);                                                \
+#define trb_exit_with_code_if_fail(expr, code)                                     \
+	if (!(expr)) {                                                                 \
+		trb_exit_if_fail_critical(TRB_STRFILE, TRB_USIZELINE, TRB_STRFUNC, #expr); \
+		exit(code);                                                                \
 	}
-
-#define msg_error(...) (message_func(MESSAGE_ERROR, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
-#define msg_warn(...) (message_func(MESSAGE_WARNING, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
-#define msg_critical(...) (message_func(MESSAGE_CRITICAL, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
-#define msg_info(...) (message_func(MESSAGE_INFO, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
-#define msg_debug(...) (message_func(MESSAGE_DEBUG, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
-#define msg_print(...) (message_func(MESSAGE_PRINT, STRFILE, USIZELINE, STRFUNC, __VA_ARGS__))
 
 #endif /* end of include guard: MESSAGES_H_V1NHZAPH */

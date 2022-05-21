@@ -1,5 +1,5 @@
 project('libtribble', 'c',
-  version: '0.0.1',
+  version: '1.0.0',
   default_options: [
     'buildtype=debug',
     'warning_level=1',
@@ -8,20 +8,26 @@ project('libtribble', 'c',
   license: 'MIT'
 )
 
-cxx = meson.get_compiler('c')
+version_arr = meson.project_version().split('.')
 
-cflags = []
+apiversion = version_arr[0]
+libversion = meson.project_version()
 
-if cxx.get_id() == 'gcc' or cxx.get_id() == 'clang'
-  cflags = [
-    '-pipe',
-    '-funsigned-char',
-  ]
-endif
+pkg_api_name = '@0@-@1@'.format(meson.project_name(), apiversion)
 
-add_project_arguments(cxx.get_supported_arguments(cflags), language: 'c')
+add_project_arguments([
+  '-pipe',
+  '-funsigned-char',
+], language: 'c')
+
+datadir = get_option('datadir')
+libdir  = get_option('libdir')
+girdir  = get_option('datadir') / 'gir-1.0'
+
+gnome = import('gnome')
 
 subdir('src')
+subdir('doc')
 subdir('test')
 
 executable('main', 'main.c',
@@ -31,7 +37,8 @@ executable('main', 'main.c',
 pkg_config = import('pkgconfig')
 pkg_config.generate(
   libraries: libtribble,
-  version: '0.0.1',
+  version: libversion,
+  filebase: pkg_api_name,
   name: 'tribble',
   description: 'Some C library',
 )
