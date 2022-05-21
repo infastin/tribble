@@ -148,7 +148,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
       <div class="docblock">
         <p>Removes all entries from the hash&nbsp;table.</p>
 <p>This example shows how to use this&nbsp;function:</p>
-<div class="highlight"><pre><span></span><span class="n">TrbHashTable</span> <span class="n">ht</span><span class="p">;</span>
+<div class="codehilite"><pre><span></span><span class="n">TrbHashTable</span> <span class="n">ht</span><span class="p">;</span>
 <span class="n">trb_hash_table_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mh">0xdeadbeef</span><span class="p">,</span> <span class="n">jhash</span><span class="p">,</span> <span class="p">(</span><span class="n">TrbCmpFunc</span><span class="p">)</span> <span class="n">strcmp</span><span class="p">);</span>
 
 <span class="n">trb_hash_table_insert</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="n">trb_get_arr</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s">&quot;Mike Urasawa&quot;</span><span class="p">),</span> <span class="n">trb_get_ptr</span><span class="p">(</span><span class="n">u64</span><span class="p">,</span> <span class="mi">42</span><span class="p">));</span>
