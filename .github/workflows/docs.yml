@@ -1,4 +1,4 @@
-name: Build
+name: Docs
 
 on:
   push:
@@ -26,5 +26,5 @@ jobs:
       run: sudo pip3 install meson gi-docgen && sudo apt install libgirepository1.0-dev ninja-build
     - name: Init Meson
       run: make init
-    - name: Run build
-      run: make build
+    - name: Make docs
+      run: make doc

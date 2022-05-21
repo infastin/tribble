@@ -2,6 +2,3 @@ build/
 .cache/
 tags
 compile_commands.json
-docs/assets/*
-docs/built_doc/*
-docs/hotdoc-private-*/*
