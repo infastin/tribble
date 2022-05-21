@@ -1,0 +1,308 @@
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tribble.HashTableIter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="utf-8" />
+
+  
+  <meta property="og:type" content="website"/>
+
+  
+
+  
+  <meta property="og:title" content="Tribble.HashTableIter"/>
+  <meta property="og:description" content="Reference for Tribble.HashTableIter"/>
+  <meta name="twitter:title" content="Tribble.HashTableIter"/>
+  <meta name="twitter:description" content="Reference for Tribble.HashTableIter"/>
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+
+  
+  
+  
+  
+
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  
+
+  
+  
+  <script src="fzy.js"></script>
+  <script src="search.js"></script>
+  
+  <script src="main.js"></script>
+  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+  <div id="body-wrapper" tabindex="-1">
+
+    <nav class="sidebar devhelp-hidden">
+      
+      
+      <div class="search section">
+        <form id="search-form" autocomplete="off">
+          <input id="search-input" type="text" name="do-not-autocomplete" placeholder="Click, or press 's' to search" autocomplete="off"/>
+        </form>
+      </div>
+      
+      <div class="section namespace">
+        <h3><a href="index.html">Tribble</a></h3>
+        <p>API Version: 1</p>
+        
+        <p>Library Version: 1.0.0</p>
+        
+      </div>
+      
+<div class="section">
+  <h5>Type</h5>
+  <div class="links">
+    <a class="current" href="struct.HashTableIter.html#description">HashTableIter</a>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="section">
+  <h5>Instance methods</h5>
+  <div class="links">
+  
+    <a class="method" href="method.HashTableIter.get.html">get</a>
+  
+    <a class="method" href="method.HashTableIter.init.html">init</a>
+  
+    <a class="method" href="method.HashTableIter.next.html">next</a>
+  
+    <a class="method" href="method.HashTableIter.remove.html">remove</a>
+  
+    <a class="method" href="method.HashTableIter.replace.html">replace</a>
+  
+  </div>
+</div>
+
+
+
+    </nav>
+    
+    <button id="btn-to-top" class="hidden"><span class="up-arrow"></span></button>
+
+    
+<section id="main" class="content">
+  <header>
+    <h3>Struct</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>HashTableIter</h1>
+  </header>
+
+  <section>
+    <summary>
+      <div class="toggle-wrapper">
+        <h4 style="display:flex;" id="description">
+          Description
+          <a href="#description" class="anchor"></a>
+          
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/HashTableIter.h#L8">[src]</a>
+          
+        </h4>
+
+        <pre><code><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">TrbHashTableIter</span> <span class="p">{</span>
+  <span class="n">TrbHashTable</span><span class="o">*</span> <span class="n">ht</span><span class="p">;</span>
+  <span class="n">usize</span> <span class="n">slot</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</code></pre>
+
+        <div class="docblock">
+          <p>An iterator over hash&nbsp;table.</p>
+<p>This example show how to iterate over a hash&nbsp;table:</p>
+<div class="highlight"><pre><span></span><span class="n">TrbHashTable</span> <span class="n">ht</span><span class="p">;</span>
+<span class="n">trb_hash_table_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mh">0xdeadbeef</span><span class="p">,</span> <span class="n">jhash</span><span class="p">,</span> <span class="p">(</span><span class="n">TrbCmpFunc</span><span class="p">)</span> <span class="n">strcmp</span><span class="p">);</span>
+
+<span class="n">trb_hash_table_insert</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="n">trb_get_arr</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">&quot;Mike Urasawa&quot;</span><span class="p">),</span> <span class="n">trb_get_ptr</span><span class="p">(</span><span class="n">u64</span><span class="p">,</span> <span class="mi">42</span><span class="p">));</span>
+<span class="n">trb_hash_table_insert</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="n">trb_get_arr</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">&quot;Mario Franco&quot;</span><span class="p">),</span> <span class="n">trb_get_ptr</span><span class="p">(</span><span class="n">u64</span><span class="p">,</span> <span class="mi">12</span><span class="p">));</span>
+
+<span class="n">TrbHashTableIter</span> <span class="n">iter</span><span class="p">;</span>
+<span class="n">trb_hash_table_iter_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ht</span><span class="p">);</span>
+
+<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+<span class="n">u64</span> <span class="o">*</span><span class="n">age</span><span class="p">;</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="n">trb_hash_table_iter_next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">iter</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="kt">void</span> <span class="o">**</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">**</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">age</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;--------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot; Name: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot; Age: %lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">age</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;--------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">trb_hash_table_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</pre></div>
+
+<p>You should get an output similar to the&nbsp;following:</p>
+<div class="codehilite"><pre><span></span>--------------------
+ Name: Mike Urasawa
+ Age: 42
+--------------------
+--------------------
+ Name: Mario Franco
+ Age: 12
+--------------------
+</pre></div>
+        </div>
+
+        
+        <div class="toggle-wrapper">
+          <h6 style="display:flex;">
+            Structure members
+            
+          </h6>
+
+          <div class="docblock">
+            <table>
+            
+              <tr>
+                <td><code>ht</code></td>
+                <td><p>A pointer to the <code>TrbHashTable</code>.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>slot</code></td>
+                <td><p>The current position in the hash&nbsp;table.</p></td>
+              </tr>
+            
+            </table>
+          </div>
+        </div>
+        
+
+        <div class="docblock">
+          <table class="attributes">
+            
+            
+            
+          </table>
+        </div>
+
+        
+      </div>
+    </summary>
+
+    
+
+    
+
+    
+    <div class="toggle-wrapper methods">
+      <h4 id="methods">
+        Instance methods
+        <a href="#methods" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="method.HashTableIter.get.html">trb_hash_table_iter_get</a></h6>
+
+          <div class="docblock">
+            <p>Retrieves the key and the&nbsp;value.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.HashTableIter.init.html">trb_hash_table_iter_init</a></h6>
+
+          <div class="docblock">
+            <p>Creates a new <code>HashTableIter</code>.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.HashTableIter.next.html">trb_hash_table_iter_next</a></h6>
+
+          <div class="docblock">
+            <p>Advances the <code>self</code> and retrieves the key and/or the value (or nothing)
+that are now pointed to as a result of this&nbsp;advancement.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.HashTableIter.remove.html">trb_hash_table_iter_remove</a></h6>
+
+          <div class="docblock">
+            <p>Removes the entry currently pointer to by the&nbsp;iterator.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.HashTableIter.replace.html">trb_hash_table_iter_replace</a></h6>
+
+          <div class="docblock">
+            <p>Replaces the value currently pointed to by the&nbsp;iterator.</p>
+          </div>
+
+          
+        </div>
+      
+      </div>
+
+    </div>
+    
+
+  </section>
+</section>
+
+
+    
+<div id="toc" class="toc">
+  <nav aria-labelledby="toc-title">
+    <p id="toc-title">Content</p>
+    <ul class="toc-list">
+      <li class="toc-list-item"><a href="#description"><span class="link-text">Description</span></a></li>
+      
+      
+
+      
+
+      
+<li class="toc-list-item"><a href="#methods"><span class="link-text">Methods</span></a></li>
+
+
+    </ul>
+  </nav>
+</div>
+
+
+    <section id="search" class="content hidden"></section>
+
+    <footer>
+    
+    </footer>
+  </div>
+</body>
+</html>

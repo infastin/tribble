@@ -1,0 +1,592 @@
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tribble.Vector</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="utf-8" />
+
+  
+  <meta property="og:type" content="website"/>
+
+  
+
+  
+  <meta property="og:title" content="Tribble.Vector"/>
+  <meta property="og:description" content="Reference for Tribble.Vector"/>
+  <meta name="twitter:title" content="Tribble.Vector"/>
+  <meta name="twitter:description" content="Reference for Tribble.Vector"/>
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+
+  
+  
+  
+  
+
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  
+
+  
+  
+  <script src="fzy.js"></script>
+  <script src="search.js"></script>
+  
+  <script src="main.js"></script>
+  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+  <div id="body-wrapper" tabindex="-1">
+
+    <nav class="sidebar devhelp-hidden">
+      
+      
+      <div class="search section">
+        <form id="search-form" autocomplete="off">
+          <input id="search-input" type="text" name="do-not-autocomplete" placeholder="Click, or press 's' to search" autocomplete="off"/>
+        </form>
+      </div>
+      
+      <div class="section namespace">
+        <h3><a href="index.html">Tribble</a></h3>
+        <p>API Version: 1</p>
+        
+        <p>Library Version: 1.0.0</p>
+        
+      </div>
+      
+<div class="section">
+  <h5>Type</h5>
+  <div class="links">
+    <a class="current" href="struct.Vector.html#description">Vector</a>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="section">
+  <h5>Instance methods</h5>
+  <div class="links">
+  
+    <a class="method" href="method.Vector.copy.html">copy</a>
+  
+    <a class="method" href="method.Vector.destroy.html">destroy</a>
+  
+    <a class="method" href="method.Vector.free.html">free</a>
+  
+    <a class="method" href="method.Vector.get.html">get</a>
+  
+    <a class="method" href="method.Vector.get_range.html">get_range</a>
+  
+    <a class="method" href="method.Vector.init.html">init</a>
+  
+    <a class="method" href="method.Vector.insert.html">insert</a>
+  
+    <a class="method" href="method.Vector.insert_many.html">insert_many</a>
+  
+    <a class="method" href="method.Vector.pop_back.html">pop_back</a>
+  
+    <a class="method" href="method.Vector.pop_front.html">pop_front</a>
+  
+    <a class="method" href="method.Vector.push_back.html">push_back</a>
+  
+    <a class="method" href="method.Vector.push_back_many.html">push_back_many</a>
+  
+    <a class="method" href="method.Vector.push_front.html">push_front</a>
+  
+    <a class="method" href="method.Vector.push_front_many.html">push_front_many</a>
+  
+    <a class="method" href="method.Vector.remove_all.html">remove_all</a>
+  
+    <a class="method" href="method.Vector.remove_index.html">remove_index</a>
+  
+    <a class="method" href="method.Vector.remove_range.html">remove_range</a>
+  
+    <a class="method" href="method.Vector.require.html">require</a>
+  
+    <a class="method" href="method.Vector.reverse.html">reverse</a>
+  
+    <a class="method" href="method.Vector.search.html">search</a>
+  
+    <a class="method" href="method.Vector.search_data.html">search_data</a>
+  
+    <a class="method" href="method.Vector.set.html">set</a>
+  
+    <a class="method" href="method.Vector.set_range.html">set_range</a>
+  
+    <a class="method" href="method.Vector.shrink.html">shrink</a>
+  
+    <a class="method" href="method.Vector.sort.html">sort</a>
+  
+    <a class="method" href="method.Vector.sort_data.html">sort_data</a>
+  
+    <a class="method" href="method.Vector.steal.html">steal</a>
+  
+    <a class="method" href="method.Vector.steal0.html">steal0</a>
+  
+  </div>
+</div>
+
+
+
+    </nav>
+    
+    <button id="btn-to-top" class="hidden"><span class="up-arrow"></span></button>
+
+    
+<section id="main" class="content">
+  <header>
+    <h3>Struct</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>Vector</h1>
+  </header>
+
+  <section>
+    <summary>
+      <div class="toggle-wrapper">
+        <h4 style="display:flex;" id="description">
+          Description
+          <a href="#description" class="anchor"></a>
+          
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L10">[src]</a>
+          
+        </h4>
+
+        <pre><code><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">TrbVector</span> <span class="p">{</span>
+  <span class="kt">void</span><span class="o">*</span> <span class="n">data</span><span class="p">;</span>
+  <span class="n">usize</span> <span class="n">len</span><span class="p">;</span>
+  <span class="n">usize</span> <span class="n">capacity</span><span class="p">;</span>
+  <span class="n">usize</span> <span class="n">elemsize</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">zero_terminated</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">clear</span><span class="p">;</span>
+  <span class="kt">bool</span> <span class="n">sorted</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</code></pre>
+
+        <div class="docblock">
+          <p>A dynamic size&nbsp;array.</p>
+        </div>
+
+        
+        <div class="toggle-wrapper">
+          <h6 style="display:flex;">
+            Structure members
+            
+          </h6>
+
+          <div class="docblock">
+            <table>
+            
+              <tr>
+                <td><code>data</code></td>
+                <td><p>The vector&nbsp;buffer.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>len</code></td>
+                <td><p>The size of the&nbsp;vector.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>capacity</code></td>
+                <td><p>The capacity of the vector&nbsp;buffer.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>elemsize</code></td>
+                <td><p>The size of each&nbsp;element.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>zero_terminated</code></td>
+                <td><p>Indicates whether vector is zero-terminated or&nbsp;not.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>clear</code></td>
+                <td><p>Indicates whether elements should be cleared to 0 when allocated or&nbsp;not.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>sorted</code></td>
+                <td><p>Indicates whether vector is sorted or&nbsp;not.</p></td>
+              </tr>
+            
+            </table>
+          </div>
+        </div>
+        
+
+        <div class="docblock">
+          <table class="attributes">
+            
+            
+            
+          </table>
+        </div>
+
+        
+      </div>
+    </summary>
+
+    
+
+    
+
+    
+    <div class="toggle-wrapper methods">
+      <h4 id="methods">
+        Instance methods
+        <a href="#methods" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="method.Vector.copy.html">trb_vector_copy</a></h6>
+
+          <div class="docblock">
+            <p>Creates a copy of the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.destroy.html">trb_vector_destroy</a></h6>
+
+          <div class="docblock">
+            <p>Frees the array&nbsp;buffer.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.free.html">trb_vector_free</a></h6>
+
+          <div class="docblock">
+            <p>Frees the array&nbsp;completely.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.get.html">trb_vector_get</a></h6>
+
+          <div class="docblock">
+            <p>Gets the value of the entry in the array at the given&nbsp;index.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.get_range.html">trb_vector_get_range</a></h6>
+
+          <div class="docblock">
+            <p>Gets the range of elements in the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.init.html">trb_vector_init</a></h6>
+
+          <div class="docblock">
+            <p>Creates a new dynamic size&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.insert.html">trb_vector_insert</a></h6>
+
+          <div class="docblock">
+            <p>Inserts the element into the array at the given index.
+If <code>data</code> is <code>NULL</code>, inserts a zero into the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.insert_many.html">trb_vector_insert_many</a></h6>
+
+          <div class="docblock">
+            <p>Inserts elements into the array at the given index.
+If <code>data</code> is <code>NULL</code>, inserts zeroes into the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.pop_back.html">trb_vector_pop_back</a></h6>
+
+          <div class="docblock">
+            <p>Removes the last element from the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.pop_front.html">trb_vector_pop_front</a></h6>
+
+          <div class="docblock">
+            <p>Removes the first element from the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.push_back.html">trb_vector_push_back</a></h6>
+
+          <div class="docblock">
+            <p>Adds the element to the end of the array.
+If <code>data</code> is <code>NULL</code>, adds a zero to the end of the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.push_back_many.html">trb_vector_push_back_many</a></h6>
+
+          <div class="docblock">
+            <p>Adds elements to the end of the array.
+If <code>data</code> is <code>NULL</code>, adds zeroes to the end of the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.push_front.html">trb_vector_push_front</a></h6>
+
+          <div class="docblock">
+            <p>Adds the element to the beginning of the array.
+If <code>data</code> is <code>NULL</code>, adds a zero to the beginning of the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.push_front_many.html">trb_vector_push_front_many</a></h6>
+
+          <div class="docblock">
+            <p>Adds elements to the beginning of the array.
+If <code>data</code> is <code>NULL</code>, adds zeroes to the beginning of the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.remove_all.html">trb_vector_remove_all</a></h6>
+
+          <div class="docblock">
+            <p>Removes all elements from the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.remove_index.html">trb_vector_remove_index</a></h6>
+
+          <div class="docblock">
+            <p>Removes the entry at the given index from the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.remove_range.html">trb_vector_remove_range</a></h6>
+
+          <div class="docblock">
+            <p>Removes the range of elements from the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.require.html">trb_vector_require</a></h6>
+
+          <div class="docblock">
+            <p>Reserves memory in the array&nbsp;buffer.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.reverse.html">trb_vector_reverse</a></h6>
+
+          <div class="docblock">
+            <p>Reverses the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.search.html">trb_vector_search</a></h6>
+
+          <div class="docblock">
+            <p>Searches for the entry in the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.search_data.html">trb_vector_search_data</a></h6>
+
+          <div class="docblock">
+            <p>Searches for the entry in the array using user&nbsp;data.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.set.html">trb_vector_set</a></h6>
+
+          <div class="docblock">
+            <p>Changes the value of the entry at the given index in the array
+with the given data.
+If <code>data</code> is <code>NULL</code>, changes the value with a&nbsp;zero.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.set_range.html">trb_vector_set_range</a></h6>
+
+          <div class="docblock">
+            <p>Overwrites values of the entries at the given index in the
+array with the given data.
+If <code>data</code> is <code>NULL</code>, overwrites values with&nbsp;zeroes.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.shrink.html">trb_vector_shrink</a></h6>
+
+          <div class="docblock">
+            <p>Frees unused memory of the array&nbsp;buffer.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.sort.html">trb_vector_sort</a></h6>
+
+          <div class="docblock">
+            <p>Sorts the&nbsp;array.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.sort_data.html">trb_vector_sort_data</a></h6>
+
+          <div class="docblock">
+            <p>Sorts the array using user&nbsp;data.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.steal.html">trb_vector_steal</a></h6>
+
+          <div class="docblock">
+            <p>Steals the array buffer.
+Array creates a new&nbsp;buffer.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Vector.steal0.html">trb_vector_steal0</a></h6>
+
+          <div class="docblock">
+            <p>Steals the array buffer.
+Array&#8217;s buffer becomes <code>NULL</code>.</p>
+          </div>
+
+          
+        </div>
+      
+      </div>
+
+    </div>
+    
+
+  </section>
+</section>
+
+
+    
+<div id="toc" class="toc">
+  <nav aria-labelledby="toc-title">
+    <p id="toc-title">Content</p>
+    <ul class="toc-list">
+      <li class="toc-list-item"><a href="#description"><span class="link-text">Description</span></a></li>
+      
+      
+
+      
+
+      
+<li class="toc-list-item"><a href="#methods"><span class="link-text">Methods</span></a></li>
+
+
+    </ul>
+  </nav>
+</div>
+
+
+    <section id="search" class="content hidden"></section>
+
+    <footer>
+    
+    </footer>
+  </div>
+</body>
+</html>

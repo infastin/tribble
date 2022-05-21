@@ -1,0 +1,324 @@
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tribble.HashTable.remove_all</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="utf-8" />
+
+  
+  <meta property="og:type" content="website"/>
+
+  
+
+  
+  <meta priority="og:title" content="Tribble.HashTable.remove_all"/>
+  <meta priority="og:description" content="Reference for Tribble.HashTable.remove_all"/>
+  <meta name="twitter:title" content="Tribble.HashTable.remove_all"/>
+  <meta name="twitter:description" content="Reference for Tribble.HashTable.remove_all"/>
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+
+  
+  
+  
+  
+
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  
+
+  
+  
+  <script src="fzy.js"></script>
+  <script src="search.js"></script>
+  
+  <script src="main.js"></script>
+  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+  <div id="body-wrapper" tabindex="-1">
+
+    <nav class="sidebar devhelp-hidden">
+      
+      
+      <div class="search section">
+        <form id="search-form" autocomplete="off">
+          <input id="search-input" type="text" name="do-not-autocomplete" placeholder="Click, or press 's' to search" autocomplete="off"/>
+        </form>
+      </div>
+      
+      <div class="section namespace">
+        <h3><a href="index.html">Tribble</a></h3>
+        <p>API Version: 1</p>
+        
+        <p>Library Version: 1.0.0</p>
+        
+      </div>
+      
+<div class="section">
+  <h5>Type</h5>
+  <div class="links">
+    <a href="struct.HashTable.html">HashTable</a>
+  </div>
+</div>
+<div class="section">
+  <h5>Methods</h5>
+  <div class="links">
+  
+    <a class="method" href="method.HashTable.add.html">add</a>
+  
+    <a class="method" href="method.HashTable.destroy.html">destroy</a>
+  
+    <a class="method" href="method.HashTable.free.html">free</a>
+  
+    <a class="method" href="method.HashTable.init.html">init</a>
+  
+    <a class="method" href="method.HashTable.init_data.html">init_data</a>
+  
+    <a class="method" href="method.HashTable.insert.html">insert</a>
+  
+    <a class="method" href="method.HashTable.lookup.html">lookup</a>
+  
+    <a class="method" href="method.HashTable.remove.html">remove</a>
+  
+    <a class="method current" href="method.HashTable.remove_all.html">remove_all</a>
+  
+  </div>
+</div>
+
+    </nav>
+    
+    <button id="btn-to-top" class="hidden"><span class="up-arrow"></span></button>
+
+    
+<section id="main" class="content">
+  <header>
+    <h3>Method</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.HashTable.html">HashTable</a><span class="sep"></span>remove_all</h1>
+  </header>
+
+  <section>
+    <div class="declaration toggle-wrapper">
+      <h4 style="display:flex;" id="declaration">
+        Declaration
+        <a class="anchor" href="#declaration"></a>
+        
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/HashTable.h#L185">[src]</a>
+        
+      </h4>
+
+      <div class="docblock c-decl">
+        <pre><code><div class="highlight"><pre><span></span><span class="kt">bool</span>
+<span class="n">trb_hash_table_remove_all</span> <span class="p">(</span>
+  <span class="n">TrbHashTable</span><span class="o">*</span> <span class="n">self</span><span class="p">,</span>
+  <span class="n">usize</span> <span class="n">padding</span><span class="p">,</span>
+  <span class="kt">void</span><span class="o">*</span> <span class="n">ret</span><span class="p">,</span>
+  <span class="n">usize</span><span class="o">*</span> <span class="n">len</span>
+<span class="p">)</span>
+</pre></div>
+</code></pre>
+      </div>
+    </div>
+
+    <div class="description toggle-wrapper">
+      <h4 style="display:flex;" id="description">
+        Description
+        <a class="anchor" href="#description"></a>
+        
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/HashTable.h#L126">[src]</a>
+        
+      </h4>
+
+      <div class="docblock">
+        <p>Removes all entries from the hash&nbsp;table.</p>
+<p>This example shows how to use this&nbsp;function:</p>
+<div class="highlight"><pre><span></span><span class="n">TrbHashTable</span> <span class="n">ht</span><span class="p">;</span>
+<span class="n">trb_hash_table_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mh">0xdeadbeef</span><span class="p">,</span> <span class="n">jhash</span><span class="p">,</span> <span class="p">(</span><span class="n">TrbCmpFunc</span><span class="p">)</span> <span class="n">strcmp</span><span class="p">);</span>
+
+<span class="n">trb_hash_table_insert</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="n">trb_get_arr</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s">&quot;Mike Urasawa&quot;</span><span class="p">),</span> <span class="n">trb_get_ptr</span><span class="p">(</span><span class="n">u64</span><span class="p">,</span> <span class="mi">42</span><span class="p">));</span>
+<span class="n">trb_hash_table_insert</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="n">trb_get_arr</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">&quot;Mario Franco&quot;</span><span class="p">),</span> <span class="n">trb_get_ptr</span><span class="p">(</span><span class="n">u64</span><span class="p">,</span> <span class="mi">12</span><span class="p">));</span>
+
+<span class="k">struct</span> <span class="n">entry</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">key</span><span class="p">[</span><span class="mi">30</span><span class="p">];</span>
+
+    <span class="c1">// In this case the padding between the key and the value is 2.</span>
+    <span class="c1">// You can manually pass 2 in the function or</span>
+    <span class="c1">// use the trb_distance_of(type, m1, m2) macro.</span>
+
+    <span class="n">u64</span> <span class="n">age</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">usize</span> <span class="n">len</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">entry</span> <span class="n">buf</span><span class="p">[</span><span class="n">ht</span><span class="p">.</span><span class="n">slots</span><span class="p">];</span> <span class="c1">// It is better not to allocate a buffer in the stack.</span>
+                            <span class="c1">// Because this way you can get a stack overflow error,</span>
+                            <span class="c1">// if the buffer is too big.</span>
+
+<span class="n">trb_hash_table_remove_all</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="n">trb_distance_of</span><span class="p">(</span><span class="k">struct</span> <span class="n">entry</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">age</span><span class="p">),</span> <span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">len</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="n">usize</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;--------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot; Name: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">key</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot; Age: %lu</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">age</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;--------------------</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">trb_hash_table_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</pre></div>
+
+<p>You should get an output similar to the&nbsp;following:</p>
+<div class="codehilite"><pre><span></span>--------------------
+ Name: Mario Franco
+ Age: 12
+--------------------
+--------------------
+ Name: Mike Urasawa
+ Age: 42
+--------------------
+</pre></div>
+      </div>
+
+      <div class="docblock">
+        <table>
+          
+          
+          
+          
+          <tr><td>This method is not directly available to language bindings.</td></tr>
+          
+          
+          
+        </table>
+      </div>
+
+      
+    </div>
+
+    
+    <div class="parameters toggle-wrapper">
+      <h4 id="parameters">
+        Parameters
+        <a href="#parameters" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table class="arguments">
+          
+          <tr class="arg-name">
+            <td><code>padding</code></td>
+            <td><code>usize</code></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td><p>The padding between the key and the&nbsp;value.</p></td>
+          </tr>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <tr class="arg-name">
+            <td><code>ret</code></td>
+            <td><code>void*</code></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td><p>The pointer to retrieve removed entries.
+      The retrieved data will be an unaligned array of key:value&nbsp;pairs.</p></td>
+          </tr>
+          <tr><td>&nbsp;</td><td title="direction: out">The argument will be set by the function.</td></tr>
+          
+          <tr><td>&nbsp;</td><td>The argument can be set to <code>NULL</code>.</td></tr>
+          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
+          
+          
+          
+          
+          
+          
+          <tr class="arg-name">
+            <td><code>len</code></td>
+            <td><code>usize*</code></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td><p>The pointer to retrieve the number of&nbsp;entries.</p></td>
+          </tr>
+          <tr><td>&nbsp;</td><td title="direction: out">The argument will be set by the function.</td></tr>
+          
+          
+          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
+          
+          
+          
+          <tr><td>&nbsp;</td><td title="transfer: full">The instance takes ownership of the data, and is responsible for freeing it.</td></tr>
+          
+          
+          
+        </table>
+      </div>
+    </div>
+    
+
+    
+    <div class="return-value toggle-wrapper">
+      <h4 id="return-value">
+        Return value
+        <a href="#return-value" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table class="returns">
+          <tr class="arg-name">
+            <td>Returns:</td>
+            <td><code>bool</code></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td><p><code>TRUE</code> on&nbsp;success.</p></td>
+          </tr>
+          
+          
+          
+          
+          
+          
+        </table>
+      </div>
+    </div>
+    
+
+  </section>
+</section>
+
+
+    
+
+    <section id="search" class="content hidden"></section>
+
+    <footer>
+    
+    </footer>
+  </div>
+</body>
+</html>

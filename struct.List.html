@@ -1,0 +1,466 @@
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tribble.List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="utf-8" />
+
+  
+  <meta property="og:type" content="website"/>
+
+  
+
+  
+  <meta property="og:title" content="Tribble.List"/>
+  <meta property="og:description" content="Reference for Tribble.List"/>
+  <meta name="twitter:title" content="Tribble.List"/>
+  <meta name="twitter:description" content="Reference for Tribble.List"/>
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+
+  
+  
+  
+  
+
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  
+
+  
+  
+  <script src="fzy.js"></script>
+  <script src="search.js"></script>
+  
+  <script src="main.js"></script>
+  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+  <div id="body-wrapper" tabindex="-1">
+
+    <nav class="sidebar devhelp-hidden">
+      
+      
+      <div class="search section">
+        <form id="search-form" autocomplete="off">
+          <input id="search-input" type="text" name="do-not-autocomplete" placeholder="Click, or press 's' to search" autocomplete="off"/>
+        </form>
+      </div>
+      
+      <div class="section namespace">
+        <h3><a href="index.html">Tribble</a></h3>
+        <p>API Version: 1</p>
+        
+        <p>Library Version: 1.0.0</p>
+        
+      </div>
+      
+<div class="section">
+  <h5>Type</h5>
+  <div class="links">
+    <a class="current" href="struct.List.html#description">List</a>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="section">
+  <h5>Instance methods</h5>
+  <div class="links">
+  
+    <a class="method" href="method.List.copy.html">copy</a>
+  
+    <a class="method" href="method.List.destroy.html">destroy</a>
+  
+    <a class="method" href="method.List.empty.html">empty</a>
+  
+    <a class="method" href="method.List.free.html">free</a>
+  
+    <a class="method" href="method.List.init.html">init</a>
+  
+    <a class="method" href="method.List.insert_after.html">insert_after</a>
+  
+    <a class="method" href="method.List.insert_before.html">insert_before</a>
+  
+    <a class="method" href="method.List.len.html">len</a>
+  
+    <a class="method" href="method.List.lookup.html">lookup</a>
+  
+    <a class="method" href="method.List.lookup_data.html">lookup_data</a>
+  
+    <a class="method" href="method.List.nth.html">nth</a>
+  
+    <a class="method" href="method.List.pop_back.html">pop_back</a>
+  
+    <a class="method" href="method.List.pop_front.html">pop_front</a>
+  
+    <a class="method" href="method.List.position.html">position</a>
+  
+    <a class="method" href="method.List.push_back.html">push_back</a>
+  
+    <a class="method" href="method.List.push_front.html">push_front</a>
+  
+    <a class="method" href="method.List.remove.html">remove</a>
+  
+    <a class="method" href="method.List.reverse.html">reverse</a>
+  
+    <a class="method" href="method.List.sort.html">sort</a>
+  
+    <a class="method" href="method.List.sort_data.html">sort_data</a>
+  
+    <a class="method" href="method.List.splice.html">splice</a>
+  
+  </div>
+</div>
+
+
+
+    </nav>
+    
+    <button id="btn-to-top" class="hidden"><span class="up-arrow"></span></button>
+
+    
+<section id="main" class="content">
+  <header>
+    <h3>Struct</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>List</h1>
+  </header>
+
+  <section>
+    <summary>
+      <div class="toggle-wrapper">
+        <h4 style="display:flex;" id="description">
+          Description
+          <a href="#description" class="anchor"></a>
+          
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/List.h#L9">[src]</a>
+          
+        </h4>
+
+        <pre><code><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">TrbList</span> <span class="p">{</span>
+  <span class="n">TrbList</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span>
+  <span class="n">TrbList</span><span class="o">*</span> <span class="n">prev</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</code></pre>
+
+        <div class="docblock">
+          <p>A circular doubly-linked&nbsp;list.</p>
+        </div>
+
+        
+        <div class="toggle-wrapper">
+          <h6 style="display:flex;">
+            Structure members
+            
+          </h6>
+
+          <div class="docblock">
+            <table>
+            
+              <tr>
+                <td><code>next</code></td>
+                <td><p>The next element in the&nbsp;list.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>prev</code></td>
+                <td><p>The previous element in the&nbsp;list.</p></td>
+              </tr>
+            
+            </table>
+          </div>
+        </div>
+        
+
+        <div class="docblock">
+          <table class="attributes">
+            
+            
+            
+          </table>
+        </div>
+
+        
+      </div>
+    </summary>
+
+    
+
+    
+
+    
+    <div class="toggle-wrapper methods">
+      <h4 id="methods">
+        Instance methods
+        <a href="#methods" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="method.List.copy.html">trb_list_copy</a></h6>
+
+          <div class="docblock">
+            <p>Copies the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.destroy.html">trb_list_destroy</a></h6>
+
+          <div class="docblock">
+            <p>Frees all nodes in the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.empty.html">trb_list_empty</a></h6>
+
+          <div class="docblock">
+            <p>Checks whether the list is empty or&nbsp;not.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.free.html">trb_list_free</a></h6>
+
+          <div class="docblock">
+            <p>Frees the list&nbsp;completely.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.init.html">trb_list_init</a></h6>
+
+          <div class="docblock">
+            <p>Creates a new doubly-linked&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.insert_after.html">trb_list_insert_after</a></h6>
+
+          <div class="docblock">
+            <p>Inserts one node after other&nbsp;node.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.insert_before.html">trb_list_insert_before</a></h6>
+
+          <div class="docblock">
+            <p>Inserts one node after other&nbsp;node.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.len.html">trb_list_len</a></h6>
+
+          <div class="docblock">
+            <p>Returns the number of elements in the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.lookup.html">trb_list_lookup</a></h6>
+
+          <div class="docblock">
+            <p>Searches for the element in the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.lookup_data.html">trb_list_lookup_data</a></h6>
+
+          <div class="docblock">
+            <p>Searches for the element in the list using user&nbsp;data.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.nth.html">trb_list_nth</a></h6>
+
+          <div class="docblock">
+            <p>Gets the element at the given&nbsp;position.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.pop_back.html">trb_list_pop_back</a></h6>
+
+          <div class="docblock">
+            <p>Removes the last node from the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.pop_front.html">trb_list_pop_front</a></h6>
+
+          <div class="docblock">
+            <p>Removes the first node from the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.position.html">trb_list_position</a></h6>
+
+          <div class="docblock">
+            <p>Gets the position of the element in the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.push_back.html">trb_list_push_back</a></h6>
+
+          <div class="docblock">
+            <p>Adds a new entry onto the end of the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.push_front.html">trb_list_push_front</a></h6>
+
+          <div class="docblock">
+            <p>Adds a new entry onto the beginning of the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.remove.html">trb_list_remove</a></h6>
+
+          <div class="docblock">
+            <p>Removes the node from a&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.reverse.html">trb_list_reverse</a></h6>
+
+          <div class="docblock">
+            <p>Reverses the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.sort.html">trb_list_sort</a></h6>
+
+          <div class="docblock">
+            <p>Sorts the&nbsp;list.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.sort_data.html">trb_list_sort_data</a></h6>
+
+          <div class="docblock">
+            <p>Sorts the list using user&nbsp;data.</p>
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.List.splice.html">trb_list_splice</a></h6>
+
+          <div class="docblock">
+            <p>Transfers elements from one list to&nbsp;another.</p>
+          </div>
+
+          
+        </div>
+      
+      </div>
+
+    </div>
+    
+
+  </section>
+</section>
+
+
+    
+<div id="toc" class="toc">
+  <nav aria-labelledby="toc-title">
+    <p id="toc-title">Content</p>
+    <ul class="toc-list">
+      <li class="toc-list-item"><a href="#description"><span class="link-text">Description</span></a></li>
+      
+      
+
+      
+
+      
+<li class="toc-list-item"><a href="#methods"><span class="link-text">Methods</span></a></li>
+
+
+    </ul>
+  </nav>
+</div>
+
+
+    <section id="search" class="content hidden"></section>
+
+    <footer>
+    
+    </footer>
+  </div>
+</body>
+</html>

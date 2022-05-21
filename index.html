@@ -1,0 +1,956 @@
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tribble &ndash; 1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="utf-8" />
+
+  
+  <meta property="og:type" content="website"/>
+
+  
+
+  
+  <meta property="og:title" content="Tribble-1"/>
+  <meta property="og:description" content="Reference for Tribble-1"/>
+  <meta name="twitter:title" content="Tribble-1"/>
+  <meta name="twitter:description" content="Reference for Tribble-1"/>
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+
+  
+  
+  
+  
+
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  
+
+  
+  
+  <script src="fzy.js"></script>
+  <script src="search.js"></script>
+  
+  <script src="main.js"></script>
+  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+  <div id="body-wrapper" tabindex="-1">
+
+    <nav class="sidebar devhelp-hidden">
+      
+      
+      <div class="search section">
+        <form id="search-form" autocomplete="off">
+          <input id="search-input" type="text" name="do-not-autocomplete" placeholder="Click, or press 's' to search" autocomplete="off"/>
+        </form>
+      </div>
+      
+      <div class="section namespace">
+        <h3><a href="index.html">Tribble</a></h3>
+        <p>API Version: 1</p>
+        
+        <p>Library Version: 1.0.0</p>
+        
+      </div>
+      
+<div class="section">
+  <h5>Sections</h5>
+  <div class="links">
+  
+
+  
+  
+  
+    <a href="#structs">Structs</a>
+  
+  
+  
+  
+    <a href="#enums">Enumerations</a>
+  
+  
+  
+  
+    <a href="#callbacks">Callbacks</a>
+  
+  
+    <a href="#functions">Functions</a>
+  
+  
+    <a href="#function_macros">Function Macros</a>
+  
+  
+  </div>
+</div>
+
+
+    </nav>
+    
+    <button id="btn-to-top" class="hidden"><span class="up-arrow"></span></button>
+
+    
+<section id="main" class="content">
+  <header>
+    <h3>Namespace</h3>
+    <h1>Tribble &ndash; 1</h1>
+
+    <div class="description">
+      <p>Some C library</p>
+    </div>
+
+    <div class="meta info">
+      <table>
+        <tr><td><em>Version</em></td><td>1.0.0</td></tr>
+        <tr><td><em>Authors</em></td><td>infastin</td></tr>
+        <tr><td><em>License</em></td><td>MIT</td></tr>
+        <tr><td><em>Website</em></td><td><a href="https://github.com/infastin/tribble" class="external">https://github.com/infastin/tribble</a></td></tr>
+        <tr><td><em>Source</em></td><td><a href="https://github.com/infastin/tribble" class="external">https://github.com/infastin/tribble</a></td></tr>
+      </table>
+    </div>
+
+    <div class="meta build toggle-wrapper">
+      <h4>Build</h4>
+
+      <div class="docblock">
+      <table>
+        <tr><td>C headers</td><td><code>Tribble.h</code></td></tr>
+        <tr><td>pkg-config files</td><td><code>libtribble-1</code></td></tr>
+      </table>
+      </div>
+    </div>
+  </header>
+
+  
+
+  
+
+  
+  <section>
+    <div class="toggle-wrapper">
+      <h4 id="extra" style="display:flex;">
+        Additional documentation
+        <a href="#extra" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <ul>
+        
+          <li><a href="classes_hierarchy.html">Classes Hierarchy</a></li>
+        
+        </ul>
+      </div>
+    </div>
+  </section>
+  
+
+  
+
+  
+  
+  
+  <section>
+    <div class="toggle-wrapper default-hide">
+      <h4 id="structs" class="section-header" style="display:flex;">
+        Structs
+        <a href="#structs" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table style="display:block;">
+          <tbody>
+          
+          <tr class="section-item">
+            <td><a title="HashTable" class="symbol" href="struct.HashTable.html">HashTable</a></td>
+            
+            <td class="docblock-summary"><p>A hash table with quadratic probing and size&nbsp;2^n.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="HashTableIter" class="symbol" href="struct.HashTableIter.html">HashTableIter</a></td>
+            
+            <td class="docblock-summary"><p>An iterator over hash&nbsp;table.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="Heap" class="symbol" href="struct.Heap.html">Heap</a></td>
+            
+            <td class="docblock-summary"><p>A heap data structure represented as an&nbsp;array.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="List" class="symbol" href="struct.List.html">List</a></td>
+            
+            <td class="docblock-summary"><p>A circular doubly-linked&nbsp;list.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="SList" class="symbol" href="struct.SList.html">SList</a></td>
+            
+            <td class="docblock-summary"><p>A circular singly-linked&nbsp;list.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="SM64" class="symbol" href="struct.SM64.html">SM64</a></td>
+            
+            <td class="docblock-summary"><p>SplitMix64 - is a fast, high-quality seudorandom number generator.
+Recommended for initializing generators of the xoshiro familiy from a 64-bit&nbsp;seed.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="String" class="symbol" href="struct.String.html">String</a></td>
+            
+            <td class="docblock-summary"><p>A dynamic size&nbsp;string.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="Tree" class="symbol" href="struct.Tree.html">Tree</a></td>
+            
+            <td class="docblock-summary"><p>A self-balancing <span class="caps">AVL</span>&nbsp;tree.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="TreeNode" class="symbol" href="struct.TreeNode.html">TreeNode</a></td>
+            
+            <td class="docblock-summary"><p>A node in a <code>TrbTree</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="Vector" class="symbol" href="struct.Vector.html">Vector</a></td>
+            
+            <td class="docblock-summary"><p>A dynamic size&nbsp;array.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="Xs128p" class="symbol" href="struct.Xs128p.html">Xs128p</a></td>
+            
+            <td class="docblock-summary"><p>Xoshiro128+ - is the best and fastest 32-bit generator from Xorshift family for 32-bit floating-point numbers.
+It passes all tests we are aware of except for
+linearity tests, as the lowest four bits have low linear complexity, so
+if low linear complexity is not considered an issue (as it is usually the case)
+it can be used to generate 32-bit outputs,&nbsp;too.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="Xs128ss" class="symbol" href="struct.Xs128ss.html">Xs128ss</a></td>
+            
+            <td class="docblock-summary"><p>Xoshiro128** - is all-purpose, rock-solid generator.
+It is extremely (sub-ns) fast and it passes all&nbsp;tests.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="Xs256p" class="symbol" href="struct.Xs256p.html">Xs256p</a></td>
+            
+            <td class="docblock-summary"><p>Xoshiro256+ - is the best and fastest generator from Xorshift family for floating-point numbers.
+It passes all tests except for the lowest three bits,
+which might fail linearity tests (and just those), so if low linear
+complexity is not considered an issue (as it is usually the case) it
+can be used to generate 64-bit outputs,&nbsp;too.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="Xs256ss" class="symbol" href="struct.Xs256ss.html">Xs256ss</a></td>
+            
+            <td class="docblock-summary"><p>Xoshiro256** - is all-purpose, rock-solid generator.
+It has excellent (sub-ns) speed and it passes all&nbsp;tests.</p></td>
+            
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  
+  
+  
+  <section>
+    <div class="toggle-wrapper default-hide">
+      <h4 id="enums" class="section-header" style="display:flex;">
+        Enumerations
+        <a href="#enums" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table style="display:block;">
+          <tbody>
+          
+          <tr class="section-item">
+            <td><a title="MessageFlags" class="symbol" href="enum.MessageFlags.html">MessageFlags</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  
+  
+  
+  <section>
+    <div class="toggle-wrapper default-hide">
+      <h4 id="callbacks" class="section-header" style="display:flex;">
+        Callbacks
+        <a href="#callbacks" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table style="display:block;">
+          <tbody>
+          
+          <tr class="section-item">
+            <td><a title="CmpDataFunc" class="symbol" href="callback.CmpDataFunc.html">CmpDataFunc</a></td>
+            
+            <td class="docblock-summary"><p>The function for comparing two values using user&nbsp;data.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="CmpFunc" class="symbol" href="callback.CmpFunc.html">CmpFunc</a></td>
+            
+            <td class="docblock-summary"><p>The function for comparing two&nbsp;values.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="CopyFunc" class="symbol" href="callback.CopyFunc.html">CopyFunc</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="FreeFunc" class="symbol" href="callback.FreeFunc.html">FreeFunc</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="HashFunc" class="symbol" href="callback.HashFunc.html">HashFunc</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="UserFunc" class="symbol" href="callback.UserFunc.html">UserFunc</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  
+  <section>
+    <div class="toggle-wrapper default-hide">
+      <h4 id="functions" class="section-header" style="display:flex;">
+        Functions
+        <a href="#functions" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table style="display:block;">
+          <tbody>
+          
+          <tr class="section-item">
+            <td><a title="binary_search" class="symbol" href="func.binary_search.html">binary_search</a></td>
+            
+            <td class="docblock-summary"><p>Searches for the entry in the array using binary&nbsp;search.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="binary_search_data" class="symbol" href="func.binary_search_data.html">binary_search_data</a></td>
+            
+            <td class="docblock-summary"><p>Searches for the entry in the array using binary search and user&nbsp;data.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="exit_if_fail_critical" class="symbol" href="func.exit_if_fail_critical.html">exit_if_fail_critical</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="f32cmp" class="symbol" href="func.f32cmp.html">f32cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>f32</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="f64cmp" class="symbol" href="func.f64cmp.html">f64cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>f64</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="heapify" class="symbol" href="func.heapify.html">heapify</a></td>
+            
+            <td class="docblock-summary"><p>Heapifies the&nbsp;array.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="heapify_data" class="symbol" href="func.heapify_data.html">heapify_data</a></td>
+            
+            <td class="docblock-summary"><p>Heapifies the array using user&nbsp;data.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="heapsort" class="symbol" href="func.heapsort.html">heapsort</a></td>
+            
+            <td class="docblock-summary"><p>Sorts the array using Heap&nbsp;Sort.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="heapsort_data" class="symbol" href="func.heapsort_data.html">heapsort_data</a></td>
+            
+            <td class="docblock-summary"><p>Sorts the array using Heap Sort and user&nbsp;data.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="i16cmp" class="symbol" href="func.i16cmp.html">i16cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>i16</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="i32cmp" class="symbol" href="func.i32cmp.html">i32cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>i32</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="i64cmp" class="symbol" href="func.i64cmp.html">i64cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>i64</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="i8cmp" class="symbol" href="func.i8cmp.html">i8cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>i8</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="inssort" class="symbol" href="func.inssort.html">inssort</a></td>
+            
+            <td class="docblock-summary"><p>Sorts the array using Insertion&nbsp;Sort.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="inssort_data" class="symbol" href="func.inssort_data.html">inssort_data</a></td>
+            
+            <td class="docblock-summary"><p>Sorts the array using Insertion Sort and user&nbsp;data.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="isizecmp" class="symbol" href="func.isizecmp.html">isizecmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>isize</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="jhash" class="symbol" href="func.jhash.html">jhash</a></td>
+            
+            <td class="docblock-summary"><p>Uses <code>trb_jhash32()</code> on 32-bit platform and <code>trb_jhash64()</code> on 64-bit&nbsp;platform.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="jhash32" class="symbol" href="func.jhash32.html">jhash32</a></td>
+            
+            <td class="docblock-summary"><p>Jenkins Hash 32-bit.
+<a href="http://burtleburtle.net/bob/c/lookup2.c">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="jhash64" class="symbol" href="func.jhash64.html">jhash64</a></td>
+            
+            <td class="docblock-summary"><p>Jenkins Hash 64-bit.
+<a href="http://burtleburtle.net/bob/c/lookup8.c">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="message" class="symbol" href="func.message.html">message</a></td>
+            
+            <td class="docblock-summary"><p>Prints a&nbsp;message.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="message_func" class="symbol" href="func.message_func.html">message_func</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="murmurhash3" class="symbol" href="func.murmurhash3.html">murmurhash3</a></td>
+            
+            <td class="docblock-summary"><p>Uses <code>trb_murmurhash3_32()</code> on 32-bit platform and <code>trb_murmurhash3_64()</code> on 64-bit&nbsp;platform.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="murmurhash3_32" class="symbol" href="func.murmurhash3_32.html">murmurhash3_32</a></td>
+            
+            <td class="docblock-summary"><p>MurmurHash3 x86 32.
+<a href="https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp#L94">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="murmurhash3_64" class="symbol" href="func.murmurhash3_64.html">murmurhash3_64</a></td>
+            
+            <td class="docblock-summary"><p>MurmurHash3 x64 128, but we discard the upper 64 bits.
+<a href="https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp#L94">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="pow2" class="symbol" href="func.pow2.html">pow2</a></td>
+            
+            <td class="docblock-summary"><p>Rounds up to the next power of&nbsp;2.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="pow2_32" class="symbol" href="func.pow2_32.html">pow2_32</a></td>
+            
+            <td class="docblock-summary"><p>Rounds up to the next power of&nbsp;2.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="pow2_64" class="symbol" href="func.pow2_64.html">pow2_64</a></td>
+            
+            <td class="docblock-summary"><p>Rounds up to the next power of&nbsp;2.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="quicksort" class="symbol" href="func.quicksort.html">quicksort</a></td>
+            
+            <td class="docblock-summary"><p>Sorts the array using Quicksort by Knuth.
+<a href="http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="quicksort_data" class="symbol" href="func.quicksort_data.html">quicksort_data</a></td>
+            
+            <td class="docblock-summary"><p>Sorts the array using Quicksort by Knuth.
+<a href="http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="realcmp" class="symbol" href="func.realcmp.html">realcmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>real</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="return_if_fail_warning" class="symbol" href="func.return_if_fail_warning.html">return_if_fail_warning</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="siphash" class="symbol" href="func.siphash.html">siphash</a></td>
+            
+            <td class="docblock-summary"><p>Uses <code>trb_siphash32()</code> on 32-bit platform and <code>trb_siphash64()</code> on 64-bit&nbsp;platform.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="siphash32" class="symbol" href="func.siphash32.html">siphash32</a></td>
+            
+            <td class="docblock-summary"><p>Half SipHash 1-3.
+<a href="https://github.com/veorq/SipHash/blob/master/halftrb_siphash.c">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="siphash64" class="symbol" href="func.siphash64.html">siphash64</a></td>
+            
+            <td class="docblock-summary"><p>SipHash 1-3.
+<a href="https://github.com/veorq/SipHash/blob/master/trb_siphash.c">Reference</a>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="strdup_fmt" class="symbol" href="func.strdup_fmt.html">strdup_fmt</a></td>
+            
+            <td class="docblock-summary"><p>It is analogous to <code>snprintf()</code>, except it allocates a string large enough to
+hold the output including terminating null&nbsp;byte.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="strdup_vfmt" class="symbol" href="func.strdup_vfmt.html">strdup_vfmt</a></td>
+            
+            <td class="docblock-summary"><p>It is analogous to <code>vsnprintf()</code>, except it allocates a string large enough to
+hold the output including terminating null&nbsp;byte.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="strfmt" class="symbol" href="func.strfmt.html">strfmt</a></td>
+            
+            <td class="docblock-summary"><p>It is analogous to <code>snprintf()</code>, except it allocates a string large enough to
+hold the output including terminating null&nbsp;byte.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="u16cmp" class="symbol" href="func.u16cmp.html">u16cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>u16</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="u32cmp" class="symbol" href="func.u32cmp.html">u32cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>u32</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="u64cmp" class="symbol" href="func.u64cmp.html">u64cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>u64</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="u8cmp" class="symbol" href="func.u8cmp.html">u8cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>u8</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="usizecmp" class="symbol" href="func.usizecmp.html">usizecmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>usize</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="vstrfmt" class="symbol" href="func.vstrfmt.html">vstrfmt</a></td>
+            
+            <td class="docblock-summary"><p>It is analogous to <code>vsnprintf()</code>, except it allocates a string large enough to
+hold the output including terminating null&nbsp;byte.</p></td>
+            
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  
+  <section>
+    <div class="toggle-wrapper default-hide">
+      <h4 id="function_macros" class="section-header" style="display:flex;">
+        Function Macros
+        <a href="#function_macros" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+        <table style="display:block;">
+          <tbody>
+          
+          <tr class="section-item">
+            <td><a title="array_cell" class="symbol" href="func.array_cell.html">array_cell</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="array_get" class="symbol" href="func.array_get.html">array_get</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="array_swap" class="symbol" href="func.array_swap.html">array_swap</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="container_of" class="symbol" href="func.container_of.html">container_of</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="distance_of" class="symbol" href="func.distance_of.html">distance_of</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="do_if_fail" class="symbol" href="func.do_if_fail.html">do_if_fail</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="exit_if_fail" class="symbol" href="func.exit_if_fail.html">exit_if_fail</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="exit_with_code_if_fail" class="symbol" href="func.exit_with_code_if_fail.html">exit_with_code_if_fail</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="FORMAT" class="symbol" href="func.FORMAT.html">FORMAT</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="heap_get_unsafe" class="symbol" href="func.heap_get_unsafe.html">heap_get_unsafe</a></td>
+            
+            <td class="docblock-summary"><p>Unsafe version of <code>trb_heap_get()</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="list_entry" class="symbol" href="func.list_entry.html">list_entry</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="list_foreach" class="symbol" href="func.list_foreach.html">list_foreach</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="list_foreach_reverse" class="symbol" href="func.list_foreach_reverse.html">list_foreach_reverse</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="list_node_init" class="symbol" href="func.list_node_init.html">list_node_init</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="max" class="symbol" href="func.max.html">max</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="min" class="symbol" href="func.min.html">min</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="return_if_fail" class="symbol" href="func.return_if_fail.html">return_if_fail</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="return_val_if_fail" class="symbol" href="func.return_val_if_fail.html">return_val_if_fail</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="rotl32" class="symbol" href="func.rotl32.html">rotl32</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="rotl64" class="symbol" href="func.rotl64.html">rotl64</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="rotr32" class="symbol" href="func.rotr32.html">rotr32</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="rotr64" class="symbol" href="func.rotr64.html">rotr64</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="slist_entry" class="symbol" href="func.slist_entry.html">slist_entry</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="slist_foreach" class="symbol" href="func.slist_foreach.html">slist_foreach</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="slist_node_init" class="symbol" href="func.slist_node_init.html">slist_node_init</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="talloc" class="symbol" href="func.talloc.html">talloc</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="talloc0" class="symbol" href="func.talloc0.html">talloc0</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="tree_node_entry" class="symbol" href="func.tree_node_entry.html">tree_node_entry</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="tree_node_init" class="symbol" href="func.tree_node_init.html">tree_node_init</a></td>
+            
+            <td class="docblock-summary"></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="vector_get_unsafe" class="symbol" href="func.vector_get_unsafe.html">vector_get_unsafe</a></td>
+            
+            <td class="docblock-summary"><p>Unsafe version of <code>trb_vector_get()</code>.</p></td>
+            
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  
+  
+</section>
+
+
+    
+
+    <section id="search" class="content hidden"></section>
+
+    <footer>
+    
+    </footer>
+  </div>
+</body>
+</html>
