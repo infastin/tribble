@@ -134,7 +134,7 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret);
  * Removes all entries from the hash table.
  *
  * This example shows how to use this function:
- * |[<!-- language="C" -->
+ * ```c
  * TrbHashTable ht;
  * trb_hash_table_init(&ht, 30, 8, 0xdeadbeef, jhash, (TrbCmpFunc) strcmp);
  *
@@ -166,10 +166,10 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret);
  * }
  *
  * trb_hash_table_destroy(&ht, NULL, NULL);
- * ]|
+ * ```
  *
  * You should get an output similar to the following:
- * |[
+ * ```
  * --------------------
  *  Name: Mario Franco
  *  Age: 12
@@ -178,7 +178,7 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret);
  *  Name: Mike Urasawa
  *  Age: 42
  * --------------------
- * ]|
+ * ```
  *
  * Returns: %TRUE on success.
  **/

@@ -10,10 +10,10 @@ typedef struct _TrbHashTableIter TrbHashTableIter;
  * @ht: A pointer to the #TrbHashTable.
  * @slot: The current position in the hash table.
  *
- * An iterator over hash table.
+ * An iterator over a hash table.
  *
  * This example show how to iterate over a hash table:
- * |[<!-- language="C" -->
+ * ```c
  * TrbHashTable ht;
  * trb_hash_table_init(&ht, 32, 8, 0xdeadbeef, jhash, (TrbCmpFunc) strcmp);
  *
@@ -34,10 +34,10 @@ typedef struct _TrbHashTableIter TrbHashTableIter;
  * }
  *
  * trb_hash_table_destroy(&ht, NULL, NULL);
- * ]|
+ * ```
  *
  * You should get an output similar to the following:
- * |[
+ * ```
  * --------------------
  *  Name: Mike Urasawa
  *  Age: 42
@@ -46,7 +46,7 @@ typedef struct _TrbHashTableIter TrbHashTableIter;
  *  Name: Mario Franco
  *  Age: 12
  * --------------------
- * ]|
+ * ```
  **/
 struct _TrbHashTableIter {
 	TrbHashTable *ht;

@@ -17,19 +17,19 @@ typedef struct _TrbString TrbString;
  * A dynamic size string.
  *
  * This example shows how to init and print the string to stdout:
- * |[<!-- language="C" -->
+ * ```c
  * TrbString example_string;
  * trb_string_init(&example_string, "I am an example!");
  *
  * printf("%s\n", example_string.data);
  *
  * trb_string_destroy(&example_string);
- * ]|
+ * ```
  *
  * You should get an output similar to the following:
- * |[
+ * ```
  * I am an example!
- * ]|
+ * ```
  **/
 struct _TrbString {
 	char *data;
