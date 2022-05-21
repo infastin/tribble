@@ -27,4 +27,4 @@ jobs:
     - name: Init Meson
       run: make init
     - name: Run build
-      run: make all
+      run: make build
