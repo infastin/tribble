@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+    - name: Setup GCC
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: latest
+    - name: Install dependencies
+      run: pip3 install --user meson gi-docgen
+    - name: Init Meson
+      run: make init
+    - name: Run build
+      run: make all
