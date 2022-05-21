@@ -11,7 +11,7 @@ gidocgen = find_program('gi-docgen')
 
 docsdir = datadir / 'doc'
 
-custom_target('tribble-doc',
+custom_target('libtribble-doc',
   input: [libtribble_toml, libtribble_gir[0]],
   output: 'libtribble-@0@'.format(apiversion),
   command: [

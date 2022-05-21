@@ -15,6 +15,9 @@ clean:
 compdb:
 	ninja -C $(BUILD_DIR) -t compdb > compile_commands.json
 
+doc:
+	meson compile -C $(BUILD_DIR) libtribble-doc
+
 install:
 	ninja -C $(BUILD_DIR) install
 
@@ -23,4 +26,4 @@ test:
 
 all: build ctags compdb
 
-.PHONY: all build ctags compdb clean install test
+.PHONY: all build ctags compdb clean install doc test

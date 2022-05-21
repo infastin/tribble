@@ -16,4 +16,4 @@ show_index_summary = true
 show_class_hierarchy = true
 
 [source-location]
-base_url = "https://github.com/infastin/tribble"
+base_url = "https://github.com/infastin/tribble/blob/master/"
