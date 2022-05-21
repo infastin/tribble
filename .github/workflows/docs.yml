@@ -18,13 +18,14 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: '3.x'
-    - name: Setup GCC
-      uses: egor-tensin/setup-gcc@v1
-      with:
-        version: latest
     - name: Install dependencies
-      run: sudo pip3 install meson gi-docgen && sudo apt install libgirepository1.0-dev ninja-build
+      run: sudo pip3 install meson gi-docgen && sudo apt install libgirepository1.0-dev ninja-build gcc
     - name: Init Meson
       run: make init
     - name: Make docs
       run: make doc
+    - name: What the dog doing
+      uses: actions/upload-artifact@v3
+      with:
+        name: docs
+        path: build/doc/libtribble-1/
