@@ -24,8 +24,8 @@ jobs:
       run: make init
     - name: Make docs
       run: make doc
-    - name: What the dog doing
-      uses: actions/upload-artifact@v3
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
-        name: docs
-        path: build/doc/libtribble-1/
+        branch: docs
+        folder: build/doc/libtribble-1
