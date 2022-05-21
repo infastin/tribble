@@ -23,7 +23,7 @@ jobs:
       with:
         version: latest
     - name: Install dependencies
-      run: sudo pip3 install meson gi-docgen && sudo apt install gobject-introspection
+      run: sudo pip3 install meson gi-docgen && sudo apt install libgirepository-1.0-1
     - name: Init Meson
       run: make init
     - name: Run build
