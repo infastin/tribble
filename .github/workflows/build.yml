@@ -23,7 +23,7 @@ jobs:
       with:
         version: latest
     - name: Install dependencies
-      run: sudo pip3 install meson gi-docgen && sudo apt install libgirepository-1.0-1
+      run: sudo pip3 install meson gi-docgen && sudo apt install libgirepository1.0-dev
     - name: Init Meson
       run: make init
     - name: Run build
