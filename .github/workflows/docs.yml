@@ -15,7 +15,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Install dependencies
-      run: sudo apt install meson gi-docgen libgirepository1.0-dev ninja-build gcc
+      run: sudo pip3 install gi-docgen && sudo apt install meson libgirepository1.0-dev ninja-build gcc
     - name: Init Meson
       run: make init
     - name: Make docs
