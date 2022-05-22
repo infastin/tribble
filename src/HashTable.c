@@ -28,7 +28,6 @@ TrbHashTable *trb_hash_table_init(
 	trb_return_val_if_fail(hash_func != NULL, NULL);
 	trb_return_val_if_fail(cmp_func != NULL, NULL);
 	trb_return_val_if_fail(keysize != 0, NULL);
-	trb_return_val_if_fail(valuesize != 0, NULL);
 
 	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
 		trb_msg_error("bucket size overflow!");
@@ -92,7 +91,6 @@ TrbHashTable *trb_hash_table_init_data(
 	trb_return_val_if_fail(hash_func != NULL, NULL);
 	trb_return_val_if_fail(cmpd_func != NULL, NULL);
 	trb_return_val_if_fail(keysize != 0, NULL);
-	trb_return_val_if_fail(valuesize != 0, NULL);
 
 	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
 		trb_msg_error("bucket size overflow!");
@@ -408,7 +406,6 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 	trb_return_val_if_fail(key != NULL, FALSE);
-	trb_return_val_if_fail(ret != NULL, FALSE);
 
 	if (self->slots == 0) {
 		trb_msg_warn("hash table capacity is zero!");
@@ -467,7 +464,6 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 bool trb_hash_table_remove_all(TrbHashTable *self, usize padding, void *ret, usize *len)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
-	trb_return_val_if_fail(ret != NULL, FALSE);
 
 	if (self->keysize + self->valuesize > USIZE_MAX - padding) {
 		trb_msg_error("bucket size overflow: the padding is too big!");

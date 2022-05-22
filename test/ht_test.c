@@ -161,7 +161,7 @@ bool search_hash_table(TrbHashTable *ht, char *name, u32 pos)
 void test_add_destroy()
 {
 	TrbHashTable ht;
-	trb_hash_table_init(&ht, 32, 8, time(0), test_hash_func, (TrbCmpFunc) strcmp);
+	trb_hash_table_init(&ht, 32, 8, trb_xs128ss_next(&state), test_hash_func, (TrbCmpFunc) strcmp);
 
 	u32 name_indices[32];
 
@@ -214,12 +214,65 @@ void test_add_destroy()
 	assert(ht.data == NULL);
 }
 
+void test_no_value()
+{
+	TrbHashTable ht;
+	trb_hash_table_init(&ht, 32, 0, trb_xs128ss_next(&state), test_hash_func, (TrbCmpFunc) strcmp);
+
+	u32 name_indices[32];
+
+	for (u32 i = 0; i < 8; ++i) {
+		u32 name_index = trb_xs128ss_next(&state) & 31;
+		char *name = names[name_index];
+		trb_hash_table_add(&ht, name, NULL);
+		name_indices[i] = name_index;
+	}
+
+	for (u32 i = 0; i < 8; ++i) {
+		u32 name_index = name_indices[i];
+		char *name = names[name_index];
+		u32 expected_slot = (((name_index + 1) << 1) & 63) & (ht.slots - 1);
+		assert(search_hash_table(&ht, name, expected_slot));
+	}
+
+	for (u32 i = 8; i < 16; ++i) {
+		u32 name_index = trb_xs128ss_next(&state) & 31;
+		char *name = names[name_index];
+		trb_hash_table_add(&ht, name, NULL);
+		name_indices[i] = name_index;
+	}
+
+	for (u32 i = 0; i < 16; ++i) {
+		u32 name_index = name_indices[i];
+		char *name = names[name_index];
+		u32 expected_slot = (((name_index + 1) << 1) & 63) & (ht.slots - 1);
+		assert(search_hash_table(&ht, name, expected_slot));
+	}
+
+	for (u32 i = 16; i < 32; ++i) {
+		u32 name_index = trb_xs128ss_next(&state) & 31;
+		char *name = names[name_index];
+		trb_hash_table_add(&ht, name, &name_index);
+		name_indices[i] = name_index;
+	}
+
+	for (u32 i = 0; i < 16; ++i) {
+		u32 name_index = name_indices[i];
+		char *name = names[name_index];
+		u32 expected_slot = (((name_index + 1) << 1) & 63) & (ht.slots - 1);
+		assert(search_hash_table(&ht, name, expected_slot));
+	}
+
+	trb_hash_table_destroy(&ht, NULL, NULL);
+}
+
 int main(int argc, char *argv[])
 {
 	trb_xs128ss_init(&state, 0xdeadbeef);
 
 	generate_names();
 	test_add_destroy();
+	test_no_value();
 
 	return 0;
 }

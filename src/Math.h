@@ -151,7 +151,7 @@ i32 u128_cmp(const u128 *a, const u128 *b);
 
 /**
  * u128_clz:
- * @num: A `u128` number.
+ * @num: An `u128` integer.
  *
  * Counts the number of leading 0-bits in @num,
  * starting at the most significant bit position
@@ -284,7 +284,7 @@ i32 i128_cmp(const i128 *a, const i128 *b);
 
 /**
  * i128_neg:
- * @num: A `i128` number.
+ * @num: An `i128` integer.
  *
  * Performs minus unary operation for @num.
  *
@@ -294,7 +294,7 @@ i128 i128_minus(i128 num);
 
 /**
  * i128_not:
- * @num: A `i128` number.
+ * @num: An `i128` integer.
  *
  * Performs one's complement negation for @num.
  *
@@ -418,7 +418,7 @@ typedef struct {
 
 /**
  * trb_abs32:
- * @num: A `i32` number.
+ * @num: An `i32` integer.
  *
  * Gets the absolute value of @num.
  *
@@ -428,7 +428,7 @@ u32 trb_abs32(i32 num);
 
 /**
  * trb_abs64:
- * @num: A `i64` number.
+ * @num: An `i64` integer.
  *
  * Gets the absolute value of @num.
  *
@@ -438,7 +438,7 @@ u64 trb_abs64(i64 num);
 
 /**
  * trb_abs:
- * @num: A `isize` number.
+ * @num: An `isize` integer.
  *
  * Gets the absolute value of @num.
  *
@@ -542,7 +542,26 @@ ud64 trb_div_pow2_64(u64 num, u64 denom);
  **/
 udsize trb_div_pow2(usize num, usize denom);
 
+/**
+ * trb_clz32:
+ * @num: An `u32` integer.
+ *
+ * Counts the number of leading 0-bits in @num,
+ * starting at the most significant bit position
+ *
+ * Returns: The number of leading 0-bits.
+ **/
 #define trb_clz32(num) ((num) ? __builtin_clz(num) : 32)
+
+/**
+ * trb_clz64:
+ * @num: An `u64` integer.
+ *
+ * Counts the number of leading 0-bits in @num,
+ * starting at the most significant bit position
+ *
+ * Returns: The number of leading 0-bits.
+ **/
 #define trb_clz64(num) ((num) ? __builtin_clzll(num) : 64)
 
 #if USIZE_WIDTH == 64
@@ -551,13 +570,70 @@ udsize trb_div_pow2(usize num, usize denom);
 	#define trb_clz(num) trb_clz32(num)
 #endif
 
+/**
+ * trb_rotl32:
+ * @x: The 32-bit integer to be rotated.
+ * @r: The rotation count.
+ *
+ * Rotates @x by @r bits to the left.
+ *
+ * Returns: A rotated 32-bit integer.
+ **/
 #define trb_rotl32(x, r) (((x) << (r)) | ((x) >> (32 - (r))))
+
+/**
+ * trb_rotr32:
+ * @x: The 32-bit integer to be rotated.
+ * @r: The rotation count.
+ *
+ * Rotates @x by @r bits to the right.
+ *
+ * Returns: A rotated 32-bit integer.
+ **/
 #define trb_rotr32(x, r) (((x) >> (r)) | ((x) << (32 - (r))))
 
+/**
+ * trb_rotl64:
+ * @x: The 64-bit integer to be rotated.
+ * @r: The rotation count.
+ *
+ * Rotates @x by @r bits to the left.
+ *
+ * Returns: A rotated 64-bit integer.
+ **/
 #define trb_rotl64(x, r) (((x) << (r)) | ((x) >> (64 - (r))))
+
+/**
+ * trb_rotr64:
+ * @x: The 64-bit integer to be rotated.
+ * @r: The rotation count.
+ *
+ * Rotates @x by @r bits to the right.
+ *
+ * Returns: A rotated 64-bit integer.
+ **/
 #define trb_rotr64(x, r) (((x) >> (r)) | ((x) << (64 - (r))))
 
+/**
+ * trb_max:
+ * @a: The first value.
+ * @b: The second value.
+ *
+ * Chooses the largest value between @a and @b.
+ *
+ * Returns: the largest value between @a and @b.
+ **/
 #define trb_max(a, b) (((a) > (b)) ? (a) : (b))
+
+/**
+ * trb_min:
+ * @a: The first value.
+ * @b: The second value.
+ *
+ * Chooses the lowest value between @a and @b.
+ *
+ * Returns: the lowest value between @a and @b.
+ **/
 #define trb_min(a, b) (((a) < (b)) ? (a) : (b))
 
 #endif /* end of include guard: MATH_H_5PNMJXKW */

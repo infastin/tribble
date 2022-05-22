@@ -171,7 +171,7 @@ typedef void (*TrbUserFunc)(void *data, void *userdata);
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
  *
- * Hashes the @key.
+ * The function for hashing keys.
  *
  * Returns: A hash value of the @key.
  **/
