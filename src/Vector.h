@@ -31,14 +31,15 @@ struct _TrbVector {
 
 /**
  * trb_vector_init:
- * @self: (optional) (inout): The pointer to the `TrbVector` to be initialized.
+ * @self: (nullable): The pointer to the `TrbVector` to be initialized.
  * @clear: %TRUE if elements should be cleared to 0 when allocated.
  * @zero_terminated: %TRUE if the array should have terminating zero.
  * @elemsize: The size of each element in bytes.
  *
  * Creates a new dynamic size array.
  *
- * Returns: A new dynamic size array. Can return %NULL if an error occurs.
+ * Returns: (nullable): A new dynamic size array.
+ * Can return %NULL if an error occurs.
  **/
 TrbVector *trb_vector_init(TrbVector *self, bool clear, bool zero_terminated, usize elemsize);
 
@@ -49,7 +50,8 @@ TrbVector *trb_vector_init(TrbVector *self, bool clear, bool zero_terminated, us
  *
  * Creates a copy of the array.
  *
- * Returns: A copy of the array. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A copy of the array.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbVector *trb_vector_copy(TrbVector *dst, const TrbVector *src);
 
@@ -228,7 +230,7 @@ bool trb_vector_remove_all(TrbVector *self, void *ret);
 /**
  * trb_vector_sort:
  * @self: The array to be sorted.
- * @cmp_func: The comparison function for sorting entries.
+ * @cmp_func: (scope call): The comparison function for sorting entries.
  *
  * Sorts the array.
  **/
@@ -237,7 +239,7 @@ void trb_vector_sort(TrbVector *self, TrbCmpFunc cmp_func);
 /**
  * trb_vector_sort_data:
  * @self: The array to be sorted.
- * @cmpd_func: The comparison function for sorting entries.
+ * @cmpd_func: (scope call): The comparison function for sorting entries.
  * @data: User data.
  *
  * Sorts the array using user data.
@@ -277,7 +279,8 @@ bool trb_vector_get_range(const TrbVector *self, usize index, usize len, void *r
  * Steals the array buffer.
  * Array creates a new buffer.
  *
- * Returns: The buffer on success.
+ * Returns: (transfer full) (nullable): The buffer on success.
+ * Can return %NULL on failure.
  **/
 void *trb_vector_steal(TrbVector *self, usize *len);
 
@@ -289,7 +292,8 @@ void *trb_vector_steal(TrbVector *self, usize *len);
  * Steals the array buffer.
  * Array's buffer becomes %NULL.
  *
- * Returns: The buffer on success.
+ * Returns: (transfer full) (nullable): The buffer on success.
+ * Can return %NULL on failure.
  **/
 void *trb_vector_steal0(TrbVector *self, usize *len);
 
@@ -317,7 +321,7 @@ bool trb_vector_shrink(TrbVector *self);
 /**
  * trb_vector_destroy:
  * @self: The array which buffer is to be freed.
- * @free_func: The function for freeing elements.
+ * @free_func: (scope call) (nullable): The function for freeing elements.
  *
  * Frees the array buffer.
  **/
@@ -326,7 +330,7 @@ void trb_vector_destroy(TrbVector *self, TrbFreeFunc free_func);
 /**
  * trb_vector_free:
  * @self: The array to be freed.
- * @free_func: The function for freeing elements.
+ * @free_func: (scope call) (nullable): The function for freeing elements.
  *
  * Frees the array completely.
  **/
@@ -336,7 +340,7 @@ void trb_vector_free(TrbVector *self, TrbFreeFunc free_func);
  * trb_vector_search:
  * @self: The array where to search.
  * @target: The pointer to the data to be found.
- * @cmp_func: The function for comparing values.
+ * @cmp_func: (scope call): The function for comparing values.
  * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
  * Searches for the entry in the array.
@@ -349,7 +353,7 @@ bool trb_vector_search(TrbVector *self, const void *target, TrbCmpFunc cmp_func,
  * trb_vector_search_data:
  * @self: The array where to search.
  * @target: The pointer to the data to be found.
- * @cmpd_func: The function for comparing values.
+ * @cmpd_func: (scope call): The function for comparing values.
  * @data: User data.
  * @index: (optional) (out): The pointer to retrieve the index of found value.
  *

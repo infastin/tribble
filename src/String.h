@@ -39,69 +39,75 @@ struct _TrbString {
 
 /**
  * trb_string_init0:
- * @self: The pointer to the string to be initialized.
+ * @self: (nullable): The pointer to the string to be initialized.
  *
  * Creates a new #TrbString.
  *
- * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
+ * Returns: (nullable): A new #TrbString.
+ * Can return %NULL if an alloction error occurs.
  **/
 TrbString *trb_string_init0(TrbString *self);
 
 /**
  * trb_string_init:
- * @self: The pointer to the string to be initialized.
+ * @self: (nullable): The pointer to the string to be initialized.
  * @c_str: The inital contents of the #TrbString.
  *
  * Creates a new #TrbString from @str.
  *
- * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
+ * Returns: (nullable): A new #TrbString.
+ * Can return %NULL if an alloction error occurs.
  **/
 TrbString *trb_string_init(TrbString *self, const char *c_str);
 
 /**
  * trb_string_init_len:
- * @self: The pointer to the string to be initialized.
+ * @self: (nullable): The pointer to the string to be initialized.
  * @str: The initial contents of the #TrbString.
  * @len: The number of bytes in the @str to use.
  *
  * Creates a new #TrbString with @len bytes of the @str.
  *
- * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
+ * Returns: (nullable): A new #TrbString.
+ * Can return %NULL if an alloction error occurs.
  **/
 TrbString *trb_string_init_len(TrbString *self, const char *str, usize len);
 
 /**
  * trb_string_init_sized:
- * @self: The pointer to the string to be initialized.
+ * @self: (nullable): The pointer to the string to be initialized.
  * @cap: The initial capacity of the string.
  *
  * Creates a new #TrbString with capacity of @cap bytes.
  *
- * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
+ * Returns: (nullable): A new #TrbString.
+ * Can return %NULL if an alloction error occurs.
  **/
 TrbString *trb_string_init_sized(TrbString *self, usize cap);
 
 /**
  * trb_string_init_fmt:
- * @self: The pointer to the string to be initialized.
+ * @self: (nullable): The pointer to the string to be initialized.
  * @fmt: The format of the string that wiil be used as the initial contents of the #TrbString.
  * @...: Arguments.
  *
  * Creates a new #TrbString from the formatted string.
  *
- * Returns: A new #TrbString. Can return %NULL if an allocate error occurs.
+ * Returns: (nullable): A new #TrbString
+ * Can return %NULL if an allocate error occurs.
  **/
 TrbString *trb_string_init_fmt(TrbString *self, const char *fmt, ...) TRB_FORMAT(printf, 2, 3);
 
 /**
  * trb_string_init_vfmt:
- * @self: The pointer to the string to be initialized.
+ * @self: (nullable): The pointer to the string to be initialized.
  * @fmt: The format of the string that will be used as the initial contents of the #TrbString.
  * @args: The argument list.
  *
  * Creates a new #TrbString from the formatted string.
  *
- * Returns: A new #TrbString. Can return %NULL if an alloction error occurs.
+ * Returns: (nullable): A new #TrbString.
+ * Can return %NULL if an alloction error occurs.
  **/
 TrbString *trb_string_init_vfmt(TrbString *self, const char *fmt, va_list args) TRB_FORMAT(printf, 2, 0);
 
@@ -467,7 +473,8 @@ bool trb_string_assign_vfmt(TrbString *self, const char *fmt, va_list args) TRB_
  * Steals the string buffer.
  * TrbString's buffer becomes %NULL.
  *
- * Returns: The buffer on success.
+ * Returns: (transfer full) (nullable): The buffer on success.
+ * Can return %NULL on failure.
  **/
 char *trb_string_steal0(TrbString *self, usize *len);
 
@@ -479,7 +486,8 @@ char *trb_string_steal0(TrbString *self, usize *len);
  * Steals the string buffer.
  * TrbString creates a new buffer.
  *
- * Returns: The buffer on success.
+ * Returns: (transfer full) (nullable): The buffer on success.
+ * Can return %NULL on failure.
  **/
 char *trb_string_steal(TrbString *self, usize *len);
 
@@ -506,7 +514,8 @@ void trb_string_free(TrbString *self);
  *
  * Creates a copy of the string.
  *
- * Returns: A copy of the array. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A copy of the array.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbString *trb_string_copy(TrbString *dst, const TrbString *src);
 

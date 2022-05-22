@@ -377,7 +377,7 @@ void *trb_vector_steal(TrbVector *self, usize *len)
 
 	if (self->data == NULL) {
 		trb_msg_warn("array buffer is NULL!");
-		return FALSE;
+		return NULL;
 	}
 
 	void *ret = self->data;
@@ -427,7 +427,7 @@ void *trb_vector_steal0(TrbVector *self, usize *len)
 
 	if (self->data == NULL) {
 		trb_msg_warn("array buffer is NULL!");
-		return FALSE;
+		return NULL;
 	}
 
 	void *ret = self->data;

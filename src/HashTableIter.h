@@ -57,12 +57,14 @@ struct _TrbHashTableIter {
 
 /**
  * trb_hash_table_iter_init:
- * @self: The pointer to the hash table iterator to be initialized.
+ * @self: (nullable): The pointer to the hash table iterator to be initialized.
  * @ht: The hash table to be iterated.
  *
  * Creates a new #HashTableIter.
+ * If allocated on heap, use `free()` to release the allocated memory.
  *
- * Returns: A new #HashTableIter.
+ * Returns: (nullable): A new #HashTableIter.
+ * Can return %NULL if an alloction error occurs.
  **/
 TrbHashTableIter *trb_hash_table_iter_init(TrbHashTableIter *self, TrbHashTable *ht);
 
@@ -93,8 +95,8 @@ bool trb_hash_table_iter_replace(TrbHashTableIter *self, const void *value);
 /**
  * trb_hash_table_iter_get:
  * @self: The hash table iterator.
- * @key: (optional) (out): The pointer to retrieve the key of the entry.
- * @value: (optional) (out): The pointer to retrieve the value of the entry.
+ * @key: (out): The pointer to retrieve the key of the entry.
+ * @value: (out): The pointer to retrieve the value of the entry.
  *
  * Retrieves the key and the value.
  *

@@ -43,15 +43,16 @@ struct _TrbHashTable {
 
 /**
  * trb_hash_table_init:
- * @self: The pointer to the hash table to be initialized.
+ * @self: (nullable): The pointer to the hash table to be initialized.
  * @keysize: The size of keys in the hash table.
  * @valuesize: The size of values in the hash table.
- * @hash_func: The function for hashing keys.
- * @cmp_func: The function for comparing keys.
+ * @hash_func: (scope call): The function for hashing keys.
+ * @cmp_func: (scope call): The function for comparing keys.
  *
  * Creates a new #TrbHashTable.
  *
- * Returns: A new #TrbHashTable. Can return %NULL if an error occurs
+ * Returns: (nullable): A new #TrbHashTable.
+ * Can return %NULL if an error occurs
  **/
 TrbHashTable *trb_hash_table_init(
 	TrbHashTable *self,
@@ -64,7 +65,7 @@ TrbHashTable *trb_hash_table_init(
 
 /**
  * trb_hash_table_init_data:
- * @self: The pointer to the hash table to be initialized.
+ * @self: (nullable): The pointer to the hash table to be initialized.
  * @keysize: The size of keys in the hash table.
  * @valuesize: The size of values in the hash table.
  * @hash_func: The function for hashing keys.
@@ -73,7 +74,8 @@ TrbHashTable *trb_hash_table_init(
  *
  * Creates a new #TrbHashTable with the comparison function that accepts user data.
  *
- * Returns: A new #TrbHashTable. Can return %NULL if an error occurs
+ * Returns: (nullable): A new #TrbHashTable.
+ * Can return %NULL if an error occurs
  **/
 TrbHashTable *trb_hash_table_init_data(
 	TrbHashTable *self,
@@ -199,8 +201,8 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 /**
  * trb_hash_table_destroy:
  * @self: The hash table which buckets will be freed.
- * @key_free_func: The function for freeing keys.
- * @value_free_func: The function for freeing values.
+ * @key_free_func: (scope call) (nullable): The function for freeing keys.
+ * @value_free_func: (scope call) (nullable): The function for freeing values.
  *
  * Frees the hash table buckets.
  **/
@@ -209,8 +211,8 @@ void trb_hash_table_destroy(TrbHashTable *self, TrbFreeFunc key_free_func, TrbFr
 /**
  * trb_hash_table_free:
  * @self: The hash table to be freed.
- * @key_free_func: The function for freeing keys.
- * @value_free_func: The function for freeing values.
+ * @key_free_func: (scope call) (nullable): The function for freeing keys.
+ * @value_free_func: (scope call) (nullable): The function for freeing values.
  *
  * Frees the hash table completely.
  **/

@@ -18,11 +18,12 @@ struct _TrbSList {
 
 /**
  * trb_slist_init:
- * @self: The pointer to the list to be initialized.
+ * @self: (nullable): The pointer to the list to be initialized.
  *
  * Creates a new singly-linked list.
  *
- * Returns: A new singly-linked list. Can return %NULL if an alloction error occurs.
+ * Returns: (nullable): A new singly-linked list.
+ * Can return %NULL if an alloction error occurs.
  **/
 TrbSList *trb_slist_init(TrbSList *self);
 
@@ -75,7 +76,7 @@ void trb_slist_reverse(TrbSList *self);
 /**
  * trb_slist_sort:
  * @self: The list to be sorted.
- * @cmp_func: The comparison function for sorting entries.
+ * @cmp_func: (scope call): The comparison function for sorting entries.
  *
  * Sorts the list.
  **/
@@ -84,7 +85,7 @@ void trb_slist_sort(TrbSList *self, TrbCmpFunc cmp_func);
 /**
  * trb_slist_sort_data:
  * @self: The list to be sorted.
- * @cmpd_func: The comparison function for sorting entries using user data.
+ * @cmpd_func: (scope call): The comparison function for sorting entries using user data.
  * @data: User data.
  *
  * Sorts the list using user data.
@@ -98,7 +99,8 @@ void trb_slist_sort_data(TrbSList *self, TrbCmpDataFunc cmpd_func, void *data);
  *
  * Gets the element at the given position.
  *
- * Returns: The element, or %NULL if position is beyond the end of the list.
+ * Returns: (nullable): The element,
+ * or %NULL if position is beyond the end of the list.
  **/
 TrbSList *trb_slist_nth(TrbSList *self, usize n);
 
@@ -117,12 +119,13 @@ usize trb_slist_position(TrbSList *self, TrbSList *node);
  * trb_slist_lookup:
  * @self: The list with the element.
  * @node: The similar node for comparison.
- * @cmp_func: The function for comparing elements.
+ * @cmp_func: (scope call): The function for comparing elements.
  * @index: (optional) (out): The pointer to retrieve the position of the element.
  *
  * Searches for the element in the list.
  *
- * Returns: The element, or %NULL if it isn't in the list.
+ * Returns: (nullable): The element,
+ * or %NULL if it isn't in the list.
  **/
 TrbSList *trb_slist_lookup(TrbSList *self, const TrbSList *node, TrbCmpFunc cmp_func, usize *index);
 
@@ -130,13 +133,14 @@ TrbSList *trb_slist_lookup(TrbSList *self, const TrbSList *node, TrbCmpFunc cmp_
  * trb_slist_lookup_data:
  * @self: The list with the element.
  * @node: The similar node for comparison.
- * @cmpd_func: The function for comparing elements.
+ * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  * @index: (optional) (out): The pointer to retrieve the position of the element.
  *
  * Searches for the element in the list using user data.
  *
- * Returns: The element, or %NULL if it isn't in the list.
+ * Returns: (nullable): The element,
+ * or %NULL if it isn't in the list.
  **/
 TrbSList *trb_slist_lookup_data(TrbSList *self, const TrbSList *node, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
@@ -201,21 +205,22 @@ void trb_slist_splice(TrbSList *self, TrbSList *node);
 
 /**
  * trb_slist_copy:
- * @dst: The destination list.
+ * @dst: (optional) (inout): The destination list.
  * @src: The source list.
- * @copy_func: The function for copying nodes.
+ * @copy_func: (scope call): The function for copying nodes.
  * @status: (optional) (out): The pointer to retrieve the status of execution (%TRUE for success).
  *
  * Copies the list.
  *
- * Returns: A copy of the list. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A copy of the list.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbSList *trb_slist_copy(TrbSList *dst, const TrbSList *src, TrbCopyFunc copy_func, bool *status);
 
 /**
  * trb_slist_destroy:
  * @self: The list to be freed.
- * @free_func: The function for freeing nodes.
+ * @free_func: (scope call) (nullable): The function for freeing nodes.
  *
  * Frees all nodes in the list.
  **/
@@ -224,7 +229,7 @@ void trb_slist_destroy(TrbSList *self, TrbFreeFunc free_func);
 /**
  * trb_slist_free:
  * @self: The list to be freed.
- * @free_func: The function for freeing nodes.
+ * @free_func: (scope call) (nullable): The function for freeing nodes.
  *
  * Frees the list completely.
  **/

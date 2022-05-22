@@ -375,7 +375,7 @@ i128 i128_minus(i128 num)
 #endif
 }
 
-i128 i128_neg(i128 num)
+i128 i128_not(i128 num)
 {
 #ifdef HAS_INT128
 	return ~num;

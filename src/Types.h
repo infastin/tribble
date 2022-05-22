@@ -4,17 +4,64 @@
 #include <limits.h>
 #include <stdint.h>
 
-/* Integers */
+/**
+ * i8:
+ * A signed 8-bit integer type.
+ **/
 typedef int8_t i8;
+
+/**
+ * i16:
+ * A signed 16-bit integer type.
+ **/
 typedef int16_t i16;
+
+/**
+ * i32:
+ * A signed 32-bit integer type.
+ **/
 typedef int32_t i32;
+
+/**
+ * i64:
+ * A signed 64-bit integer type.
+ **/
 typedef int64_t i64;
+
+/**
+ * isize:
+ * A signed pointer size integer type.
+ **/
 typedef intptr_t isize;
 
+/**
+ * u8:
+ * An unsigned 8-bit integer type.
+ **/
 typedef uint8_t u8;
+
+/**
+ * u16:
+ * An unsigned 16-bit integer type.
+ **/
 typedef uint16_t u16;
+
+/**
+ * u32:
+ * An unsigned 32-bit integer type.
+ **/
 typedef uint32_t u32;
+
+/**
+ * u64:
+ * An unsigned 64-bit integer type.
+ **/
 typedef uint64_t u64;
+
+/**
+ * usize:
+ * An unsigned pointer size integer type.
+ **/
 typedef uintptr_t usize;
 
 #define I8_MAX INT8_MAX
@@ -64,56 +111,30 @@ typedef uintptr_t usize;
 #define TRB_UNUSED __attribute__((unused))
 #define TRB_PACKED __attribute__((packed))
 
-/* Floating point numbers */
+/**
+ * f32:
+ * A single precision floating-point number type.
+ **/
 typedef float f32;
+
+/**
+ * f64:
+ * A double precision floating-point number type.
+ **/
 typedef double f64;
+
+/**
+ * real:
+ * A quadruple precision floating-point number type.
+ **/
 typedef long double real;
 
-/* Tuples for div functions */
-typedef struct {
-	i32 quot;
-	i32 rem;
-} d32;
-
-typedef struct {
-	i64 quot;
-	i64 rem;
-} d64;
-
-typedef struct {
-	isize quot;
-	isize rem;
-} dsize;
-
-typedef struct {
-	u32 quot;
-	u32 rem;
-} ud32;
-
-typedef struct {
-	u64 quot;
-	u64 rem;
-} ud64;
-
-typedef struct {
-	usize quot;
-	usize rem;
-} udsize;
-
-/* Boolean */
 #ifndef bool
 typedef _Bool bool;
 #endif
 
 #define TRUE 1
 #define FALSE 0
-
-/* auto */
-#ifndef auto
-	#define auto __auto_type
-#endif
-
-/* Functions */
 
 /**
  * TrbCmpFunc:

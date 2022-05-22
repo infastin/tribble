@@ -30,7 +30,7 @@ struct _TrbHeap {
 
 /**
  * trb_heap_init:
- * @self: The pointer to the `TrbHeap` to be initialized.
+ * @self: (nullable): The pointer to the `TrbHeap` to be initialized.
  * @elemsize: The size of each element in bytes.
  * @cmp_func: The function for comparing elements.
  *
@@ -42,7 +42,7 @@ TrbHeap *trb_heap_init(TrbHeap *self, usize elemsize, TrbCmpFunc cmp_func);
 
 /**
  * trb_heap_init_data:
- * @self: The pointer to the `TrbHeap` to be initialized.
+ * @self: (nullable): The pointer to the `TrbHeap` to be initialized.
  * @elemsize: The size of each element in bytes.
  * @cmpd_func: The function for comparing elements.
  * @data: User data.
@@ -125,7 +125,7 @@ bool trb_heap_search(const TrbHeap *self, const void *target, usize *index);
 /**
  * trb_heap_destroy:
  * @self: The heap which buffer is to be freed.
- * @free_func: The function for freeing elements.
+ * @free_func: (scope call) (nullable): The function for freeing elements.
  *
  * Frees the heap buffer.
  **/
@@ -134,7 +134,7 @@ void trb_heap_destroy(TrbHeap *self, TrbFreeFunc free_func);
 /**
  * trb_heap_free:
  * @self: The heap to be freed.
- * @free_func: The function for freeing elements.
+ * @free_func: (scope call) (nullable): The function for freeing elements.
  *
  * Frees the heap completely.
  **/

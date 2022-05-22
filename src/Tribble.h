@@ -3,9 +3,11 @@
 
 #include "Hash.h"
 #include "HashTable.h"
+#include "HashTableIter.h"
 #include "Heap.h"
 #include "List.h"
 #include "Macros.h"
+#include "Math.h"
 #include "Messages.h"
 #include "Rand.h"
 #include "SList.h"

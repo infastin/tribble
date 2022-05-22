@@ -21,12 +21,13 @@ struct _TrbSM64 {
 
 /**
  * trb_sm64_init:
- * @self: The pointer to the state to be initialized.
+ * @self: (nullable): The pointer to the state to be initialized.
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbSM64 with the given seed.
  *
- * Returns: A new state. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new state.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbSM64 *trb_sm64_init(TrbSM64 *self, u64 seed);
 
@@ -67,12 +68,13 @@ struct _TrbXs128ss {
 
 /**
  * trb_xs128ss_init:
- * @self: The pointer to the state to be initialized.
+ * @self: (nullable): The pointer to the state to be initialized.
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs128ss with the given seed.
  *
- * Returns: A new state. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new state.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbXs128ss *trb_xs128ss_init(TrbXs128ss *self, u64 seed);
 
@@ -106,12 +108,13 @@ struct _TrbXs128p {
 
 /**
  * trb_xs128p_init:
- * @self: The pointer to the state to be initialized.
+ * @self: (nullable): The pointer to the state to be initialized.
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs128p with the given seed.
  *
- * Returns: A new state. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new state.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbXs128p *trb_xs128p_init(TrbXs128p *self, u64 seed);
 
@@ -152,12 +155,13 @@ struct _TrbXs256ss {
 
 /**
  * trb_xs256ss_init:
- * @self: The pointer to the state to be initialized.
+ * @self: (nullable): The pointer to the state to be initialized.
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs256ss with the given seed.
  *
- * Returns: A new state. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new state.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbXs256ss *trb_xs256ss_init(TrbXs256ss *self, u64 seed);
 
@@ -191,12 +195,13 @@ struct _TrbXs256p {
 
 /**
  * trb_xs256p_init:
- * @self: The pointer to the state to be initialized.
+ * @self: (nullable): The pointer to the state to be initialized.
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs256p with the given seed.
  *
- * Returns: A new state. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new state.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbXs256p *trb_xs256p_init(TrbXs256p *self, u64 seed);
 
@@ -235,12 +240,13 @@ struct _TrbPcg64 {
 
 /**
  * trb_pcg64_init:
- * @self: The pointer to the state to be initialized.
+ * @self: (nullable): The pointer to the state to be initialized.
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbPcg64 with the given seed.
  *
- * Returns: A new state. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new state.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbPcg64 *trb_pcg64_init(TrbPcg64 *self, u64 seed);
 
@@ -304,12 +310,13 @@ struct _TrbPcg128 {
 
 /**
  * trb_pcg128_init:
- * @self: The pointer to the state to be initialized.
+ * @self: (nullable): The pointer to the state to be initialized.
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbPcg128 with the given seed.
  *
- * Returns: A new state. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new state.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbPcg128 *trb_pcg128_init(TrbPcg128 *self, u128 seed);
 

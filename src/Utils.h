@@ -61,7 +61,7 @@ char *trb_strdup_vfmt(const char *fmt, va_list args) TRB_FORMAT(printf, 1, 0);
  * @array: The array to be heapified.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The function for comparing elements.
+ * @cmp_func: (scope call): The function for comparing elements.
  *
  * Heapifies the array.
  **/
@@ -72,19 +72,19 @@ void trb_heapify(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
  * @array: The array to be heapified.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmpd_func: The function for comparing elements using user data.
+ * @cmpd_func: (scope call): The function for comparing elements using user data.
  * @data: User data.
  *
  * Heapifies the array using user data.
  **/
-void trb_heapify_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmp_func, void *data);
+void trb_heapify_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
  * trb_inssort:
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The function for comparing elements.
+ * @cmp_func: (scope call): The function for comparing elements.
  *
  * Sorts the array using Insertion Sort.
  **/
@@ -95,7 +95,7 @@ void trb_inssort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmpd_func: The function for comparing elements.
+ * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  *
  * Sorts the array using Insertion Sort and user data.
@@ -107,7 +107,7 @@ void trb_inssort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmp
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The function for comparing elements.
+ * @cmp_func: (scope call): The function for comparing elements.
  *
  * Sorts the array using Heap Sort.
  **/
@@ -118,7 +118,7 @@ void trb_heapsort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmpd_func: The function for comparing elements.
+ * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  *
  * Sorts the array using Heap Sort and user data.
@@ -130,7 +130,7 @@ void trb_heapsort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cm
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The function for comparing elements.
+ * @cmp_func: (scope call): The function for comparing elements.
  *
  * Sorts the array using Quicksort by Knuth.
  * [Reference](http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf).
@@ -142,7 +142,7 @@ void trb_quicksort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
  * @array: The array to be sorted.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmpd_func: The function for comparing elements.
+ * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  *
  * Sorts the array using Quicksort by Knuth.
@@ -156,7 +156,7 @@ void trb_quicksort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc c
  * @target: The pointer to the data to be found.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmp_func: The function for comparing elements.
+ * @cmp_func: (scope call): The function for comparing elements.
  * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
  * Searches for the entry in the array using binary search.
@@ -173,7 +173,7 @@ bool trb_binary_search(const void *array, const void *target, usize len, usize e
  * @target: The pointer to the data to be found.
  * @len: The length of the array.
  * @elemsize: The size of each element in the array.
- * @cmpd_func: The function for comparing elements.
+ * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  * @index: (optional) (out): The pointer to retrieve the index of found value.
  *

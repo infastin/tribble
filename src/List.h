@@ -20,11 +20,12 @@ struct _TrbList {
 
 /**
  * trb_list_init:
- * @self: The pointer to the list to be initialized.
+ * @self: (nullable): The pointer to the list to be initialized.
  *
  * Creates a new doubly-linked list.
  *
- * Returns: A new doubly-linked list. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A new doubly-linked list.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbList *trb_list_init(TrbList *self);
 
@@ -57,7 +58,7 @@ void trb_list_reverse(TrbList *self);
 /**
  * trb_list_sort:
  * @self: The list to be sorted.
- * @cmp_func: The comparison function for sorting entries.
+ * @cmp_func: (scope call): The comparison function for sorting entries.
  *
  * Sorts the list.
  **/
@@ -66,7 +67,7 @@ void trb_list_sort(TrbList *self, TrbCmpFunc cmp_func);
 /**
  * trb_list_sort_data:
  * @self: The list to be sorted.
- * @cmpd_func: The comparison function for sorting entries using user data.
+ * @cmpd_func: (scope call): The comparison function for sorting entries using user data.
  * @data: User data.
  *
  * Sorts the list using user data.
@@ -80,7 +81,8 @@ void trb_list_sort_data(TrbList *self, TrbCmpDataFunc cmpd_func, void *data);
  *
  * Gets the element at the given position.
  *
- * Returns: The element, or %NULL if position is beyond the end of the list.
+ * Returns: (nullable): The element,
+ * or %NULL if position is beyond the end of the list.
  **/
 TrbList *trb_list_nth(TrbList *self, usize n);
 
@@ -99,12 +101,13 @@ usize trb_list_position(TrbList *self, TrbList *node);
  * trb_list_lookup:
  * @self: The list with the element.
  * @node: The similar node for comparison.
- * @cmp_func: The function for comparing elements.
+ * @cmp_func: (scope call): The function for comparing elements.
  * @index: (optional) (out): The pointer to retrieve the position of the element.
  *
  * Searches for the element in the list.
  *
- * Returns: The element, or %NULL if it isn't in the list.
+ * Returns: (nullable): The element,
+ * or %NULL if it isn't in the list.
  **/
 TrbList *trb_list_lookup(TrbList *self, const TrbList *node, TrbCmpFunc cmp_func, usize *index);
 
@@ -112,13 +115,14 @@ TrbList *trb_list_lookup(TrbList *self, const TrbList *node, TrbCmpFunc cmp_func
  * trb_list_lookup_data:
  * @self: The list with the element.
  * @node: The similar node for comparison.
- * @cmpd_func: The function for comparing elements.
+ * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  * @index: (optional) (out): The pointer to retrieve the position of the element.
  *
  * Searches for the element in the list using user data.
  *
- * Returns: The element, or %NULL if it isn't in the list.
+ * Returns: (nullable): The element,
+ * or %NULL if it isn't in the list.
  **/
 TrbList *trb_list_lookup_data(TrbList *self, const TrbList *node, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
@@ -201,19 +205,20 @@ void trb_list_splice(TrbList *self, TrbList *node);
  * trb_list_copy:
  * @dst: The destination list.
  * @src: The source list.
- * @copy_func: The function for copying nodes.
+ * @copy_func: (scope call): The function for copying nodes.
  * @status: (optional) (out): The pointer to retrieve the status of execution (%TRUE for success).
  *
  * Copies the list.
  *
- * Returns: A copy of the list. Can return %NULL if an allocation error occurs.
+ * Returns: (nullable): A copy of the list.
+ * Can return %NULL if an allocation error occurs.
  **/
 TrbList *trb_list_copy(TrbList *dst, const TrbList *src, TrbCopyFunc copy_func, bool *status);
 
 /**
  * trb_list_destroy:
  * @self: The list to be freed.
- * @free_func: The function for freeing nodes.
+ * @free_func: (scope call) (nullable): The function for freeing nodes.
  *
  * Frees all nodes in the list.
  **/
@@ -222,7 +227,7 @@ void trb_list_destroy(TrbList *self, TrbFreeFunc free_func);
 /**
  * trb_list_free:
  * @self: The list to be freed.
- * @free_func: The function for freeing nodes.
+ * @free_func: (scope call) (nullable): The function for freeing nodes.
  *
  * Frees the list completely.
  **/
