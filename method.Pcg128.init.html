@@ -48,7 +48,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   <script src="search.js"></script>
   
   <script src="main.js"></script>
-  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
 <body>
@@ -109,16 +108,16 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L314">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L321">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">TrbPcg128</span><span class="o">*</span>
-<span class="n">trb_pcg128_init</span> <span class="p">(</span>
-  <span class="n">TrbPcg128</span><span class="o">*</span> <span class="n">self</span><span class="p">,</span>
-  <span class="n">u128</span> <span class="n">seed</span>
-<span class="p">)</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">TrbPcg128</span><span class="o">*</span><span class="w"></span>
+<span class="n">trb_pcg128_init</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbPcg128</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">u128</span><span class="w"> </span><span class="n">seed</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
       </div>
@@ -129,7 +128,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L305">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L311">[src]</a>
         
       </h4>
 
@@ -165,7 +164,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           <tr class="arg-name">
             <td><code>seed</code></td>
-            <td><code>u128</code></td>
+            <td><a href="struct.u128.html"><code>u128</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
@@ -202,13 +201,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>A new state. Can return <code>NULL</code> if an allocation error&nbsp;occurs.</p></td>
+            <td><p>A new state.
+Can return <code>NULL</code> if an allocation error&nbsp;occurs.</p></td>
           </tr>
           
           
           
           <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the instance.</td></tr>
-          
+          <tr><td>&nbsp;</td><td>The return value can be <code>NULL</code>.</td></tr>
           
         </table>
       </div>

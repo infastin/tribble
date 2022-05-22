@@ -48,7 +48,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   <script src="search.js"></script>
   
   <script src="main.js"></script>
-  <!--[if IE]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
 
 <body>
@@ -143,18 +142,18 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/SList.h#L127">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/SList.h#L130">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">TrbSList</span><span class="o">*</span>
-<span class="n">trb_slist_lookup</span> <span class="p">(</span>
-  <span class="n">TrbSList</span><span class="o">*</span> <span class="n">self</span><span class="p">,</span>
-  <span class="k">const</span> <span class="n">TrbSList</span><span class="o">*</span> <span class="n">node</span><span class="p">,</span>
-  <span class="n">TrbCmpFunc</span> <span class="n">cmp_func</span><span class="p">,</span>
-  <span class="n">usize</span><span class="o">*</span> <span class="n">index</span>
-<span class="p">)</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="n">TrbSList</span><span class="o">*</span><span class="w"></span>
+<span class="n">trb_slist_lookup</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbSList</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TrbSList</span><span class="o">*</span><span class="w"> </span><span class="n">node</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbCmpFunc</span><span class="w"> </span><span class="n">cmp_func</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="o">*</span><span class="w"> </span><span class="n">index</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
       </div>
@@ -165,7 +164,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/SList.h#L116">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/SList.h#L118">[src]</a>
         
       </h4>
 
@@ -237,7 +236,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           <tr class="arg-name">
             <td><code>index</code></td>
-            <td><code>usize*</code></td>
+            <td><a href="alias.usize.html"><code>usize</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
@@ -274,13 +273,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The element, or <code>NULL</code> if it isn&#8217;t in the&nbsp;list.</p></td>
+            <td><p>The element,
+or <code>NULL</code> if it isn&#8217;t in the&nbsp;list.</p></td>
           </tr>
           
           
           
           <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the instance.</td></tr>
-          
+          <tr><td>&nbsp;</td><td>The return value can be <code>NULL</code>.</td></tr>
           
         </table>
       </div>
