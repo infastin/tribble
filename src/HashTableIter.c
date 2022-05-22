@@ -35,6 +35,8 @@ TrbHashTableIter *trb_hash_table_iter_init(TrbHashTableIter *self, TrbHashTable 
 	self->ht = ht;
 	self->slot = -1;
 	self->status = NONE;
+
+	return self;
 }
 
 bool trb_hash_table_iter_next(TrbHashTableIter *self, const void **key, void **value)
