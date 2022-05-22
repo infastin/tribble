@@ -98,14 +98,14 @@ d128 i128_div(i128 num, i128 denom);
 	#define I128_LO(num) ((u64) ((num) & (U64_MAX)))
 #else
 	#define U128_MAX ((u128){ U64_MAX, U64_MAX })
-	#define U128_C(hi, lo) ((u128){ hi, lo })
+	#define U128_C(hi, lo) ((u128){ U64_C(hi), U64_C(lo) })
 
 	#define U128_HI(num) ((num).hi)
 	#define U128_LO(num) ((num).lo)
 
 	#define I128_MAX ((i128){ I64_MAX, U64_MAX })
 	#define I128_MIN ((i128){ I64_MIN, 0 })
-	#define I128_C(hi, lo) ((i128){ hi, lo })
+	#define I128_C(hi, lo) ((i128){ U64_C(hi), U64_C(lo) })
 
 	#define I128_HI(num) ((num).hi)
 	#define I128_LO(num) ((num).lo)

@@ -328,16 +328,21 @@ f64 trb_pcg128_next_f64(TrbPcg128 *self)
 
 u128 trb_pcg128_next_u128(TrbPcg128 *self)
 {
+	const u128 multi = U128_C(2549297995355413924, 4865540595714422341);
+	const u128 inc = U128_C(6364136223846793005, 1442695040888963407);
 	const u128 bc = U128_C(17766728186571221404, 12605985483714917081);
 
-	usize sh = u128_shr(self->s, 122);
+	self->s = u128_mul(self->s, multi);
+	self->s = u128_add(self->s, inc);
+
+	u128 sh = u128_shr(self->s, 122);
 	sh = u128_add(sh, U128_C(0, 6));
 
-	usize word = u128_shr(self->s, U128_LO(sh));
+	u128 word = u128_shr(self->s, U128_LO(sh));
 	word = u128_xor(word, self->s);
 	word = u128_mul(word, bc);
 
-	usize res = u128_shr(word, 86);
+	u128 res = u128_shr(word, 86);
 	res = u128_xor(res, word);
 
 	return res;
