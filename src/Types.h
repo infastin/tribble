@@ -165,6 +165,16 @@ typedef void (*TrbFreeFunc)(void *ptr);
 
 typedef void (*TrbUserFunc)(void *data, void *userdata);
 
+/**
+ * TrbHashFunc:
+ * @key: (not nullable): The key to be hashed.
+ * @keysize: The size of the key.
+ * @seed: The seed for hashing.
+ *
+ * Hashes the @key.
+ *
+ * Returns: A hash value of the @key.
+ **/
 typedef usize (*TrbHashFunc)(const void *key, usize keysize, usize seed);
 
 #endif /* end of include guard: DEFINITIONS_H_N6TPGG3D */

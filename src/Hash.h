@@ -5,7 +5,7 @@
 
 /**
  * trb_murmurhash3_32:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
  *
@@ -18,7 +18,7 @@ u32 trb_murmurhash3_32(const void *key, u32 keysize, u32 seed);
 
 /**
  * trb_murmurhash3_64:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
  *
@@ -31,7 +31,7 @@ u64 trb_murmurhash3_64(const void *key, u64 keysize, u64 seed);
 
 /**
  * trb_murmurhash3:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
  *
@@ -43,7 +43,7 @@ usize trb_murmurhash3(const void *key, usize keysize, usize seed);
 
 /**
  * trb_jhash32:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
 
@@ -56,7 +56,7 @@ u32 trb_jhash32(const void *key, u32 keysize, u32 seed);
 
 /**
  * trb_jhash64:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
 
@@ -69,7 +69,7 @@ u64 trb_jhash64(const void *key, u64 keysize, u64 seed);
 
 /**
  * trb_jhash:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
  *
@@ -81,7 +81,7 @@ usize trb_jhash(const void *key, usize keysize, usize seed);
 
 /**
  * trb_siphash32:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
 
@@ -94,7 +94,7 @@ u32 trb_siphash32(const void *key, u32 keysize, u32 seed);
 
 /**
  * trb_siphash64:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
 
@@ -107,7 +107,7 @@ u64 trb_siphash64(const void *key, u64 keysize, u64 seed);
 
 /**
  * trb_siphash:
- * @key: The key to be hashed.
+ * @key: (not nullable): The key to be hashed.
  * @keysize: The size of the key.
  * @seed: The seed for hashing.
  *
