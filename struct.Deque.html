@@ -1,0 +1,355 @@
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!--
+SPDX-FileCopyrightText: 2021 GNOME Foundation
+
+SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tribble.Deque</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta charset="utf-8" />
+
+  
+  <meta property="og:type" content="website"/>
+
+  
+
+  
+  <meta property="og:title" content="Tribble.Deque"/>
+  <meta property="og:description" content="Reference for Tribble.Deque"/>
+  <meta name="twitter:title" content="Tribble.Deque"/>
+  <meta name="twitter:description" content="Reference for Tribble.Deque"/>
+
+
+  
+  <meta name="twitter:card" content="summary"/>
+
+  
+  
+  
+  
+
+  <link rel="stylesheet" href="style.css" type="text/css" />
+
+  
+
+  
+  
+  <script src="fzy.js"></script>
+  <script src="search.js"></script>
+  
+  <script src="main.js"></script>
+</head>
+
+<body>
+  <div id="body-wrapper" tabindex="-1">
+
+    <nav class="sidebar devhelp-hidden">
+      
+      
+      <div class="search section">
+        <form id="search-form" autocomplete="off">
+          <input id="search-input" type="text" name="do-not-autocomplete" placeholder="Click, or press 's' to search" autocomplete="off"/>
+        </form>
+      </div>
+      
+      <div class="section namespace">
+        <h3><a href="index.html">Tribble</a></h3>
+        <p>API Version: 1.0</p>
+        
+        <p>Library Version: 1.0.0</p>
+        
+      </div>
+      
+<div class="section">
+  <h5>Type</h5>
+  <div class="links">
+    <a class="current" href="struct.Deque.html#description">Deque</a>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="section">
+  <h5>Instance methods</h5>
+  <div class="links">
+  
+    <a class="method" href="method.Deque.destroy.html">destroy</a>
+  
+    <a class="method" href="method.Deque.free.html">free</a>
+  
+    <a class="method" href="method.Deque.get.html">get</a>
+  
+    <a class="method" href="method.Deque.init.html">init</a>
+  
+    <a class="method" href="method.Deque.pop_back.html">pop_back</a>
+  
+    <a class="method" href="method.Deque.pop_front.html">pop_front</a>
+  
+    <a class="method" href="method.Deque.push_back.html">push_back</a>
+  
+    <a class="method" href="method.Deque.push_front.html">push_front</a>
+  
+    <a class="method" href="method.Deque.shrink.html">shrink</a>
+  
+  </div>
+</div>
+
+
+
+    </nav>
+    
+    <button id="btn-to-top" class="hidden"><span class="up-arrow"></span></button>
+
+    
+<section id="main" class="content">
+  <header>
+    <h3>Struct</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>Deque</h1>
+  </header>
+
+  <section>
+    <summary>
+      <div class="toggle-wrapper">
+        <h4 style="display:flex;" id="description">
+          Description
+          <a href="#description" class="anchor"></a>
+          
+        </h4>
+
+        <pre><code><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">TrbDeque</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbVector</span><span class="w"> </span><span class="n">buckets</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbVector</span><span class="w"> </span><span class="n">unused</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">bucketsize</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">bucketcap</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">n_buckets</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">n_unused</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</code></pre>
+
+        <div class="docblock">
+          No description available.
+        </div>
+
+        
+        <div class="toggle-wrapper">
+          <h6 style="display:flex;">
+            Structure members
+            
+          </h6>
+
+          <div class="docblock">
+            <table>
+            
+              <tr>
+                <td><code>buckets</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+              <tr>
+                <td><code>unused</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+              <tr>
+                <td><code>elemsize</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+              <tr>
+                <td><code>bucketsize</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+              <tr>
+                <td><code>bucketcap</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+              <tr>
+                <td><code>n_buckets</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+              <tr>
+                <td><code>n_unused</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+              <tr>
+                <td><code>len</code></td>
+                <td>No description available.</td>
+              </tr>
+            
+            </table>
+          </div>
+        </div>
+        
+
+        <div class="docblock">
+          <table class="attributes">
+            
+            
+            
+          </table>
+        </div>
+
+        
+      </div>
+    </summary>
+
+    
+
+    
+
+    
+    <div class="toggle-wrapper methods">
+      <h4 id="methods">
+        Instance methods
+        <a href="#methods" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+        <div class="">
+          <h6><a href="method.Deque.destroy.html">trb_deque_destroy</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.free.html">trb_deque_free</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.get.html">trb_deque_get</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.init.html">trb_deque_init</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.pop_back.html">trb_deque_pop_back</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.pop_front.html">trb_deque_pop_front</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.push_back.html">trb_deque_push_back</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.push_front.html">trb_deque_push_front</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.shrink.html">trb_deque_shrink</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+      </div>
+
+    </div>
+    
+
+  </section>
+</section>
+
+
+    
+<div id="toc" class="toc">
+  <nav aria-labelledby="toc-title">
+    <p id="toc-title">Content</p>
+    <ul class="toc-list">
+      <li class="toc-list-item"><a href="#description"><span class="link-text">Description</span></a></li>
+      
+      
+
+      
+
+      
+<li class="toc-list-item"><a href="#methods"><span class="link-text">Methods</span></a></li>
+
+
+    </ul>
+  </nav>
+</div>
+
+
+    <section id="search" class="content hidden"></section>
+
+    <footer>
+    
+    </footer>
+  </div>
+</body>
+</html>

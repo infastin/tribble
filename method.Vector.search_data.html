@@ -64,7 +64,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
       
       <div class="section namespace">
         <h3><a href="index.html">Tribble</a></h3>
-        <p>API Version: 1</p>
+        <p>API Version: 1.0</p>
         
         <p>Library Version: 1.0.0</p>
         
@@ -98,7 +98,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Vector.pop_back.html">pop_back</a>
   
+    <a class="method" href="method.Vector.pop_back_many.html">pop_back_many</a>
+  
     <a class="method" href="method.Vector.pop_front.html">pop_front</a>
+  
+    <a class="method" href="method.Vector.pop_front_many.html">pop_front_many</a>
   
     <a class="method" href="method.Vector.push_back.html">push_back</a>
   
@@ -156,14 +160,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L364">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L388">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"></span>
 <span class="n">trb_vector_search_data</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">TrbCmpDataFunc</span><span class="w"> </span><span class="n">cmpd_func</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"></span>
@@ -179,7 +183,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L352">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L376">[src]</a>
         
       </h4>
 
