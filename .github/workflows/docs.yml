@@ -24,4 +24,4 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         branch: docs
-        folder: build/doc/libtribble-1
+        folder: build/doc/libtribble-1.0
