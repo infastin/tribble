@@ -504,10 +504,12 @@ TrbList *trb_list_copy(TrbList *dst, const TrbList *src, TrbCopyFunc copy_func, 
 void trb_list_destroy(TrbList *self, TrbFreeFunc free_func)
 {
 	trb_return_if_fail(self != NULL);
-	trb_return_if_fail(free_func != NULL);
 
 	if (self->next == self)
 		return;
+
+	if (free_func == NULL)
+		free_func = free;
 
 	TrbList *current = self->next;
 
@@ -524,7 +526,6 @@ void trb_list_destroy(TrbList *self, TrbFreeFunc free_func)
 void trb_list_free(TrbList *self, TrbFreeFunc free_func)
 {
 	trb_return_if_fail(self != NULL);
-	trb_return_if_fail(free_func != NULL);
 
 	trb_list_destroy(self, free_func);
 	free(self);

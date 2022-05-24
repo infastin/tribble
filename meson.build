@@ -10,7 +10,7 @@ project('libtribble', 'c',
 
 version_arr = meson.project_version().split('.')
 
-apiversion = version_arr[0]
+apiversion = '@0@.0'.format(version_arr[0])
 libversion = meson.project_version()
 
 pkg_api_name = '@0@-@1@'.format(meson.project_name(), apiversion)

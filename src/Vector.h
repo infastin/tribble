@@ -185,6 +185,18 @@ bool trb_vector_remove_index(TrbVector *self, usize index, void *ret);
 bool trb_vector_pop_back(TrbVector *self, void *ret);
 
 /**
+ * trb_vector_pop_back_many:
+ * @self: The array where to remove.
+ * @len: The number of elements to be removed.
+ * @ret: (optional) (out): The pointer to retrieve removed data.
+ *
+ * Removes last @len elements from the array.
+ *
+ * Returns: %TRUE on success.
+ **/
+bool trb_vector_pop_back_many(TrbVector *self, usize len, void *ret);
+
+/**
  * trb_vector_pop_front:
  * @self: The array where to remove.
  * @ret: (optional) (out): The pointer to retrieve removed data.
@@ -196,6 +208,18 @@ bool trb_vector_pop_back(TrbVector *self, void *ret);
 bool trb_vector_pop_front(TrbVector *self, void *ret);
 
 /**
+ * trb_vector_pop_front_many:
+ * @self: The array where to remove.
+ * @len: The number of elements to be removed.
+ * @ret: (optional) (out): The pointer to retrieve removed data.
+ *
+ * Removes first @len elements from the array.
+ *
+ * Returns: %TRUE on success.
+ **/
+bool trb_vector_pop_front_many(TrbVector *self, usize len, void *ret);
+
+/**
  * trb_vector_reverse:
  * @self: The array to be reversed.
  *
@@ -205,7 +229,7 @@ void trb_vector_reverse(TrbVector *self);
 
 /**
  * trb_vector_remove_range:
- * @self: The vec where to remove.
+ * @self: The array where to remove.
  * @index: The index of the first element to be removed.
  * @len: The number of elements to be removed.
  * @ret: (optional) (out): The pointer to retrieve removed data.
@@ -218,7 +242,7 @@ bool trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
 
 /**
  * trb_vector_remove_all:
- * @self: The vec where to remove.
+ * @self: The array where to remove.
  * @ret: (optional) (out): The pointer to retrieve removed data.
  *
  * Removes all elements from the array.
@@ -347,7 +371,7 @@ void trb_vector_free(TrbVector *self, TrbFreeFunc free_func);
  *
  * Returns: %TRUE if found, %FALSE if not.
  **/
-bool trb_vector_search(TrbVector *self, const void *target, TrbCmpFunc cmp_func, usize *index);
+bool trb_vector_search(const TrbVector *self, const void *target, TrbCmpFunc cmp_func, usize *index);
 
 /**
  * trb_vector_search_data:
@@ -361,7 +385,7 @@ bool trb_vector_search(TrbVector *self, const void *target, TrbCmpFunc cmp_func,
  *
  * Returns: %TRUE if found, %FALSE if not.
  **/
-bool trb_vector_search_data(TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
+bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
 /**
  * trb_vector_get_unsafe:

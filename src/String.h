@@ -507,16 +507,4 @@ void trb_string_destroy(TrbString *self);
  **/
 void trb_string_free(TrbString *self);
 
-/**
- * trb_string_copy:
- * @dst: The pointer to the destination string.
- * @src: The string to be copied.
- *
- * Creates a copy of the string.
- *
- * Returns: (nullable): A copy of the array.
- * Can return %NULL if an allocation error occurs.
- **/
-TrbString *trb_string_copy(TrbString *dst, const TrbString *src);
-
 #endif /* end of include guard: STRING_H_WW4E6R5D */

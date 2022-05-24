@@ -682,14 +682,12 @@ char *trb_string_steal(TrbString *self, usize *len)
 	self->len = 0;
 	self->capacity = 1;
 
-	self->data = malloc(1);
+	self->data = calloc(1, 1);
 
 	if (self->data == NULL) {
 		self->capacity = 0;
 		trb_msg_error("couldn't allocate memory for a new buffer of the string!");
 	}
-
-	self->data[0] = '\0';
 
 	return ret;
 }
@@ -767,40 +765,4 @@ void trb_string_free(TrbString *self)
 	trb_return_if_fail(self != NULL);
 	trb_string_destroy(self);
 	free(self);
-}
-
-TrbString *trb_string_copy(TrbString *dst, const TrbString *src)
-{
-	trb_return_val_if_fail(src != NULL, NULL);
-
-	if (src->data == NULL) {
-		trb_msg_warn("source string buffer is NULL!");
-		return NULL;
-	}
-
-	bool was_allocated = FALSE;
-
-	if (dst == NULL) {
-		dst = trb_talloc(TrbString, 1);
-
-		if (dst == NULL) {
-			trb_msg_error("couldn't allocate memory for a copy of the string!");
-			return NULL;
-		}
-	}
-
-	dst->data = malloc(src->capacity);
-
-	if (dst->data == NULL) {
-		if (was_allocated)
-			free(dst);
-
-		trb_msg_error("couldn't allocate memory for a buffer of a copy of the string!");
-		return NULL;
-	}
-
-	dst->capacity = src->capacity;
-	dst->len = src->len;
-
-	return dst;
 }

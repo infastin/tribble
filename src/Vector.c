@@ -76,7 +76,7 @@ static bool __trb_vector_newcap(TrbVector *self, usize newcap)
 		return FALSE;
 	}
 
-	void *data = (void *) realloc(self->data, newcap * self->elemsize);
+	void *data = realloc(self->data, newcap * self->elemsize);
 
 	if (data == NULL) {
 		trb_msg_error("couldn't reallocate memory for the array buffer!");
@@ -323,10 +323,34 @@ bool trb_vector_pop_back(TrbVector *self, void *ret)
 	return __trb_vector_remove_range(self, self->len - 1, 1, ret);
 }
 
+bool trb_vector_pop_back_many(TrbVector *self, usize len, void *ret)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len < len) {
+		trb_msg_warn("array doesn't hold %zu elements!", len);
+		return FALSE;
+	}
+
+	return __trb_vector_remove_range(self, self->len - len, len, ret);
+}
+
 bool trb_vector_pop_front(TrbVector *self, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 	return __trb_vector_remove_range(self, 0, 1, ret);
+}
+
+bool trb_vector_pop_front_many(TrbVector *self, usize len, void *ret)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len < len) {
+		trb_msg_warn("array doesn't hold %zu elements!", len);
+		return FALSE;
+	}
+
+	return __trb_vector_remove_range(self, 0, len, ret);
 }
 
 bool trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
@@ -449,7 +473,7 @@ void trb_vector_free(TrbVector *self, TrbFreeFunc free_func)
 	free(self);
 }
 
-bool trb_vector_search(TrbVector *self, const void *target, TrbCmpFunc cmp_func, usize *index)
+bool trb_vector_search(const TrbVector *self, const void *target, TrbCmpFunc cmp_func, usize *index)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 	trb_return_val_if_fail(cmp_func != NULL, FALSE);
@@ -457,27 +481,18 @@ bool trb_vector_search(TrbVector *self, const void *target, TrbCmpFunc cmp_func,
 	if (self->len == 0)
 		return FALSE;
 
-	if (self->len < BINARY_SEARCH_LEN_THRESHOLD) {
-		for (usize i = 0; i < self->len; ++i) {
-			if (cmp_func(vector_cell(self, i), target) == 0) {
-				if (index != NULL)
-					*index = i;
-				return TRUE;
-			}
+	for (usize i = 0; i < self->len; ++i) {
+		if (cmp_func(vector_cell(self, i), target) == 0) {
+			if (index != NULL)
+				*index = i;
+			return TRUE;
 		}
-
-		return FALSE;
 	}
 
-	if (!self->sorted) {
-		trb_quicksort(self->data, self->len, self->elemsize, cmp_func);
-		self->sorted = TRUE;
-	}
-
-	return trb_binary_search(self->data, target, self->len, self->elemsize, cmp_func, index);
+	return FALSE;
 }
 
-bool trb_vector_search_data(TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index)
+bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 	trb_return_val_if_fail(cmpd_func != NULL, FALSE);
@@ -485,24 +500,15 @@ bool trb_vector_search_data(TrbVector *self, const void *target, TrbCmpDataFunc 
 	if (self->len == 0)
 		return FALSE;
 
-	if (self->len < BINARY_SEARCH_LEN_THRESHOLD) {
-		for (usize i = 0; i < self->len; ++i) {
-			if (cmpd_func(vector_cell(self, i), target, data) == 0) {
-				if (index != NULL)
-					*index = i;
-				return TRUE;
-			}
+	for (usize i = 0; i < self->len; ++i) {
+		if (cmpd_func(vector_cell(self, i), target, data) == 0) {
+			if (index != NULL)
+				*index = i;
+			return TRUE;
 		}
-
-		return FALSE;
 	}
 
-	if (!self->sorted) {
-		trb_quicksort_data(self->data, self->len, self->elemsize, cmpd_func, data);
-		self->sorted = TRUE;
-	}
-
-	return trb_binary_search_data(self->data, target, self->len, self->elemsize, cmpd_func, data, index);
+	return FALSE;
 }
 
 TrbVector *trb_vector_copy(TrbVector *dst, const TrbVector *src)
@@ -568,8 +574,13 @@ bool trb_vector_shrink(TrbVector *self)
 	trb_return_val_if_fail(self != NULL, FALSE);
 
 	usize zt = self->zero_terminated;
+	usize mincap = self->len + zt;
 
-	void *data = (void *) realloc(self->data, (self->len + zt) * self->elemsize);
+	if (mincap == 0) {
+		mincap = VECTOR_INIT_CAP;
+	}
+
+	void *data = realloc(self->data, mincap * self->elemsize);
 
 	if (data == NULL) {
 		trb_msg_error("couldn't shrink memory of the array buffer!");
@@ -577,7 +588,7 @@ bool trb_vector_shrink(TrbVector *self)
 	}
 
 	self->data = data;
-	self->capacity = self->len + zt;
+	self->capacity = mincap;
 
 	return TRUE;
 }

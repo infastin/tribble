@@ -1,6 +1,7 @@
 #ifndef TRIBBLE_H_SWHO2NAT
 #define TRIBBLE_H_SWHO2NAT
 
+#include "Deque.h"
 #include "Hash.h"
 #include "HashTable.h"
 #include "HashTableIter.h"

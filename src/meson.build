@@ -1,4 +1,5 @@
 src_files = [
+  'Deque.c',
   'Hash.c',
   'HashTable.c',
   'HashTableIter.c',
@@ -15,6 +16,7 @@ src_files = [
 ]
 
 header_files = [
+  'Deque.h',
   'Hash.h',
   'HashTable.h',
   'HashTableIter.h',
