@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.deque_get_unsafe</title>
+  <title>Tribble.heap_ptr</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta property="og:title" content="Tribble.deque_get_unsafe"/>
-  <meta property="og:description" content="Reference for Tribble.deque_get_unsafe"/>
-  <meta name="twitter:title" content="Tribble.deque_get_unsafe"/>
-  <meta name="twitter:description" content="Reference for Tribble.deque_get_unsafe"/>
+  <meta property="og:title" content="Tribble.heap_ptr"/>
+  <meta property="og:description" content="Reference for Tribble.heap_ptr"/>
+  <meta name="twitter:title" content="Tribble.heap_ptr"/>
+  <meta name="twitter:description" content="Reference for Tribble.heap_ptr"/>
 
 
   
@@ -87,7 +87,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <section id="main" class="content">
   <header>
     <h3>Function Macro</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span>deque_get_unsafe</h1>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>heap_ptr</h1>
   </header>
 
   <section>
@@ -96,13 +96,13 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Deque.h#L46">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Heap.h#L141">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_deque_get_unsafe (</span>
-<span class="w">  </span><span class="n">deque</span><span class="p">,</span><span class="w"></span>
+        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_heap_ptr (</span>
+<span class="w">  </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">type</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">index</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
@@ -116,10 +116,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a href="#description" class="anchor"></a>
         
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Heap.h#L131">[src]</a>
+        
       </h4>
 
       <div class="docblock">
-        No description available.
+        <p>Gets the pointer to the entry in the heap at the given&nbsp;index.</p>
       </div>
 
       <div class="docblock">
@@ -149,12 +151,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>deque</code></td>
+            <td><code>self</code></td>
             <td><code>-</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The heap where to&nbsp;get.</p></td>
           </tr>
           
           
@@ -172,7 +174,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The type of the&nbsp;element.</p></td>
           </tr>
           
           
@@ -190,7 +192,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The position of the&nbsp;entry.</p></td>
           </tr>
           
           

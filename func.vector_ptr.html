@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.vector_get_unsafe</title>
+  <title>Tribble.vector_ptr</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta property="og:title" content="Tribble.vector_get_unsafe"/>
-  <meta property="og:description" content="Reference for Tribble.vector_get_unsafe"/>
-  <meta name="twitter:title" content="Tribble.vector_get_unsafe"/>
-  <meta name="twitter:description" content="Reference for Tribble.vector_get_unsafe"/>
+  <meta property="og:title" content="Tribble.vector_ptr"/>
+  <meta property="og:description" content="Reference for Tribble.vector_ptr"/>
+  <meta name="twitter:title" content="Tribble.vector_ptr"/>
+  <meta name="twitter:description" content="Reference for Tribble.vector_ptr"/>
 
 
   
@@ -87,7 +87,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <section id="main" class="content">
   <header>
     <h3>Function Macro</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span>vector_get_unsafe</h1>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>vector_ptr</h1>
   </header>
 
   <section>
@@ -96,12 +96,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L400">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L346">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_vector_get_unsafe (</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_vector_ptr (</span>
 <span class="w">  </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">type</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">index</span><span class="w"></span>
@@ -116,12 +116,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L390">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L336">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Unsafe version of <code>trb_vector_get()</code>.</p>
+        <p>Gets the pointer to the entry in the array at the given&nbsp;index.</p>
       </div>
 
       <div class="docblock">
@@ -174,7 +174,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The type to be&nbsp;got.</p></td>
+            <td><p>The type of the&nbsp;element.</p></td>
           </tr>
           
           
@@ -192,7 +192,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The position of the entry which value is to be&nbsp;got.</p></td>
+            <td><p>The position of the&nbsp;entry.</p></td>
           </tr>
           
           

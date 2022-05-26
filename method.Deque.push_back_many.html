@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.Heap.get</title>
+  <title>Tribble.Deque.push_back_many</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta priority="og:title" content="Tribble.Heap.get"/>
-  <meta priority="og:description" content="Reference for Tribble.Heap.get"/>
-  <meta name="twitter:title" content="Tribble.Heap.get"/>
-  <meta name="twitter:description" content="Reference for Tribble.Heap.get"/>
+  <meta priority="og:title" content="Tribble.Deque.push_back_many"/>
+  <meta priority="og:description" content="Reference for Tribble.Deque.push_back_many"/>
+  <meta name="twitter:title" content="Tribble.Deque.push_back_many"/>
+  <meta name="twitter:description" content="Reference for Tribble.Deque.push_back_many"/>
 
 
   
@@ -73,32 +73,36 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="struct.Heap.html">Heap</a>
+    <a href="struct.Deque.html">Deque</a>
   </div>
 </div>
 <div class="section">
   <h5>Methods</h5>
   <div class="links">
   
-    <a class="method" href="method.Heap.destroy.html">destroy</a>
+    <a class="method" href="method.Deque.destroy.html">destroy</a>
   
-    <a class="method" href="method.Heap.free.html">free</a>
+    <a class="method" href="method.Deque.free.html">free</a>
   
-    <a class="method current" href="method.Heap.get.html">get</a>
+    <a class="method" href="method.Deque.init.html">init</a>
   
-    <a class="method" href="method.Heap.init.html">init</a>
+    <a class="method" href="method.Deque.insert.html">insert</a>
   
-    <a class="method" href="method.Heap.init_data.html">init_data</a>
+    <a class="method" href="method.Deque.insert_many.html">insert_many</a>
   
-    <a class="method" href="method.Heap.insert.html">insert</a>
+    <a class="method" href="method.Deque.pop_back.html">pop_back</a>
   
-    <a class="method" href="method.Heap.pop_back.html">pop_back</a>
+    <a class="method" href="method.Deque.pop_front.html">pop_front</a>
   
-    <a class="method" href="method.Heap.pop_front.html">pop_front</a>
+    <a class="method" href="method.Deque.push_back.html">push_back</a>
   
-    <a class="method" href="method.Heap.remove.html">remove</a>
+    <a class="method current" href="method.Deque.push_back_many.html">push_back_many</a>
   
-    <a class="method" href="method.Heap.search.html">search</a>
+    <a class="method" href="method.Deque.push_front.html">push_front</a>
+  
+    <a class="method" href="method.Deque.push_front_many.html">push_front_many</a>
+  
+    <a class="method" href="method.Deque.shrink.html">shrink</a>
   
   </div>
 </div>
@@ -111,7 +115,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Heap.html">Heap</a><span class="sep"></span>get</h1>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Deque.html">Deque</a><span class="sep"></span>push_back_many</h1>
   </header>
 
   <section>
@@ -120,16 +124,16 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Heap.h#L111">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Deque.h#L34">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"></span>
-<span class="n">trb_heap_get</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TrbHeap</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ret</span><span class="w"></span>
+<span class="n">trb_deque_push_back_many</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbDeque</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">len</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -141,12 +145,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Heap.h#L101">[src]</a>
-        
       </h4>
 
       <div class="docblock">
-        <p>Gets the value of the entry in the heap at the given&nbsp;index.</p>
+        No description available.
       </div>
 
       <div class="docblock">
@@ -174,34 +176,34 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>index</code></td>
-            <td><a href="alias.usize.html"><code>usize</code></a></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p>The position of the entry which value is to be&nbsp;got.</p></td>
-          </tr>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          <tr class="arg-name">
-            <td><code>ret</code></td>
+            <td><code>data</code></td>
             <td><code>void*</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The pointer to retrieve value of the&nbsp;entry.</p></td>
+            <td>No description available.</td>
           </tr>
-          <tr><td>&nbsp;</td><td title="direction: out">The argument will be set by the function.</td></tr>
           
-          <tr><td>&nbsp;</td><td>The argument can be set to <code>NULL</code>.</td></tr>
+          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
+          
+          
+          
+          
+          
+          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
+          
+          
+          <tr class="arg-name">
+            <td><code>len</code></td>
+            <td><a href="alias.usize.html"><code>usize</code></a></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td>No description available.</td>
+          </tr>
+          
+          
+          
           
           
           
@@ -230,7 +232,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p><code>TRUE</code> on&nbsp;success.</p></td>
+            <td>No description available.</td>
           </tr>
           
           

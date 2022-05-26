@@ -90,9 +90,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Deque.free.html">free</a>
   
-    <a class="method" href="method.Deque.get.html">get</a>
-  
     <a class="method" href="method.Deque.init.html">init</a>
+  
+    <a class="method" href="method.Deque.insert.html">insert</a>
+  
+    <a class="method" href="method.Deque.insert_many.html">insert_many</a>
   
     <a class="method" href="method.Deque.pop_back.html">pop_back</a>
   
@@ -100,7 +102,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Deque.push_back.html">push_back</a>
   
+    <a class="method" href="method.Deque.push_back_many.html">push_back_many</a>
+  
     <a class="method" href="method.Deque.push_front.html">push_front</a>
+  
+    <a class="method" href="method.Deque.push_front_many.html">push_front_many</a>
   
     <a class="method" href="method.Deque.shrink.html">shrink</a>
   
@@ -135,8 +141,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">bucketsize</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">bucketcap</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">n_buckets</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">n_unused</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
@@ -178,16 +182,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
             
               <tr>
                 <td><code>bucketcap</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
-                <td><code>n_buckets</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
-                <td><code>n_unused</code></td>
                 <td>No description available.</td>
               </tr>
             
@@ -247,7 +241,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         </div>
       
         <div class="">
-          <h6><a href="method.Deque.get.html">trb_deque_get</a></h6>
+          <h6><a href="method.Deque.init.html">trb_deque_init</a></h6>
 
           <div class="docblock">
             No description available.
@@ -257,7 +251,17 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         </div>
       
         <div class="">
-          <h6><a href="method.Deque.init.html">trb_deque_init</a></h6>
+          <h6><a href="method.Deque.insert.html">trb_deque_insert</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.insert_many.html">trb_deque_insert_many</a></h6>
 
           <div class="docblock">
             No description available.
@@ -297,7 +301,27 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         </div>
       
         <div class="">
+          <h6><a href="method.Deque.push_back_many.html">trb_deque_push_back_many</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
           <h6><a href="method.Deque.push_front.html">trb_deque_push_front</a></h6>
+
+          <div class="docblock">
+            No description available.
+          </div>
+
+          
+        </div>
+      
+        <div class="">
+          <h6><a href="method.Deque.push_front_many.html">trb_deque_push_front_many</a></h6>
 
           <div class="docblock">
             No description available.
