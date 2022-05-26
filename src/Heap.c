@@ -132,12 +132,6 @@ bool trb_heap_pop_front(TrbHeap *self, void *ret)
 	return __trb_heap_remove(self, 0, ret);
 }
 
-bool trb_heap_get(const TrbHeap *self, usize index, void *ret)
-{
-	trb_return_val_if_fail(self != NULL, FALSE);
-	return trb_vector_get(&self->vector, index, ret);
-}
-
 bool trb_heap_search(const TrbHeap *self, const void *target, usize *index)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);

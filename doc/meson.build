@@ -1,29 +1,34 @@
-config_data = configuration_data()
-config_data.set('VERSION', libversion)
+gi_docgen_feature = get_option('gi_docgen')
+gi_docgen = girgen_feature.enabled()
 
-libtribble_toml = configure_file(
-  input: 'libtribble.toml.in',
-  output: 'libtribble.toml',
-  configuration: config_data,
-)
+if girgen and gi_docgen
+  config_data = configuration_data()
+  config_data.set('VERSION', libversion)
 
-gidocgen = find_program('gi-docgen')
+  libtribble_toml = configure_file(
+    input: 'libtribble.toml.in',
+    output: 'libtribble.toml',
+    configuration: config_data,
+  )
 
-docsdir = datadir / 'doc'
+  gidocgen = find_program('gi-docgen')
 
-custom_target('libtribble-doc',
-  input: [libtribble_toml, libtribble_gir[0]],
-  output: 'libtribble-@0@'.format(apiversion),
-  command: [
-    gidocgen,
-    'generate',
-    '--quiet',
-    '--config=@INPUT0@',
-    '--output-dir=@OUTPUT@',
-    '--no-namespace-dir',
-    '@INPUT1@',
-  ],
-  build_by_default: true,
-  install: true,
-  install_dir: docsdir,
-)
+  docsdir = datadir / 'doc'
+
+  custom_target('libtribble-doc',
+    input: [libtribble_toml, libtribble_gir[0]],
+    output: 'libtribble-@0@'.format(apiversion),
+    command: [
+      gidocgen,
+      'generate',
+      '--quiet',
+      '--config=@INPUT0@',
+      '--output-dir=@OUTPUT@',
+      '--no-namespace-dir',
+      '@INPUT1@',
+    ],
+    build_by_default: true,
+    install: true,
+    install_dir: docsdir,
+  )
+endif

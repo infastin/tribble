@@ -4,6 +4,8 @@ project('libtribble', 'c',
     'buildtype=debug',
     'warning_level=1',
     'c_std=gnu2x',
+    'girgen=disabled',
+    'gi_docgen=disabled',
   ],
   license: 'MIT'
 )

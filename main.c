@@ -1,11 +1,14 @@
+#include "Deque.h"
 #include "Hash.h"
 #include "HashTable.h"
 #include "HashTableIter.h"
 #include "Heap.h"
+#include "Math.h"
 #include "Messages.h"
 #include "Rand.h"
 #include "String.h"
 #include "Tree.h"
+#include "Utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -187,29 +190,134 @@ int main(int argc, char *argv[])
 	/*  */
 	/* free(buf); */
 
-	TrbTree tree;
-	trb_tree_init(&tree, u32_tree_cmp);
+	/* TrbTree tree; */
+	/* trb_tree_init(&tree, u32_tree_cmp); */
+	/*  */
+	/* TrbTreeNode *n4 = u32_node(14); */
+	/* TrbTreeNode *n5 = u32_node(15); */
+	/* TrbTreeNode *n6 = u32_node(39); */
+	/*  */
+	/* u32_tree_insert(&tree, 10); */
+	/* u32_tree_insert(&tree, 3); */
+	/* u32_tree_insert(&tree, 2); */
+	/* u32_tree_insert(&tree, 4); */
+	/* u32_tree_insert(&tree, 18); */
+	/* u32_tree_insert(&tree, 13); */
+	/* u32_tree_insert(&tree, 12); */
+	/* trb_tree_insert(&tree, n4); */
+	/* trb_tree_insert(&tree, n6); */
+	/* u32_tree_insert(&tree, 28); */
+	/* u32_tree_insert(&tree, 40); */
+	/* trb_tree_insert(&tree, n5); */
+	/*  */
+	/* trb_tree_preorder(&tree, u32_tree_print, NULL); */
+	/*  */
+	/* trb_tree_destroy(&tree, u32_free); */
 
-	TrbTreeNode *n4 = u32_node(14);
-	TrbTreeNode *n5 = u32_node(15);
-	TrbTreeNode *n6 = u32_node(39);
+	TrbPcg64 prg;
+	trb_pcg64_init(&prg, 0xdeadbeef);
 
-	u32_tree_insert(&tree, 10);
-	u32_tree_insert(&tree, 3);
-	u32_tree_insert(&tree, 2);
-	u32_tree_insert(&tree, 4);
-	u32_tree_insert(&tree, 18);
-	u32_tree_insert(&tree, 13);
-	u32_tree_insert(&tree, 12);
-	trb_tree_insert(&tree, n4);
-	trb_tree_insert(&tree, n6);
-	u32_tree_insert(&tree, 28);
-	u32_tree_insert(&tree, 40);
-	trb_tree_insert(&tree, n5);
+	TrbDeque deque;
+	trb_deque_init(&deque, 4);
 
-	trb_tree_preorder(&tree, u32_tree_print, NULL);
+	u32 numbers[16] = { 0 };
 
-	trb_tree_destroy(&tree, u32_free);
+	for (u32 i = 0; i < 13; ++i) {
+		u32 val = trb_pcg64_next_u32(&prg) % 100;
+		printf("%u ", val);
+		trb_deque_push_back(&deque, &val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < 3; ++i) {
+		u32 val;
+		trb_deque_pop_front(&deque, &val);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < 7; ++i) {
+		numbers[i] = trb_pcg64_next_u32(&prg) % 100;
+		printf("%u ", numbers[i]);
+	}
+
+	trb_deque_push_front_many(&deque, numbers, 7);
+
+	printf("\n");
+
+	printf("Buckets: %zu\n", deque.buckets.len);
+
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < 4; ++i) {
+		u32 val = trb_pcg64_next_u32(&prg) % 100;
+		printf("%u ", val);
+		trb_deque_insert(&deque, 25, &val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < 8; ++i) {
+		numbers[i] = trb_pcg64_next_u32(&prg) % 100;
+		printf("%u ", numbers[i]);
+	}
+
+	trb_deque_insert_many(&deque, 2, numbers, 8);
+
+	printf("\n");
+
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < 1; ++i) {
+		u32 val;
+		trb_deque_pop_front(&deque, &val);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < 4; ++i) {
+		u32 val = trb_pcg64_next_u32(&prg) % 100;
+		printf("%u ", val);
+		trb_deque_push_back(&deque, &val);
+	}
+
+	printf("\n");
+
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	trb_deque_destroy(&deque, NULL);
 
 	return 0;
 }

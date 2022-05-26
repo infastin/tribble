@@ -44,18 +44,23 @@ libtribble_dep = declare_dependency(
   include_directories: include_directories('.'),
 )
 
-libtribble_gir = gnome.generate_gir(libtribble,
-  sources: header_files,
-  namespace: 'Tribble',
-  identifier_prefix: 'Trb',
-  symbol_prefix: 'trb',
-  extra_args: [
-    '--quiet',
-    '--c-include=Tribble.h',
-    '--accept-unprefixed',
-  ],
-  export_packages: pkg_api_name,
-  nsversion: apiversion,
-  install: true,
-  install_dir_gir: girdir,
-)
+girgen_feature = get_option('girgen')
+girgen = girgen_feature.enabled() or girgen_feature.auto()
+
+if girgen
+  libtribble_gir = gnome.generate_gir(libtribble,
+    sources: header_files,
+    namespace: 'Tribble',
+    identifier_prefix: 'Trb',
+    symbol_prefix: 'trb',
+    extra_args: [
+      '--quiet',
+      '--c-include=Tribble.h',
+      '--accept-unprefixed',
+      ],
+    export_packages: pkg_api_name,
+    nsversion: apiversion,
+    install: true,
+    install_dir_gir: girdir,
+  )
+endif

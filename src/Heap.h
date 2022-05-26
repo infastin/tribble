@@ -99,18 +99,6 @@ bool trb_heap_pop_back(TrbHeap *self, void *ret);
 bool trb_heap_pop_front(TrbHeap *self, void *ret);
 
 /**
- * trb_heap_get:
- * @self: The heap where to get.
- * @index: The position of the entry which value is to be got.
- * @ret: (out): The pointer to retrieve value of the entry.
- *
- * Gets the value of the entry in the heap at the given index.
- *
- * Returns: `TRUE` on success.
- **/
-bool trb_heap_get(const TrbHeap *self, usize index, void *ret);
-
-/**
  * trb_heap_search:
  * @self: The heap where to search.
  * @target: The pointer to the data to be found.
@@ -141,15 +129,27 @@ void trb_heap_destroy(TrbHeap *self, TrbFreeFunc free_func);
 void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
 
 /**
- * trb_heap_get_unsafe:
+ * trb_heap_ptr:
  * @self: The heap where to get.
- * @type: The type to be got.
- * @index: The position of the entry which value is to be got.
+ * @type: The type of the element.
+ * @index: The position of the entry.
  *
- * Unsafe version of `trb_heap_get()`.
+ * Gets the pointer to the entry in the heap at the given index.
+ *
+ * Returns: The pointer to the entry.
+ **/
+#define trb_heap_ptr(self, type, index) (trb_vector_ptr(&(self)->vector, type, index))
+
+/**
+ * trb_heap_get:
+ * @self: The heap where to get.
+ * @type: The type of the element.
+ * @index: The position of the entry.
+ *
+ * Gets the value of the entry in the heap at the given index.
  *
  * Returns: The value of the entry.
  **/
-#define trb_heap_get_unsafe(self, type, index) (vector_get_unsafe(&(self)->vector, type, index))
+#define trb_heap_get(self, type, index) (trb_vector_get(&(self)->vector, type, index))
 
 #endif /* end of include guard: HEAP_H_MGLIJUQF */

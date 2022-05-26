@@ -182,85 +182,6 @@ bool trb_vector_insert_many(TrbVector *self, usize index, const void *data, usiz
 	return __trb_vector_insert_many(self, index, data, len);
 }
 
-static bool __trb_vector_set_range(TrbVector *self, usize index, const void *data, usize len)
-{
-	if (len == 0)
-		return TRUE;
-
-	usize zt = self->zero_terminated;
-
-	if ((index > USIZE_MAX - len) || (index + len > USIZE_MAX - zt)) {
-		trb_msg_error("array capacity overflow!");
-		return FALSE;
-	}
-
-	if (index + len + zt > self->capacity) {
-		if (__trb_vector_newcap(self, index + len + zt) == FALSE)
-			return FALSE;
-	}
-
-	if (index + len > self->len) {
-		self->len = index + len;
-
-		if (zt)
-			memset(vector_cell(self, self->len), 0, self->elemsize);
-	}
-
-	if (data == NULL)
-		memset(vector_cell(self, index), 0, len * self->elemsize);
-	else
-		memcpy(vector_cell(self, index), data, len * self->elemsize);
-
-	self->sorted = FALSE;
-
-	return TRUE;
-}
-
-bool trb_vector_set(TrbVector *self, usize index, const void *data)
-{
-	trb_return_val_if_fail(self != NULL, FALSE);
-	return __trb_vector_set_range(self, index, data, 1);
-}
-
-bool trb_vector_set_range(TrbVector *self, usize index, const void *data, usize len)
-{
-	trb_return_val_if_fail(self != NULL, FALSE);
-	return __trb_vector_set_range(self, index, data, len);
-}
-
-bool trb_vector_get(const TrbVector *self, usize index, void *ret)
-{
-	trb_return_val_if_fail(self != NULL, FALSE);
-	trb_return_val_if_fail(ret != NULL, FALSE);
-
-	if (index >= self->len) {
-		trb_msg_warn("element at [%zu] is out of bounds!", index);
-		return FALSE;
-	}
-
-	memcpy(ret, vector_cell(self, index), self->elemsize);
-
-	return TRUE;
-}
-
-bool trb_vector_get_range(const TrbVector *self, usize index, usize len, void *ret)
-{
-	trb_return_val_if_fail(self != NULL, FALSE);
-	trb_return_val_if_fail(ret != NULL, FALSE);
-
-	if (len == 0)
-		return TRUE;
-
-	if (index + len > self->len) {
-		trb_msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
-		return FALSE;
-	}
-
-	memcpy(ret, vector_cell(self, index), len * self->elemsize);
-
-	return TRUE;
-}
-
 static bool __trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
 {
 	if (len == 0)
@@ -299,7 +220,7 @@ static bool __trb_vector_remove_range(TrbVector *self, usize index, usize len, v
 	return TRUE;
 }
 
-bool trb_vector_remove_index(TrbVector *self, usize index, void *ret)
+bool trb_vector_remove(TrbVector *self, usize index, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 	return __trb_vector_remove_range(self, index, 1, ret);

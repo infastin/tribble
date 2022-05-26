@@ -194,6 +194,19 @@ bool trb_binary_search_data(
 );
 
 /**
+ * trb_2alloc:
+ * @rows: The number of rows in the array.
+ * @cols: The number of columns in the array.
+ * @elemsize: The size of each element in the array.
+ *
+ * Allocates a two-dimensional array.
+ * The array should be freed with `free()`.
+ *
+ * Returns: (nullable): The two-dimensional array, or %NULL if an error occurs.
+ **/
+void **trb_2alloc(usize rows, usize cols, usize elemsize);
+
+/**
  * trb_u8cmp:
  * @a: The first value to be compared.
  * @b: The second value to be compared.

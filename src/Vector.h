@@ -133,36 +133,7 @@ bool trb_vector_insert(TrbVector *self, usize index, const void *data);
 bool trb_vector_insert_many(TrbVector *self, usize index, const void *data, usize len);
 
 /**
- * trb_vector_set:
- * @self: The array where to change.
- * @index: The position of the entry in which to change the value.
- * @data: The data to be set.
- *
- * Changes the value of the entry at the given index in the array
- * with the given data.
- * If @data is %NULL, changes the value with a zero.
- *
- * Returns: %TRUE on success.
- **/
-bool trb_vector_set(TrbVector *self, usize index, const void *data);
-
-/**
- * trb_vector_set_range:
- * @self: The array where to overwrite.
- * @index: The position of the entry in which to overwrite the values.
- * @data: The data to be set.
- * @len The number of elements to be overwriten.
- *
- * Overwrites values of the entries at the given index in the
- * array with the given data.
- * If @data is %NULL, overwrites values with zeroes.
- *
- * Returns: %TRUE on success.
- **/
-bool trb_vector_set_range(TrbVector *self, usize index, const void *data, usize len);
-
-/**
- * trb_vector_remove_index:
+ * trb_vector_remove:
  * @self: The array where to remove.
  * @index: The position of the entry to be removed.
  * @ret: (optional) (out): The pointer to retrieve removed data.
@@ -171,7 +142,7 @@ bool trb_vector_set_range(TrbVector *self, usize index, const void *data, usize 
  *
  * Returns: %TRUE on success.
  **/
-bool trb_vector_remove_index(TrbVector *self, usize index, void *ret);
+bool trb_vector_remove(TrbVector *self, usize index, void *ret);
 
 /**
  * trb_vector_pop_back:
@@ -271,31 +242,6 @@ void trb_vector_sort(TrbVector *self, TrbCmpFunc cmp_func);
 void trb_vector_sort_data(TrbVector *self, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
- * trb_vector_get:
- * @self: The array where to get.
- * @index: The position of the entry which value is to be got.
- * @ret: (out): The pointer to retrieve value of the entry.
- *
- * Gets the value of the entry in the array at the given index.
- *
- * Returns: %TRUE on success.
- **/
-bool trb_vector_get(const TrbVector *self, usize index, void *ret);
-
-/**
- * trb_vector_get_range:
- * @self: The array where to get.
- * @index: The index of the first element to be got.
- * @len: The number of elements to be got.
- * @ret: (out): The pointer to retrieve the data.
- *
- * Gets the range of elements in the array.
- *
- * Returns: %TRUE on success.
- **/
-bool trb_vector_get_range(const TrbVector *self, usize index, usize len, void *ret);
-
-/**
  * trb_vector_steal:
  * @self: The array where to steal the buffer.
  * @len: (optional) (out): The pointer to retrieve the number of elements in the array.
@@ -388,15 +334,27 @@ bool trb_vector_search(const TrbVector *self, const void *target, TrbCmpFunc cmp
 bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
 /**
- * trb_vector_get_unsafe:
+ * trb_vector_ptr:
  * @self: The array where to get.
- * @type: The type to be got.
- * @index: The position of the entry which value is to be got.
+ * @type: The type of the element.
+ * @index: The position of the entry.
  *
- * Unsafe version of `trb_vector_get()`.
+ * Gets the pointer to the entry in the array at the given index.
+ *
+ * Returns: The pointer to the entry.
+ **/
+#define trb_vector_ptr(self, type, index) ((type *) &((char *) ((self)->data))[(index) * (self)->elemsize])
+
+/**
+ * trb_vector_get:
+ * @self: The array where to get.
+ * @type: The type of the element.
+ * @index: The position of the entry.
+ *
+ * Gets the value of the entry in the array at the given index.
  *
  * Returns: The value of the entry.
  **/
-#define trb_vector_get_unsafe(self, type, index) (*(type *) &((char *) ((self)->data))[(index) * (self)->elemsize])
+#define trb_vector_get(self, type, index) (*trb_vector_ptr(self, type, index))
 
 #endif /* end of include guard: ARRAY_H_KSABYJ3T */
