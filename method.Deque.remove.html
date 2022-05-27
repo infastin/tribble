@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.Deque.push_front</title>
+  <title>Tribble.Deque.remove</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta priority="og:title" content="Tribble.Deque.push_front"/>
-  <meta priority="og:description" content="Reference for Tribble.Deque.push_front"/>
-  <meta name="twitter:title" content="Tribble.Deque.push_front"/>
-  <meta name="twitter:description" content="Reference for Tribble.Deque.push_front"/>
+  <meta priority="og:title" content="Tribble.Deque.remove"/>
+  <meta priority="og:description" content="Reference for Tribble.Deque.remove"/>
+  <meta name="twitter:title" content="Tribble.Deque.remove"/>
+  <meta name="twitter:description" content="Reference for Tribble.Deque.remove"/>
 
 
   
@@ -102,11 +102,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Deque.push_back_many.html">push_back_many</a>
   
-    <a class="method current" href="method.Deque.push_front.html">push_front</a>
+    <a class="method" href="method.Deque.push_front.html">push_front</a>
   
     <a class="method" href="method.Deque.push_front_many.html">push_front_many</a>
   
-    <a class="method" href="method.Deque.remove.html">remove</a>
+    <a class="method current" href="method.Deque.remove.html">remove</a>
   
     <a class="method" href="method.Deque.remove_all.html">remove_all</a>
   
@@ -129,7 +129,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Deque.html">Deque</a><span class="sep"></span>push_front</h1>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Deque.html">Deque</a><span class="sep"></span>remove</h1>
   </header>
 
   <section>
@@ -138,15 +138,16 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Deque.h#L23">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Deque.h#L33">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"></span>
-<span class="n">trb_deque_push_front</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="n">trb_deque_remove</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="n">TrbDeque</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ret</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -189,7 +190,25 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>data</code></td>
+            <td><code>index</code></td>
+            <td><a href="alias.usize.html"><code>usize</code></a></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td>No description available.</td>
+          </tr>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <tr class="arg-name">
+            <td><code>ret</code></td>
             <td><code>void*</code></td>
           </tr>
           <tr class="arg-description">

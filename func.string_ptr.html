@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.isizecmp</title>
+  <title>Tribble.string_ptr</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta property="og:title" content="Tribble.isizecmp"/>
-  <meta property="og:description" content="Reference for Tribble.isizecmp"/>
-  <meta name="twitter:title" content="Tribble.isizecmp"/>
-  <meta name="twitter:description" content="Reference for Tribble.isizecmp"/>
+  <meta property="og:title" content="Tribble.string_ptr"/>
+  <meta property="og:description" content="Reference for Tribble.string_ptr"/>
+  <meta name="twitter:title" content="Tribble.string_ptr"/>
+  <meta name="twitter:description" content="Reference for Tribble.string_ptr"/>
 
 
   
@@ -72,7 +72,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
       
 
 <div class="section">
-  <h5>Functions</h5>
+  <h5>Function Macros</h5>
   <div class="links">
   
   </div>
@@ -86,8 +86,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Function </h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span>isizecmp</h1>
+    <h3>Function Macro</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>string_ptr</h1>
   </header>
 
   <section>
@@ -96,15 +96,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L304">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/String.h#L494">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">i32</span><span class="w"></span>
-<span class="n">trb_isizecmp</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">isize</span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">isize</span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_string_ptr (</span>
+<span class="w">  </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">index</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -116,12 +115,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L295">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/String.h#L485">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Compares two <code>isize</code>.</p>
+        <p>Gets the pointer to the character in the string at the given&nbsp;index.</p>
       </div>
 
       <div class="docblock">
@@ -129,6 +128,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           
+          
+          <tr><td>This function is not directly available to language bindings</td></tr>
           
           
           
@@ -149,12 +150,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>a</code></td>
-            <td><a href="alias.isize.html"><code>isize</code></a></td>
+            <td><code>self</code></td>
+            <td><code>-</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The first value to be&nbsp;compared.</p></td>
+            <td><p>The string where to&nbsp;get.</p></td>
           </tr>
           
           
@@ -163,50 +164,22 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           
-          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
+          
           
           
           <tr class="arg-name">
-            <td><code>b</code></td>
-            <td><a href="alias.isize.html"><code>isize</code></a></td>
+            <td><code>index</code></td>
+            <td><code>-</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The second value to be&nbsp;compared.</p></td>
+            <td><p>The position of the&nbsp;character.</p></td>
           </tr>
           
           
           
           
           
-          
-          
-          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
-          
-          
-          
-        </table>
-      </div>
-    </div>
-    
-
-    
-    <div class="return-value toggle-wrapper">
-      <h4 id="return-value">
-        Return value
-        <a href="#return-value" class="anchor"></a>
-      </h4>
-
-      <div class="docblock">
-        <table class="returns">
-          <tr class="arg-name">
-            <td>Returns:</td>
-            <td><a href="alias.i32.html"><code>i32</code></a></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p>-1 if <code>a</code> &lt; <code>b</code>; 0 if <code>a</code> == <code>b</code>; 1 if <code>a</code> &gt; <code>b</code>.</p></td>
-          </tr>
           
           
           
@@ -216,6 +189,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         </table>
       </div>
     </div>
+    
+
     
   </section>
 </section>

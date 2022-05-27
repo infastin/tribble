@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.2alloc</title>
+  <title>Tribble.string_get</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta property="og:title" content="Tribble.2alloc"/>
-  <meta property="og:description" content="Reference for Tribble.2alloc"/>
-  <meta name="twitter:title" content="Tribble.2alloc"/>
-  <meta name="twitter:description" content="Reference for Tribble.2alloc"/>
+  <meta property="og:title" content="Tribble.string_get"/>
+  <meta property="og:description" content="Reference for Tribble.string_get"/>
+  <meta name="twitter:title" content="Tribble.string_get"/>
+  <meta name="twitter:description" content="Reference for Tribble.string_get"/>
 
 
   
@@ -72,7 +72,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
       
 
 <div class="section">
-  <h5>Functions</h5>
+  <h5>Function Macros</h5>
   <div class="links">
   
   </div>
@@ -86,8 +86,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Function </h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span>2alloc</h1>
+    <h3>Function Macro</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>string_get</h1>
   </header>
 
   <section>
@@ -96,16 +96,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L207">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/String.h#L505">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span><span class="o">**</span><span class="w"></span>
-<span class="n">trb_2alloc</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">rows</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">cols</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="w"></span>
+        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_string_get (</span>
+<span class="w">  </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">index</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -117,13 +115,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L196">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/String.h#L496">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Allocates a two-dimensional array.
-The array should be freed with <code>free()</code>.</p>
+        <p>Gets the character in the string at the given&nbsp;index.</p>
       </div>
 
       <div class="docblock">
@@ -131,6 +128,8 @@ The array should be freed with <code>free()</code>.</p>
           
           
           
+          
+          <tr><td>This function is not directly available to language bindings</td></tr>
           
           
           
@@ -151,12 +150,12 @@ The array should be freed with <code>free()</code>.</p>
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>rows</code></td>
-            <td><a href="alias.usize.html"><code>usize</code></a></td>
+            <td><code>self</code></td>
+            <td><code>-</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The number of rows in the&nbsp;array.</p></td>
+            <td><p>The string where to&nbsp;get.</p></td>
           </tr>
           
           
@@ -169,30 +168,12 @@ The array should be freed with <code>free()</code>.</p>
           
           
           <tr class="arg-name">
-            <td><code>cols</code></td>
-            <td><a href="alias.usize.html"><code>usize</code></a></td>
+            <td><code>index</code></td>
+            <td><code>-</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The number of columns in the&nbsp;array.</p></td>
-          </tr>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          <tr class="arg-name">
-            <td><code>elemsize</code></td>
-            <td><a href="alias.usize.html"><code>usize</code></a></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p>The size of each element in the&nbsp;array.</p></td>
+            <td><p>The position of the&nbsp;character.</p></td>
           </tr>
           
           
@@ -210,32 +191,6 @@ The array should be freed with <code>free()</code>.</p>
     </div>
     
 
-    
-    <div class="return-value toggle-wrapper">
-      <h4 id="return-value">
-        Return value
-        <a href="#return-value" class="anchor"></a>
-      </h4>
-
-      <div class="docblock">
-        <table class="returns">
-          <tr class="arg-name">
-            <td>Returns:</td>
-            <td><code>void**</code></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p>The two-dimensional array, or <code>NULL</code> if an error&nbsp;occurs.</p></td>
-          </tr>
-          
-          
-          
-          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the called function.</td></tr>
-          <tr><td>&nbsp;</td><td>The return value can be <code>NULL</code>.</td></tr>
-          
-        </table>
-      </div>
-    </div>
     
   </section>
 </section>
