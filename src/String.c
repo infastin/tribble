@@ -438,12 +438,24 @@ static bool __trb_string_erase(TrbString *self, usize index, usize len, char *re
 bool trb_string_erase(TrbString *self, usize index, usize len, char *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len < len) {
+		trb_msg_warn("array doesn't consist of %zu characters!", len);
+		return FALSE;
+	}
+
 	return __trb_string_erase(self, index, len, ret);
 }
 
 bool trb_string_erase_c(TrbString *self, usize index, char *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len == 0) {
+		trb_msg_warn("string is empty!");
+		return FALSE;
+	}
+
 	return __trb_string_erase(self, index, 1, ret);
 }
 
@@ -711,39 +723,6 @@ char *trb_string_steal0(TrbString *self, usize *len)
 	self->capacity = 0;
 
 	return ret;
-}
-
-bool trb_string_get(TrbString *self, usize index, usize len, char *ret)
-{
-	trb_return_val_if_fail(self != NULL, FALSE);
-	trb_return_val_if_fail(ret != NULL, FALSE);
-
-	if (len == 0)
-		return TRUE;
-
-	if (index + len > self->len) {
-		trb_msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
-		return FALSE;
-	}
-
-	memcpy(ret, &self->data[index], len);
-
-	return TRUE;
-}
-
-bool trb_string_get_c(TrbString *self, usize index, char *ret)
-{
-	trb_return_val_if_fail(self != NULL, FALSE);
-	trb_return_val_if_fail(ret != NULL, FALSE);
-
-	if (index > self->len) {
-		trb_msg_warn("character at [%zu] is out of bounds!", index);
-		return FALSE;
-	}
-
-	*ret = self->data[index];
-
-	return TRUE;
 }
 
 void trb_string_destroy(TrbString *self)

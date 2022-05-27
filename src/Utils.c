@@ -606,28 +606,6 @@ bool trb_binary_search_data(
 	return FALSE;
 }
 
-void **trb_2alloc(usize rows, usize cols, usize elemsize)
-{
-	if (
-		rows > USIZE_MAX / sizeof(void *) ||
-		rows > USIZE_MAX / cols ||
-		rows * cols > USIZE_MAX / elemsize ||
-		rows * sizeof(void *) > USIZE_MAX / (rows * cols * elemsize)
-	) {
-		return NULL;
-	}
-
-	void **arr = (void **) malloc((rows * sizeof(void *)) + (rows * cols * elemsize));
-	if (arr == NULL)
-		return NULL;
-
-	for (usize i = 0; i < rows; ++i) {
-		arr[i] = (void *) (((char *) (arr + rows)) + (i * cols * elemsize));
-	}
-
-	return arr;
-}
-
 /* Compare functions */
 i32 trb_u8cmp(const u8 *a, const u8 *b)
 {

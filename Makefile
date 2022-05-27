@@ -15,23 +15,21 @@ clean:
 compdb:
 	ninja -C $(BUILD_DIR) -t compdb > compile_commands.json
 
-doc:
-	meson configure $(BUILD_DIR) -D girgen=enabled
-	meson configure $(BUILD_DIR) -D gi_docgen=enabled
-	meson $(BUILD_DIR) --reconfigure
-	meson compile -C $(BUILD_DIR) libtribble-doc
+gen-disable:
 	meson configure $(BUILD_DIR) -D girgen=disabled
 	meson configure $(BUILD_DIR) -D gi_docgen=disabled
 	meson $(BUILD_DIR) --reconfigure
 
-install:
+gen-enable:
 	meson configure $(BUILD_DIR) -D girgen=enabled
 	meson configure $(BUILD_DIR) -D gi_docgen=enabled
 	meson $(BUILD_DIR) --reconfigure
+
+doc: gen-enable
+	meson compile -C $(BUILD_DIR) libtribble-doc
+
+install:
 	ninja -C $(BUILD_DIR) install
-	meson configure $(BUILD_DIR) -D girgen=disabled
-	meson configure $(BUILD_DIR) -D gi_docgen=disabled
-	meson $(BUILD_DIR) --reconfigure
 
 test:
 	meson test -C $(BUILD_DIR)

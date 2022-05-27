@@ -342,6 +342,11 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret)
 		return FALSE;
 	}
 
+	if (self->used == 0) {
+		trb_msg_warn("hash table is empty!");
+		return FALSE;
+	}
+
 	if (self->slots > HT_INIT_SLOTS) {
 		f64 load_factor = (f64) self->used / (f64) self->slots;
 		if (load_factor <= 0.4) {
@@ -412,6 +417,9 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 		return FALSE;
 	}
 
+	if (self->used == 0)
+		return FALSE;
+
 	usize hash = self->hash_func(key, self->keysize, self->seed);
 	usize pos = hash & (self->slots - 1);
 
@@ -464,6 +472,16 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 bool trb_hash_table_remove_all(TrbHashTable *self, usize padding, void *ret, usize *len)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->slots == 0) {
+		trb_msg_warn("hash table capacity is zero!");
+		return FALSE;
+	}
+
+	if (self->used == 0) {
+		trb_msg_warn("hash table is empty!");
+		return FALSE;
+	}
 
 	if (self->keysize + self->valuesize > USIZE_MAX - padding) {
 		trb_msg_error("bucket size overflow: the padding is too big!");

@@ -7,22 +7,6 @@
 
 #include <memory.h>
 
-#define bucket_cell(b, e, i) (&((b)->data[(i) * (e)]))
-
-static TrbDequeBucket *__bucket_new(usize bucketsize)
-{
-	TrbDequeBucket *bucket = malloc(sizeof(TrbDequeBucket) + bucketsize);
-
-	if (bucket == NULL) {
-		trb_msg_error("couldn't allocate memory for the deque bucket!");
-		return NULL;
-	}
-
-	bucket->len = 0;
-
-	return bucket;
-}
-
 TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize)
 {
 	trb_return_val_if_fail(elemsize != 0, NULL);
@@ -46,12 +30,13 @@ TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize)
 	}
 
 	self->elemsize = elemsize;
-	/* self->bucketsize = (elemsize < 256) ? 2048 : elemsize * 8; */
-	self->bucketsize = elemsize * 8;
+	self->bucketsize = (elemsize < 256) ? 2048 : elemsize * 8;
 	self->bucketcap = self->bucketsize / elemsize;
-	self->len = 0;
 
-	if (trb_vector_init(&self->buckets, TRUE, FALSE, sizeof(TrbDequeBucket *)) == NULL) {
+	self->len = 0;
+	self->offset = 0;
+
+	if (trb_vector_init(&self->buckets, TRUE, FALSE, sizeof(void *)) == NULL) {
 		if (was_allocated)
 			free(self);
 
@@ -59,7 +44,7 @@ TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize)
 		return NULL;
 	}
 
-	if (trb_vector_init(&self->unused, TRUE, FALSE, sizeof(TrbDequeBucket *)) == NULL) {
+	if (trb_vector_init(&self->unused, TRUE, FALSE, sizeof(void *)) == NULL) {
 		trb_vector_destroy(&self->buckets, NULL);
 
 		if (was_allocated)
@@ -72,44 +57,40 @@ TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize)
 	return self;
 }
 
-static usize __trb_deque_add_buckets_back(TrbDeque *self, usize n)
+static bool __trb_deque_add_buckets_back(TrbDeque *self, usize n)
 {
-	TrbDequeBucket **buckets = malloc(n * sizeof(TrbDequeBucket *));
+	void **buckets = malloc(n * sizeof(void *));
 	if (buckets == NULL) {
 		trb_msg_error("couldn't allocate temporary memory for deque buckets!");
-		return -1;
+		return FALSE;
 	}
 
 	usize n_buckets = 0;
 
 	if (self->unused.len != 0) {
-		usize rm_len = (n <= self->unused.len) ? self->unused.len : n;
+		usize rm_len = (n >= self->unused.len) ? self->unused.len : n;
 		trb_vector_pop_back_many(&self->unused, rm_len, buckets);
 		n_buckets += rm_len;
 	}
 
 	for (; n_buckets < n; ++n_buckets) {
-		buckets[n_buckets] = __bucket_new(self->bucketsize);
+		buckets[n_buckets] = malloc(self->bucketsize);
 
 		if (buckets[n_buckets] == NULL) {
 			if (!trb_vector_push_back_many(&self->unused, buckets, n_buckets))
 				goto on_error;
 
 			free(buckets);
-			return -1;
+			return FALSE;
 		}
-
-		buckets[n_buckets]->offset = 0;
 	}
-
-	usize nb_index = self->buckets.len;
 
 	if (!trb_vector_push_back_many(&self->buckets, buckets, n))
 		goto on_error;
 
 	free(buckets);
 
-	return nb_index;
+	return TRUE;
 
 on_error:
 	for (usize i = 0; i < n_buckets; ++i)
@@ -117,47 +98,43 @@ on_error:
 
 	free(buckets);
 
-	return -1;
+	return FALSE;
 }
 
-static usize __trb_deque_add_buckets_front(TrbDeque *self, usize n)
+static bool __trb_deque_add_buckets_front(TrbDeque *self, usize n)
 {
-	TrbDequeBucket **buckets = malloc(n * sizeof(TrbDequeBucket *));
+	void **buckets = malloc(n * sizeof(void *));
 	if (buckets == NULL) {
 		trb_msg_error("couldn't allocate temporary memory for deque buckets!");
-		return -1;
+		return FALSE;
 	}
 
 	usize n_buckets = 0;
 
 	if (self->unused.len != 0) {
-		usize rm_len = (n <= self->unused.len) ? self->unused.len : n;
+		usize rm_len = (n >= self->unused.len) ? self->unused.len : n;
 		trb_vector_pop_back_many(&self->unused, rm_len, buckets);
 		n_buckets += rm_len;
 	}
 
 	for (; n_buckets < n; ++n_buckets) {
-		buckets[n_buckets] = __bucket_new(self->bucketsize);
+		buckets[n_buckets] = malloc(self->bucketsize);
 
 		if (buckets[n_buckets] == NULL) {
 			if (!trb_vector_push_back_many(&self->unused, buckets, n_buckets))
 				goto on_error;
 
 			free(buckets);
-			return -1;
+			return FALSE;
 		}
-
-		buckets[n_buckets]->offset = 0;
 	}
-
-	buckets[0]->offset = self->bucketcap;
 
 	if (!trb_vector_push_front_many(&self->buckets, buckets, n))
 		goto on_error;
 
 	free(buckets);
 
-	return n;
+	return TRUE;
 
 on_error:
 	for (usize i = 0; i < n_buckets; ++i)
@@ -165,42 +142,47 @@ on_error:
 
 	free(buckets);
 
-	return -1;
+	return FALSE;
 }
 
-static usize __trb_deque_get_buckets_back(TrbDeque *self, usize len)
+static bool __trb_deque_get_buckets_back(TrbDeque *self, usize len)
 {
 	if (self->buckets.len == 0) {
 		usize n = (len + (self->bucketcap - 1)) / self->bucketcap;
 		return __trb_deque_add_buckets_back(self, n);
 	}
 
-	TrbDequeBucket *last = trb_vector_get(&self->buckets, TrbDequeBucket *, self->buckets.len - 1);
+	usize first_len = trb_min(self->len, self->bucketcap - self->offset);
+	usize other_len = self->len - first_len;
 
-	if (last->offset + last->len + len > self->bucketcap) {
-		usize free_space = self->bucketcap - (last->offset + last->len);
+	usize last_offset = (self->buckets.len == 1) ? self->offset : 0;
+	usize last_len = (other_len == 0)
+						 ? first_len
+						 : (other_len - 1) % self->bucketcap + 1;
+
+	if (last_offset + last_len + len > self->bucketcap) {
+		usize free_space = self->bucketcap - (last_offset + last_len);
 		usize n = ((len - free_space) + (self->bucketcap - 1)) / self->bucketcap;
+
 		return __trb_deque_add_buckets_back(self, n);
 	}
 
-	return self->buckets.len - 1;
+	return TRUE;
 }
 
-static usize __trb_deque_get_buckets_front(TrbDeque *self, usize len)
+static bool __trb_deque_get_buckets_front(TrbDeque *self, usize len)
 {
 	if (self->buckets.len == 0) {
 		usize n = (len + (self->bucketcap - 1)) / self->bucketcap;
 		return __trb_deque_add_buckets_front(self, n);
 	}
 
-	TrbDequeBucket *first = trb_vector_get(&self->buckets, TrbDequeBucket *, 0);
-
-	if (len > first->offset) {
-		usize n = ((len - first->offset) + (self->bucketcap - 1)) / self->bucketcap;
+	if (len > self->offset) {
+		usize n = ((len - self->offset) + (self->bucketcap - 1)) / self->bucketcap;
 		return __trb_deque_add_buckets_front(self, n);
 	}
 
-	return 0;
+	return TRUE;
 }
 
 static void __trb_deque_memcpy(TrbDeque *self, usize index, const void *data, usize len)
@@ -212,19 +194,15 @@ static void __trb_deque_memcpy(TrbDeque *self, usize index, const void *data, us
 	usize elem_index = index % self->bucketcap;
 
 	for (; remaining_len != 0; ++bucket_index) {
-		TrbDequeBucket *bucket = trb_vector_get(&self->buckets, TrbDequeBucket *, bucket_index);
+		void *bucket = trb_vector_get(&self->buckets, void *, bucket_index);
 		usize copy_len = trb_min(remaining_len, self->bucketcap - elem_index);
 
 		memcpy(
-			bucket_cell(bucket, self->elemsize, elem_index),
+			trb_array_cell(bucket, self->elemsize, elem_index),
 			cdata, copy_len * self->elemsize
 		);
 
-		if (elem_index == 0)
-			bucket->offset = 0;
-
 		remaining_len -= copy_len;
-		bucket->len += copy_len;
 		cdata += copy_len * self->elemsize;
 		elem_index = 0;
 	}
@@ -253,12 +231,12 @@ static void __trb_deque_memmove_higher(TrbDeque *self, usize dst_index, usize sr
 		e1_index = (e1_index + (self->bucketcap - move_len)) % self->bucketcap;
 		e2_index = (e2_index + (self->bucketcap - move_len)) % self->bucketcap;
 
-		TrbDequeBucket *b1 = trb_vector_get(&self->buckets, TrbDequeBucket *, b1_index);
-		TrbDequeBucket *b2 = trb_vector_get(&self->buckets, TrbDequeBucket *, b2_index);
+		void *b1 = trb_vector_get(&self->buckets, void *, b1_index);
+		void *b2 = trb_vector_get(&self->buckets, void *, b2_index);
 
 		memmove(
-			bucket_cell(b2, self->elemsize, e2_index),
-			bucket_cell(b1, self->elemsize, e1_index),
+			trb_array_cell(b2, self->elemsize, e2_index),
+			trb_array_cell(b1, self->elemsize, e1_index),
 			move_len * self->elemsize
 		);
 
@@ -277,15 +255,15 @@ static void __trb_deque_memmove_lower(TrbDeque *self, usize dst_index, usize src
 	usize e2_index = dst_index % self->bucketcap;
 
 	while (remaining_len != 0) {
-		TrbDequeBucket *b1 = trb_vector_get(&self->buckets, TrbDequeBucket *, b1_index);
-		TrbDequeBucket *b2 = trb_vector_get(&self->buckets, TrbDequeBucket *, b2_index);
+		void *b1 = trb_vector_get(&self->buckets, void *, b1_index);
+		void *b2 = trb_vector_get(&self->buckets, void *, b2_index);
 
 		usize max_index = trb_max(e1_index, e2_index);
 		usize move_len = trb_min(remaining_len, self->bucketcap - max_index);
 
 		memmove(
-			bucket_cell(b2, self->elemsize, e2_index),
-			bucket_cell(b1, self->elemsize, e1_index),
+			trb_array_cell(b2, self->elemsize, e2_index),
+			trb_array_cell(b1, self->elemsize, e1_index),
 			move_len * self->elemsize
 		);
 
@@ -309,31 +287,21 @@ static bool __trb_deque_insert_many(TrbDeque *self, usize index, const void *dat
 	if (index >= self->len) {
 		usize add_len = len + (index - self->len);
 
-		usize nb_index = __trb_deque_get_buckets_back(self, add_len);
-		if (nb_index == -1)
+		if (__trb_deque_get_buckets_back(self, add_len) == FALSE)
 			return FALSE;
 
-		TrbDequeBucket *new_bucket = trb_vector_get(&self->buckets, TrbDequeBucket *, nb_index);
-		TrbDequeBucket *first = trb_vector_get(&self->buckets, TrbDequeBucket *, 0);
-
-		__trb_deque_memcpy(self, first->offset + index, data, len);
-
-		self->len += add_len;
-		new_bucket->len += (first->offset + index) % self->bucketcap;
+		__trb_deque_memcpy(self, self->offset + index, data, len);
+		self->len += (index - self->len) + len;
 
 		return TRUE;
 	}
 
 	if (index > self->len / 2) {
-		usize kek = __trb_deque_get_buckets_back(self, len);
-
-		if (kek == -1)
+		if (__trb_deque_get_buckets_back(self, len) == FALSE)
 			return FALSE;
 
-		TrbDequeBucket *first = trb_vector_get(&self->buckets, TrbDequeBucket *, 0);
-
-		usize dst_index = first->offset + index + len;
-		usize src_index = first->offset + index;
+		usize dst_index = self->offset + index + len;
+		usize src_index = self->offset + index;
 
 		__trb_deque_memmove_higher(self, dst_index, src_index, self->len - index);
 		__trb_deque_memcpy(self, src_index, data, len);
@@ -344,37 +312,62 @@ static bool __trb_deque_insert_many(TrbDeque *self, usize index, const void *dat
 	}
 
 	if (index == 0) {
-		usize ob_index = __trb_deque_get_buckets_front(self, len);
-		if (ob_index == -1)
+		if (__trb_deque_get_buckets_front(self, len) == FALSE)
 			return FALSE;
 
-		TrbDequeBucket *old_bucket = trb_vector_get(&self->buckets, TrbDequeBucket *, ob_index);
-		usize offset = ((self->bucketcap + old_bucket->offset) - (len % self->bucketcap)) % self->bucketcap;
+		usize offset = ((self->bucketcap + self->offset) - (len % self->bucketcap)) % self->bucketcap;
 
 		__trb_deque_memcpy(self, offset, data, len);
 
-		TrbDequeBucket *first = trb_vector_get(&self->buckets, TrbDequeBucket *, 0);
-		first->offset = offset;
+		self->offset = offset;
 		self->len += len;
 
 		return TRUE;
 	}
 
-	usize ob_index = __trb_deque_get_buckets_front(self, len);
-	if (ob_index == -1)
+	if (__trb_deque_get_buckets_front(self, len) == FALSE)
 		return FALSE;
 
-	TrbDequeBucket *old_bucket = trb_vector_get(&self->buckets, TrbDequeBucket *, ob_index);
-
-	usize dst_index = (old_bucket->offset + self->bucketcap - (len % self->bucketcap)) % self->bucketcap;
+	usize dst_index = (self->offset + self->bucketcap - (len % self->bucketcap)) % self->bucketcap;
 	usize src_index = dst_index + len;
 
 	__trb_deque_memmove_lower(self, dst_index, src_index, index);
 	__trb_deque_memcpy(self, dst_index + index, data, len);
 
-	TrbDequeBucket *first = trb_vector_get(&self->buckets, TrbDequeBucket *, 0);
-	first->offset = dst_index;
+	self->offset = dst_index;
+	self->len += len;
 
+	return TRUE;
+}
+
+static bool __trb_deque_push_back_many(TrbDeque *self, const void *data, usize len)
+{
+	if (len == 0)
+		return TRUE;
+
+	if (__trb_deque_get_buckets_back(self, len) == FALSE)
+		return FALSE;
+
+	__trb_deque_memcpy(self, self->offset + self->len, data, len);
+
+	self->len += len;
+
+	return TRUE;
+}
+
+static bool __trb_deque_push_front_many(TrbDeque *self, const void *data, usize len)
+{
+	if (len == 0)
+		return TRUE;
+
+	if (__trb_deque_get_buckets_front(self, len) == FALSE)
+		return FALSE;
+
+	usize offset = ((self->bucketcap + self->offset) - (len % self->bucketcap)) % self->bucketcap;
+
+	__trb_deque_memcpy(self, offset, data, len);
+
+	self->offset = offset;
 	self->len += len;
 
 	return TRUE;
@@ -383,25 +376,25 @@ static bool __trb_deque_insert_many(TrbDeque *self, usize index, const void *dat
 bool trb_deque_push_back_many(TrbDeque *self, const void *data, usize len)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
-	return __trb_deque_insert_many(self, self->len, data, len);
+	return __trb_deque_push_back_many(self, data, len);
 }
 
 bool trb_deque_push_back(TrbDeque *self, const void *data)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
-	return __trb_deque_insert_many(self, self->len, data, 1);
+	return __trb_deque_push_back_many(self, data, 1);
 }
 
 bool trb_deque_push_front_many(TrbDeque *self, const void *data, usize len)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
-	return __trb_deque_insert_many(self, 0, data, len);
+	return __trb_deque_push_front_many(self, data, len);
 }
 
 bool trb_deque_push_front(TrbDeque *self, const void *data)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
-	return __trb_deque_insert_many(self, 0, data, 1);
+	return __trb_deque_push_front_many(self, data, 1);
 }
 
 bool trb_deque_insert(TrbDeque *self, usize index, const void *data)
@@ -416,81 +409,348 @@ bool trb_deque_insert_many(TrbDeque *self, usize index, const void *data, usize 
 	return __trb_deque_insert_many(self, index, data, len);
 }
 
-bool trb_deque_pop_back(TrbDeque *self, void *ret)
+static void __trb_deque_memcpy_r(TrbDeque *self, usize index, usize len, void *ret)
+{
+	char *cret = ret;
+	usize remaining_len = len;
+
+	usize bucket_index = index / self->bucketcap;
+	usize elem_index = index % self->bucketcap;
+
+	for (; remaining_len != 0; ++bucket_index) {
+		void *bucket = trb_vector_get(&self->buckets, void *, bucket_index);
+		usize copy_len = trb_min(remaining_len, self->bucketcap - elem_index);
+
+		memcpy(
+			cret,
+			trb_array_cell(bucket, self->elemsize, elem_index),
+			copy_len * self->elemsize
+		);
+
+		remaining_len -= copy_len;
+		cret += copy_len * self->elemsize;
+		elem_index = 0;
+	}
+}
+
+static void __trb_deque_remove_buckets_back(TrbDeque *self, usize len)
+{
+	usize n;
+	if (self->len == len) {
+		n = self->buckets.len;
+	} else {
+		usize first_len = trb_min(self->len, self->bucketcap - self->offset);
+		usize other_len = self->len - first_len;
+
+		usize last_len = (other_len == 0)
+							 ? first_len
+							 : (other_len - 1) % self->bucketcap + 1;
+
+		if (len >= last_len)
+			n = (len - last_len) / self->bucketcap + 1;
+		else
+			n = 0;
+	}
+
+	if (n == 0)
+		return;
+
+	if (trb_vector_push_back_many(&self->unused, NULL, n)) {
+		void **src_ptr = trb_vector_ptr(&self->buckets, void *, self->buckets.len - n);
+		void **dst_ptr = trb_vector_ptr(&self->unused, void *, self->unused.len - n);
+		memcpy(dst_ptr, src_ptr, n * sizeof(void *));
+	}
+
+	trb_vector_pop_back_many(&self->buckets, n, NULL);
+}
+
+static bool __trb_deque_pop_back_many(TrbDeque *self, usize len, void *ret)
+{
+	if (len == 0)
+		return TRUE;
+
+	if (self->len < len) {
+		trb_msg_warn("deque doesn't hold %zu elements!", len);
+		return FALSE;
+	}
+
+	if (ret != NULL) {
+		usize src_index = self->offset + (self->len - len);
+		__trb_deque_memcpy_r(self, src_index, len, ret);
+	}
+
+	__trb_deque_remove_buckets_back(self, len);
+
+	self->len -= len;
+
+	if (self->len == 0)
+		self->offset = 0;
+
+	return TRUE;
+}
+
+static void __trb_deque_remove_buckets_front(TrbDeque *self, usize len)
+{
+	usize n;
+	if (self->len == len) {
+		n = self->buckets.len;
+	} else {
+		usize first_len = trb_min(self->len, self->bucketcap - self->offset);
+
+		if (len >= first_len)
+			n = (len - first_len) / self->bucketcap + 1;
+		else
+			n = 0;
+	}
+
+	if (n == 0)
+		return;
+
+	if (trb_vector_push_back_many(&self->unused, NULL, n)) {
+		void **src_ptr = trb_vector_ptr(&self->buckets, void *, 0);
+		void **dst_ptr = trb_vector_ptr(&self->unused, void *, self->unused.len - n);
+		memcpy(dst_ptr, src_ptr, n * sizeof(void *));
+	}
+
+	trb_vector_pop_front_many(&self->buckets, n, NULL);
+}
+
+static bool __trb_deque_pop_front_many(TrbDeque *self, usize len, void *ret)
+{
+	if (len == 0)
+		return TRUE;
+
+	if (self->len < len) {
+		trb_msg_warn("deque doesn't hold %zu elements!", len);
+		return FALSE;
+	}
+
+	if (ret != NULL) {
+		usize src_index = self->offset;
+		__trb_deque_memcpy_r(self, src_index, len, ret);
+	}
+
+	__trb_deque_remove_buckets_front(self, len);
+
+	self->len -= len;
+	self->offset = (self->offset + len) % self->bucketcap;
+
+	if (self->len == 0)
+		self->offset = 0;
+
+	return TRUE;
+}
+
+static bool __trb_deque_remove_range(TrbDeque *self, usize index, usize len, void *ret)
+{
+	if (len == 0)
+		return TRUE;
+
+	if (index + len > self->len) {
+		if (len == 1) {
+			trb_msg_warn("element at [%zu] is out of bounds!", index);
+		} else {
+			trb_msg_warn("range [%zu:%zu] is out of bounds!", index, index + len - 1);
+		}
+
+		return FALSE;
+	}
+
+	if (index + len == self->len) {
+		return __trb_deque_pop_back_many(self, len, ret);
+	}
+
+	if (index + len > self->len / 2) {
+		usize dst_index = self->offset + index;
+		usize src_index = self->offset + index + len;
+		usize move = self->len - index - len;
+
+		if (ret != NULL)
+			__trb_deque_memcpy_r(self, dst_index, len, ret);
+
+		__trb_deque_memmove_lower(self, dst_index, src_index, move);
+		__trb_deque_remove_buckets_back(self, len);
+
+		self->len -= len;
+
+		return TRUE;
+	}
+
+	if (index == 0) {
+		return __trb_deque_pop_front_many(self, len, ret);
+	}
+
+	usize min_move = trb_min(len, index);
+
+	usize dst_index = self->offset + index + len - min_move;
+	usize src_index = (self->offset + index + self->bucketcap - (min_move % self->bucketcap)) % self->bucketcap;
+
+	if (ret != NULL)
+		__trb_deque_memcpy_r(self, self->offset + index, len, ret);
+
+	__trb_deque_memmove_higher(self, dst_index, src_index, min_move);
+	__trb_deque_remove_buckets_front(self, len);
+
+	self->len -= len;
+	self->offset = dst_index;
+
+	return TRUE;
+}
+
+bool trb_deque_remove(TrbDeque *self, usize index, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (self->buckets.len == 0) {
+	if (self->len == 0) {
 		trb_msg_warn("deque is empty!");
 		return FALSE;
 	}
 
-	TrbDequeBucket *last = trb_vector_get(&self->buckets, TrbDequeBucket *, self->buckets.len - 1);
+	return __trb_deque_remove_range(self, index, 1, ret);
+}
 
-	if (ret != NULL) {
-		memcpy(
-			ret,
-			bucket_cell(last, self->elemsize, last->offset + last->len - 1),
-			self->elemsize
-		);
-	}
-
-	last->len--;
-	self->len--;
-
-	if (last->len == 0) {
-		if (!trb_vector_push_back(&self->unused, &last))
-			free(last);
-		else
-			trb_vector_pop_back(&self->buckets, NULL);
-	}
-
-	return TRUE;
+bool trb_deque_pop_back(TrbDeque *self, void *ret)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_deque_pop_back_many(self, 1, ret);
 }
 
 bool trb_deque_pop_front(TrbDeque *self, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_deque_pop_front_many(self, 1, ret);
+}
 
-	if (self->buckets.len == 0) {
-		trb_msg_warn("deque is empty!");
+bool trb_deque_pop_back_many(TrbDeque *self, usize len, void *ret)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_deque_pop_back_many(self, len, ret);
+}
+
+bool trb_deque_pop_front_many(TrbDeque *self, usize len, void *ret)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+	return __trb_deque_pop_front_many(self, len, ret);
+}
+
+bool trb_deque_remove_range(TrbDeque *self, usize index, usize len, void *ret)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len < len) {
+		trb_msg_warn("deque doesn't hold %zu elements!", len);
 		return FALSE;
 	}
 
-	TrbDequeBucket *first = trb_vector_get(&self->buckets, TrbDequeBucket *, 0);
+	return __trb_deque_remove_range(self, index, len, ret);
+}
 
-	if (ret != NULL) {
-		memcpy(
-			ret,
-			bucket_cell(first, self->elemsize, first->offset),
-			self->elemsize
-		);
+bool trb_deque_remove_all(TrbDeque *self, void *ret)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len == 0) {
+		trb_msg_warn("array is empty!");
+		return FALSE;
 	}
 
-	first->offset++;
-	first->len--;
-	self->len--;
+	return __trb_deque_remove_range(self, 0, self->len, ret);
+}
 
-	if (first->len == 0) {
-		if (!trb_vector_push_back(&self->unused, &first))
-			free(first);
-		else
-			trb_vector_pop_back(&self->buckets, NULL);
+bool trb_deque_search(const TrbDeque *self, const void *target, TrbCmpFunc cmp_func, usize *index)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(cmp_func != NULL, FALSE);
+
+	if (self->len == 0)
+		return FALSE;
+
+	usize first_len = trb_min(self->len, self->bucketcap - self->offset);
+	usize other_len = self->len - first_len;
+
+	for (usize bi = 0, i = 0; bi < self->buckets.len; ++bi) {
+		void *bucket = trb_vector_get(&self->buckets, void *, bi);
+
+		usize offset = (bi == 0) ? self->offset : 0;
+		usize len = (bi == 0)
+						? first_len
+					: (bi == self->buckets.len - 1)
+						? (other_len - 1) % self->bucketcap + 1
+						: self->bucketcap;
+
+		for (usize j = 0; j < len; ++j, ++i) {
+			if (cmp_func(trb_array_cell(bucket, self->elemsize, j + offset), target) == 0) {
+				if (index != NULL)
+					*index = i;
+				return TRUE;
+			}
+		}
 	}
 
-	return TRUE;
+	return FALSE;
+}
+
+bool trb_deque_search_data(const TrbDeque *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+	trb_return_val_if_fail(cmpd_func != NULL, FALSE);
+
+	if (self->len == 0)
+		return FALSE;
+
+	usize first_len = trb_min(self->len, self->bucketcap - self->offset);
+	usize other_len = self->len - first_len;
+
+	for (usize bi = 0, i = 0; bi < self->buckets.len; ++bi) {
+		void *bucket = trb_vector_get(&self->buckets, void *, bi);
+
+		usize offset = (bi == 0) ? self->offset : 0;
+		usize len = (bi == 0)
+						? first_len
+					: (bi == self->buckets.len - 1)
+						? (other_len - 1) % self->bucketcap + 1
+						: self->bucketcap;
+
+		for (usize j = 0; j < len; ++j, ++i) {
+			if (cmpd_func(trb_array_cell(bucket, self->elemsize, j + offset), target, data) == 0) {
+				if (index != NULL)
+					*index = i;
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+
+static inline void __trb_deque_free_bucket(void **bucket)
+{
+	if (bucket == NULL)
+		return;
+
+	free(*bucket);
 }
 
 void trb_deque_destroy(TrbDeque *self, TrbFreeFunc free_func)
 {
 	trb_return_if_fail(self != NULL);
 
-	for (usize i = 0; i < self->buckets.len; ++i) {
-		TrbDequeBucket *bucket = trb_vector_get(&self->buckets, TrbDequeBucket *, i);
+	usize first_len = trb_min(self->len, self->bucketcap - self->offset);
+	usize other_len = self->len - first_len;
+
+	for (usize bi = 0; bi < self->buckets.len; ++bi) {
+		void *bucket = trb_vector_get(&self->buckets, void *, bi);
 
 		if (free_func != NULL) {
-			for (usize j = bucket->offset; j < bucket->len; ++j) {
-				free_func(bucket_cell(bucket, self->elemsize, j));
+			usize offset = (bi == 0) ? self->offset : 0;
+			usize len = (bi == 0)
+							? first_len
+						: (bi == self->buckets.len - 1)
+							? (other_len - 1) % self->bucketcap + 1
+							: self->bucketcap;
+
+			for (usize i = 0; i < len; ++i) {
+				free_func(trb_array_cell(bucket, self->elemsize, i + offset));
 			}
 		}
 
@@ -498,15 +758,24 @@ void trb_deque_destroy(TrbDeque *self, TrbFreeFunc free_func)
 	}
 
 	trb_vector_destroy(&self->buckets, NULL);
-	trb_vector_destroy(&self->unused, NULL);
+	trb_vector_destroy(&self->unused, (TrbFreeFunc) __trb_deque_free_bucket);
 
 	self->len = 0;
+	self->offset = 0;
 }
 
 void trb_deque_shrink(TrbDeque *self)
 {
 	trb_return_if_fail(self != NULL);
-	trb_vector_destroy(&self->unused, free);
+
+	for (usize i = 0; i < self->unused.len; ++i) {
+		void *bucket = trb_vector_get(&self->buckets, void *, i);
+		free(bucket);
+	}
+
+	self->unused.len = 0;
+
+	trb_vector_shrink(&self->unused);
 	trb_vector_shrink(&self->buckets);
 }
 

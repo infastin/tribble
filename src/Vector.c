@@ -223,12 +223,24 @@ static bool __trb_vector_remove_range(TrbVector *self, usize index, usize len, v
 bool trb_vector_remove(TrbVector *self, usize index, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len == 0) {
+		trb_msg_warn("array is empty!");
+		return FALSE;
+	}
+
 	return __trb_vector_remove_range(self, index, 1, ret);
 }
 
 bool trb_vector_remove_all(TrbVector *self, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len == 0) {
+		trb_msg_warn("array is empty!");
+		return FALSE;
+	}
+
 	return __trb_vector_remove_range(self, 0, self->len, ret);
 }
 
@@ -259,6 +271,12 @@ bool trb_vector_pop_back_many(TrbVector *self, usize len, void *ret)
 bool trb_vector_pop_front(TrbVector *self, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len == 0) {
+		trb_msg_warn("array is empty!");
+		return FALSE;
+	}
+
 	return __trb_vector_remove_range(self, 0, 1, ret);
 }
 
@@ -277,6 +295,12 @@ bool trb_vector_pop_front_many(TrbVector *self, usize len, void *ret)
 bool trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	if (self->len < len) {
+		trb_msg_warn("array doesn't hold %zu elements!", len);
+		return FALSE;
+	}
+
 	return __trb_vector_remove_range(self, index, len, ret);
 }
 

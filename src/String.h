@@ -294,31 +294,6 @@ bool trb_string_insert_fmt(TrbString *self, usize index, const char *fmt, ...) T
 bool trb_string_insert_vfmt(TrbString *self, usize index, const char *fmt, va_list args) TRB_FORMAT(printf, 3, 0);
 
 /**
- * trb_string_get:
- * @self: The string where to get.
- * @index: The index of the first byte to be got.
- * @len: The number of bytes to be got.
- * @ret: (optional) (out): The pointer to retrieve the data.
- *
- * Gets @len bytes in the string starting from @index.
- *
- * Returns: %TRUE on success.
- **/
-bool trb_string_get(TrbString *self, usize index, usize len, char *ret);
-
-/**
- * trb_string_get_c:
- * @self: The string where to get.
- * @index: The position of the character.
- * @ret: (out): The pointer to retrieve the character.
- *
- * Gets the character from the string.
- *
- * Returns: %TRUE on success.
- **/
-bool trb_string_get_c(TrbString *self, usize index, char *ret);
-
-/**
  * trb_string_overwrite:
  * @self: The string where to overwrite.
  * @index: The index of the first byte to be overwriten.
@@ -506,5 +481,27 @@ void trb_string_destroy(TrbString *self);
  * Frees the string completely.
  **/
 void trb_string_free(TrbString *self);
+
+/**
+ * trb_string_ptr:
+ * @self: The string where to get.
+ * @index: The position of the character.
+ *
+ * Gets the pointer to the character in the string at the given index.
+ *
+ * Returns: The pointer to the character.
+ **/
+#define trb_string_ptr(self, index) (&(self)->data[index])
+
+/**
+ * trb_string_get:
+ * @self: The string where to get.
+ * @index: The position of the character.
+ *
+ * Gets the character in the string at the given index.
+ *
+ * Returns: The character.
+ **/
+#define trb_string_get(self, index) ((self)->data[index])
 
 #endif /* end of include guard: STRING_H_WW4E6R5D */

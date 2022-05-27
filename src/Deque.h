@@ -4,14 +4,6 @@
 #include "Types.h"
 #include "Vector.h"
 
-typedef struct _TrbDequeBucket TrbDequeBucket;
-
-struct _TrbDequeBucket {
-	usize offset;
-	usize len;
-	char data[];
-};
-
 typedef struct _TrbDeque TrbDeque;
 
 struct _TrbDeque {
@@ -20,6 +12,7 @@ struct _TrbDeque {
 	usize elemsize;
 	usize bucketsize;
 	usize bucketcap;
+	usize offset;
 	usize len;
 };
 
@@ -37,9 +30,23 @@ bool trb_deque_push_front_many(TrbDeque *self, const void *data, usize len);
 
 bool trb_deque_insert_many(TrbDeque *self, usize index, const void *data, usize len);
 
+bool trb_deque_remove(TrbDeque *self, usize index, void *ret);
+
 bool trb_deque_pop_back(TrbDeque *self, void *ret);
 
 bool trb_deque_pop_front(TrbDeque *self, void *ret);
+
+bool trb_deque_pop_back_many(TrbDeque *self, usize len, void *ret);
+
+bool trb_deque_pop_front_many(TrbDeque *self, usize len, void *ret);
+
+bool trb_deque_remove_range(TrbDeque *self, usize index, usize len, void *ret);
+
+bool trb_deque_remove_all(TrbDeque *self, void *ret);
+
+bool trb_deque_search(const TrbDeque *self, const void *target, TrbCmpFunc cmp_func, usize *index);
+
+bool trb_deque_search_data(const TrbDeque *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
 void trb_deque_destroy(TrbDeque *self, TrbFreeFunc free_func);
 
@@ -57,12 +64,11 @@ void trb_deque_shrink(TrbDeque *self);
  *
  * Returns: The pointer to the entry.
  **/
-#define trb_deque_ptr(self, type, index) ({                                         \
-	TrbDequeBucket *__f = trb_vector_get(&(self)->buckets, TrbDequeBucket *, 0);    \
-	usize __ei = ((index) + __f->offset) % (self)->bucketcap;                       \
-	usize __bi = ((index) + __f->offset) / (self)->bucketcap;                       \
-	TrbDequeBucket *__b = trb_vector_get(&(self)->buckets, TrbDequeBucket *, __bi); \
-	((type *) &(__b->data[__ei * (self)->elemsize]));                               \
+#define trb_deque_ptr(self, type, index) ({                      \
+	usize __ei = ((index) + (self)->offset) % (self)->bucketcap; \
+	usize __bi = ((index) + (self)->offset) / (self)->bucketcap; \
+	void *__b = trb_vector_get(&(self)->buckets, void *, __bi);  \
+	(type *) trb_array_cell(__b, __ei, (self)->elemsize);        \
 })
 
 /**

@@ -126,6 +126,8 @@ void my_free(char **ptr)
 	free(*ptr);
 }
 
+void do_nothing(void *ptr) {}
+
 int main(int argc, char *argv[])
 {
 	/* HashTable ht; */
@@ -222,6 +224,7 @@ int main(int argc, char *argv[])
 
 	u32 numbers[16] = { 0 };
 
+	printf("push_back 13:\n");
 	for (u32 i = 0; i < 13; ++i) {
 		u32 val = trb_pcg64_next_u32(&prg) % 100;
 		printf("%u ", val);
@@ -230,14 +233,7 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
-	for (u32 i = 0; i < 3; ++i) {
-		u32 val;
-		trb_deque_pop_front(&deque, &val);
-		printf("%u ", val);
-	}
-
-	printf("\n");
-
+	printf("print:\n");
 	for (u32 i = 0; i < deque.len; ++i) {
 		u32 val = trb_deque_get(&deque, u32, i);
 		printf("%u ", val);
@@ -245,6 +241,40 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
+	printf("pop_front 10:\n");
+	for (u32 i = 0; i < 10; ++i) {
+		u32 val;
+		trb_deque_pop_front(&deque, &val);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	printf("print:\n");
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	printf("pop_back_many 3:\n");
+	trb_deque_pop_back_many(&deque, 3, numbers);
+	for (u32 i = 0; i < 3; ++i) {
+		printf("%u ", numbers[i]);
+	}
+
+	printf("\n");
+
+	printf("print:\n");
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+
+	printf("push_front_many 7:\n");
 	for (u32 i = 0; i < 7; ++i) {
 		numbers[i] = trb_pcg64_next_u32(&prg) % 100;
 		printf("%u ", numbers[i]);
@@ -254,8 +284,7 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
-	printf("Buckets: %zu\n", deque.buckets.len);
-
+	printf("print:\n");
 	for (u32 i = 0; i < deque.len; ++i) {
 		u32 val = trb_deque_get(&deque, u32, i);
 		printf("%u ", val);
@@ -263,30 +292,16 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
-	for (u32 i = 0; i < 4; ++i) {
-		u32 val = trb_pcg64_next_u32(&prg) % 100;
-		printf("%u ", val);
-		trb_deque_insert(&deque, 25, &val);
-	}
-
-	printf("\n");
-
-	for (u32 i = 0; i < deque.len; ++i) {
-		u32 val = trb_deque_get(&deque, u32, i);
-		printf("%u ", val);
-	}
-
-	printf("\n");
-
+	printf("insert_many 8 2:\n");
 	for (u32 i = 0; i < 8; ++i) {
 		numbers[i] = trb_pcg64_next_u32(&prg) % 100;
 		printf("%u ", numbers[i]);
 	}
-
 	trb_deque_insert_many(&deque, 2, numbers, 8);
 
 	printf("\n");
 
+	printf("print:\n");
 	for (u32 i = 0; i < deque.len; ++i) {
 		u32 val = trb_deque_get(&deque, u32, i);
 		printf("%u ", val);
@@ -294,14 +309,24 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
-	for (u32 i = 0; i < 1; ++i) {
-		u32 val;
-		trb_deque_pop_front(&deque, &val);
+	printf("remove_range 5 8:\n");
+	trb_deque_remove_range(&deque, 5, 8, numbers);
+
+	for (u32 i = 0; i < 8; ++i) {
+		printf("%u ", numbers[i]);
+	}
+
+	printf("\n");
+
+	printf("print:\n");
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
 		printf("%u ", val);
 	}
 
 	printf("\n");
 
+	printf("push_back 4:\n");
 	for (u32 i = 0; i < 4; ++i) {
 		u32 val = trb_pcg64_next_u32(&prg) % 100;
 		printf("%u ", val);
@@ -310,6 +335,7 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
+	printf("print:\n");
 	for (u32 i = 0; i < deque.len; ++i) {
 		u32 val = trb_deque_get(&deque, u32, i);
 		printf("%u ", val);
@@ -317,7 +343,48 @@ int main(int argc, char *argv[])
 
 	printf("\n");
 
-	trb_deque_destroy(&deque, NULL);
+	printf("remove_range 2 3:\n");
+	trb_deque_remove_range(&deque, 2, 3, numbers);
+
+	for (u32 i = 0; i < 3; ++i) {
+		printf("%u ", numbers[i]);
+	}
+
+	printf("\n");
+
+	printf("print:\n");
+	for (u32 i = 0; i < deque.len; ++i) {
+		u32 val = trb_deque_get(&deque, u32, i);
+		printf("%u ", val);
+	}
+
+	printf("\n");
+	/*  */
+	/* printf("search 71\n"); */
+	/* usize index; */
+	/* trb_deque_search(&deque, trb_get_ptr(u32, 78), (TrbCmpFunc) trb_u32cmp, &index); */
+	/* printf("%zu\n", index); */
+	/*  */
+	/* printf("remove_all:\n"); */
+	/* trb_deque_remove_all(&deque, numbers); */
+	/*  */
+	/* for (u32 i = 0; i < 16; ++i) { */
+	/* 	printf("%u ", numbers[i]); */
+	/* } */
+	/*  */
+	/* printf("\n"); */
+	/*  */
+	/* printf("print:\n"); */
+	/* for (u32 i = 0; i < deque.len; ++i) { */
+	/* 	u32 val = trb_deque_get(&deque, u32, i); */
+	/* 	printf("%u ", val); */
+	/* } */
+	/*  */
+	/* printf("\n"); */
+	/*  */
+	/* printf("%zu\n", deque.buckets.len); */
+
+	trb_deque_destroy(&deque, do_nothing);
 
 	return 0;
 }
