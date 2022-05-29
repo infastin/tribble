@@ -122,6 +122,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Vector.shrink.html">shrink</a>
   
+    <a class="method" href="method.Vector.slice.html">slice</a>
+  
     <a class="method" href="method.Vector.steal.html">steal</a>
   
     <a class="method" href="method.Vector.steal0.html">steal0</a>
@@ -153,8 +155,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="n">TrbVector</span><span class="o">*</span><span class="w"></span>
 <span class="n">trb_vector_copy</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">dst</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -201,21 +203,21 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>src</code></td>
+            <td><code>dst</code></td>
             <td><a href="struct.Vector.html"><code>TrbVector</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The array to be&nbsp;copied.</p></td>
+            <td><p>The pointer to the destination&nbsp;array.</p></td>
           </tr>
+          <tr><td>&nbsp;</td><td title="direction: inout">The argument will be modified by the function.</td></tr>
+          
+          
+          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
           
           
           
-          
-          
-          
-          
-          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
+          <tr><td>&nbsp;</td><td title="transfer: full">The instance takes ownership of the data, and is responsible for freeing it.</td></tr>
           
           
           

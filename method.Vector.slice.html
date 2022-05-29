@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.Deque.slice</title>
+  <title>Tribble.Vector.slice</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta property="og:title" content="Tribble.Deque.slice"/>
-  <meta property="og:description" content="Reference for Tribble.Deque.slice"/>
-  <meta name="twitter:title" content="Tribble.Deque.slice"/>
-  <meta name="twitter:description" content="Reference for Tribble.Deque.slice"/>
+  <meta priority="og:title" content="Tribble.Vector.slice"/>
+  <meta priority="og:description" content="Reference for Tribble.Vector.slice"/>
+  <meta name="twitter:title" content="Tribble.Vector.slice"/>
+  <meta name="twitter:description" content="Reference for Tribble.Vector.slice"/>
 
 
   
@@ -73,14 +73,60 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <div class="section">
   <h5>Type</h5>
   <div class="links">
-    <a href="struct.Deque.html">Deque</a>
+    <a href="struct.Vector.html">Vector</a>
   </div>
 </div>
 <div class="section">
-  <h5>Functions</h5>
+  <h5>Methods</h5>
   <div class="links">
   
-    <a class="method current" href="type_func.Deque.slice.html">slice</a>
+    <a class="method" href="method.Vector.copy.html">copy</a>
+  
+    <a class="method" href="method.Vector.destroy.html">destroy</a>
+  
+    <a class="method" href="method.Vector.free.html">free</a>
+  
+    <a class="method" href="method.Vector.init.html">init</a>
+  
+    <a class="method" href="method.Vector.insert.html">insert</a>
+  
+    <a class="method" href="method.Vector.insert_many.html">insert_many</a>
+  
+    <a class="method" href="method.Vector.pop_back.html">pop_back</a>
+  
+    <a class="method" href="method.Vector.pop_back_many.html">pop_back_many</a>
+  
+    <a class="method" href="method.Vector.pop_front.html">pop_front</a>
+  
+    <a class="method" href="method.Vector.pop_front_many.html">pop_front_many</a>
+  
+    <a class="method" href="method.Vector.push_back.html">push_back</a>
+  
+    <a class="method" href="method.Vector.push_back_many.html">push_back_many</a>
+  
+    <a class="method" href="method.Vector.push_front.html">push_front</a>
+  
+    <a class="method" href="method.Vector.push_front_many.html">push_front_many</a>
+  
+    <a class="method" href="method.Vector.remove.html">remove</a>
+  
+    <a class="method" href="method.Vector.remove_all.html">remove_all</a>
+  
+    <a class="method" href="method.Vector.remove_range.html">remove_range</a>
+  
+    <a class="method" href="method.Vector.require.html">require</a>
+  
+    <a class="method" href="method.Vector.search.html">search</a>
+  
+    <a class="method" href="method.Vector.search_data.html">search_data</a>
+  
+    <a class="method" href="method.Vector.shrink.html">shrink</a>
+  
+    <a class="method current" href="method.Vector.slice.html">slice</a>
+  
+    <a class="method" href="method.Vector.steal.html">steal</a>
+  
+    <a class="method" href="method.Vector.steal0.html">steal0</a>
   
   </div>
 </div>
@@ -92,25 +138,25 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Function</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Deque.html">Deque</a><span class="sep"></span>slice</h1>
+    <h3>Method</h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Vector.html">Vector</a><span class="sep"></span>slice</h1>
   </header>
 
   <section>
     <div class="declaration toggle-wrapper">
-      <h4 id="declaration" style="display:flex;">
+      <h4 style="display:flex;" id="declaration">
         Declaration
-        <a href="#declaration" class="anchor"></a>
+        <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Deque.h#L53">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L303">[src]</a>
         
       </h4>
 
-      <div class="docblock">
+      <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"></span>
-<span class="n">trb_deque_slice</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="n">trb_vector_slice</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">TrbDeque</span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">end</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
@@ -120,9 +166,9 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 id="description" style="display:flex;">
+      <h4 style="display:flex;" id="description">
         Description
-        <a href="#description" class="anchor"></a>
+        <a class="anchor" href="#description"></a>
         
       </h4>
 
@@ -132,6 +178,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 
       <div class="docblock">
         <table>
+          
+          
+          
+          
+          <tr><td>This method is not directly available to language bindings.</td></tr>
           
           
           
@@ -154,24 +205,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <tr class="arg-name">
             <td><code>dst</code></td>
             <td><a href="struct.Slice.html"><code>TrbSlice</code></a></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td>No description available.</td>
-          </tr>
-          
-          
-          
-          
-          
-          
-          
-          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
-          
-          
-          <tr class="arg-name">
-            <td><code>src</code></td>
-            <td><a href="struct.Deque.html"><code>TrbDeque</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
@@ -249,13 +282,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           
-          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the called function.</td></tr>
+          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the instance.</td></tr>
           
           
         </table>
       </div>
     </div>
     
+
   </section>
 </section>
 
