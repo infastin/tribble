@@ -104,15 +104,15 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Slice.h#L18">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Slice.h#L56">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"></span>
 <span class="n">trb_slice_reslice</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">end</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
@@ -126,10 +126,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a class="anchor" href="#description"></a>
         
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Slice.h#L42">[src]</a>
+        
       </h4>
 
       <div class="docblock">
-        No description available.
+        <p>Creates a new <code>TrbSlice</code> of another <code>TrbSlice</code>.</p>
       </div>
 
       <div class="docblock">
@@ -159,15 +161,15 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>src</code></td>
+            <td><code>dst</code></td>
             <td><a href="struct.Slice.html"><code>TrbSlice</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The destination&nbsp;slice.</p></td>
           </tr>
           
-          
+          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
           
           
           
@@ -182,7 +184,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The start position in the <code>dst</code> data.
+It is relative to the <code>src</code> start&nbsp;position.</p></td>
           </tr>
           
           
@@ -200,7 +203,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The end position in the <code>dst</code> data.
+It is relative to the <code>src</code> start&nbsp;position.</p></td>
           </tr>
           
           
@@ -233,13 +237,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>A new <code>TrbSlice</code>.
+Can return <code>NULL</code> if an error&nbsp;occurs.</p></td>
           </tr>
           
           
           
           <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the instance.</td></tr>
-          
+          <tr><td>&nbsp;</td><td>The return value can be <code>NULL</code>.</td></tr>
           
         </table>
       </div>

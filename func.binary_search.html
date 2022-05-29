@@ -96,17 +96,15 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L155">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L159">[src]</a>
         
       </h4>
 
       <div class="docblock">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"></span>
 <span class="n">trb_binary_search</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">slice</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">TrbCmpFunc</span><span class="w"> </span><span class="n">cmp_func</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="o">*</span><span class="w"> </span><span class="n">index</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
@@ -120,13 +118,13 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L140">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L146">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Searches for the entry in the array using binary&nbsp;search.</p>
-<p>The array should be sorted if you want to use this&nbsp;function.</p>
+        <p>Searches for the entry in the slice using binary&nbsp;search.</p>
+<p>The slice should be sorted if you want to use this&nbsp;function.</p>
       </div>
 
       <div class="docblock">
@@ -154,15 +152,15 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>array</code></td>
-            <td><code>void*</code></td>
+            <td><code>slice</code></td>
+            <td><a href="struct.Slice.html"><code>TrbSlice</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The array to be&nbsp;searchen.</p></td>
+            <td><p>The slice to be&nbsp;searched.</p></td>
           </tr>
           
-          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
+          
           
           
           
@@ -187,42 +185,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
-          
-          
-          <tr class="arg-name">
-            <td><code>len</code></td>
-            <td><a href="alias.usize.html"><code>usize</code></a></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p>The length of the&nbsp;array.</p></td>
-          </tr>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          <tr class="arg-name">
-            <td><code>elemsize</code></td>
-            <td><a href="alias.usize.html"><code>usize</code></a></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p>The size of each element in the&nbsp;array.</p></td>
-          </tr>
-          
-          
-          
-          
-          
-          
-          
-          
           
           
           <tr class="arg-name">

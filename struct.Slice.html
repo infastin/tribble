@@ -113,11 +113,13 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           Description
           <a href="#description" class="anchor"></a>
           
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Slice.h#L8">[src]</a>
+          
         </h4>
 
         <pre><code><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">TrbSlice</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="w"> </span><span class="n">at</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">    </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="n">usize</span><span class="w"> </span><span class="n">index</span><span class="w"></span>
 <span class="w">  </span><span class="p">);</span><span class="w"></span>
 <span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
@@ -129,7 +131,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 </code></pre>
 
         <div class="docblock">
-          No description available.
+          <p>It is a data structure that is used to represent a portion
+of the data in any container whose elements directly&nbsp;accessed.</p>
         </div>
 
         
@@ -149,22 +152,22 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
             
               <tr>
                 <td><code>data</code></td>
-                <td>No description available.</td>
+                <td><p>The slice&nbsp;data.</p></td>
               </tr>
             
               <tr>
                 <td><code>elemsize</code></td>
-                <td>No description available.</td>
+                <td><p>The size of each element in the&nbsp;slice.</p></td>
               </tr>
             
               <tr>
                 <td><code>start</code></td>
-                <td>No description available.</td>
+                <td><p>The start position in the slice&nbsp;data.</p></td>
               </tr>
             
               <tr>
                 <td><code>end</code></td>
-                <td>No description available.</td>
+                <td><p>The end position in the slice&nbsp;data.</p></td>
               </tr>
             
             </table>
@@ -201,7 +204,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Slice.init.html">trb_slice_init</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Creates a new <code>TrbSlice</code>.</p>
           </div>
 
           
@@ -211,7 +214,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Slice.reslice.html">trb_slice_reslice</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Creates a new <code>TrbSlice</code> of another <code>TrbSlice</code>.</p>
           </div>
 
           
