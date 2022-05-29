@@ -69,7 +69,7 @@ bool trb_heap_insert(TrbHeap *self, const void *data)
 
 	if (trb_vector_push_back(&self->vector, data)) {
 		TrbSlice heap_slice;
-		trb_vector_slice(&heap_slice, &self->vector, 0, self->vector.len);
+		trb_vector_slice(&self->vector, &heap_slice, 0, self->vector.len);
 
 		if (self->with_data)
 			trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
@@ -97,7 +97,7 @@ static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)
 
 	if (trb_vector_pop_back(&self->vector, ret)) {
 		TrbSlice heap_slice;
-		trb_vector_slice(&heap_slice, &self->vector, 0, self->vector.len);
+		trb_vector_slice(&self->vector, &heap_slice, 0, self->vector.len);
 
 		if (self->with_data)
 			trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
