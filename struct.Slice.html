@@ -132,7 +132,23 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 
         <div class="docblock">
           <p>It is a data structure that is used to represent a portion
-of the data in any container whose elements directly&nbsp;accessed.</p>
+of the data in any container whose elements can be directly&nbsp;accessed.</p>
+<p>This example show how to sort an&nbsp;array:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">i32</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span><span class="w"> </span><span class="mi">54</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="mi">44</span><span class="p">,</span><span class="w"> </span><span class="mi">76</span><span class="p">,</span><span class="w"> </span><span class="mi">95</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">97</span><span class="p">,</span><span class="w"> </span><span class="mi">62</span><span class="p">,</span><span class="w"> </span><span class="mi">55</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">};</span><span class="w"></span>
+
+<span class="n">TrbSlice</span><span class="w"> </span><span class="n">slice</span><span class="p">;</span><span class="w"></span>
+<span class="n">trb_slice_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slice</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">);</span><span class="w"></span>
+
+<span class="n">trb_inssort</span><span class="p">(</span><span class="o">&amp;</span><span class="n">slice</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">TrbCmpFunc</span><span class="p">)</span><span class="w"> </span><span class="n">trb_i32cmp</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">usize</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">14</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</code></pre></div>
+
+<p>You should get such&nbsp;output:</p>
+<div class="codehilite"><pre><span></span><code>1 10 14 14 17 27 44 48 54 55 62 76 95 97
+</code></pre></div>
         </div>
 
         
@@ -204,7 +220,7 @@ of the data in any container whose elements directly&nbsp;accessed.</p>
           <h6><a href="method.Slice.init.html">trb_slice_init</a></h6>
 
           <div class="docblock">
-            <p>Creates a new <code>TrbSlice</code>.</p>
+            <p>Creates a new <code>TrbSlice</code> from an&nbsp;array.</p>
           </div>
 
           
