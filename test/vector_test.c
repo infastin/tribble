@@ -213,7 +213,7 @@ void test_sort_reverse()
 	trb_vector_push_back_many(&vec, arr4, 4);
 
 	TrbSlice vec_slice;
-	trb_vector_slice(&vec_slice, &vec, 0, vec.len);
+	trb_vector_slice(&vec, &vec_slice, 0, vec.len);
 	trb_quicksort(&vec_slice, (TrbCmpFunc) trb_u32cmp);
 	assert(vec.len == 16);
 

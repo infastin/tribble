@@ -827,7 +827,7 @@ static void *__trb_deque_slice_at(TrbSlice *self, usize index)
 	return trb_array_cell(bucket, self->elemsize, ei);
 }
 
-TrbSlice *trb_deque_slice(TrbDeque *self, TrbSlice *dst, usize start, usize end)
+TrbSlice *trb_deque_slice(TrbDeque *self, TrbSlice *slice, usize start, usize end)
 {
 	trb_return_val_if_fail(self != NULL, NULL);
 	trb_return_val_if_fail(start < end, NULL);
@@ -837,22 +837,22 @@ TrbSlice *trb_deque_slice(TrbDeque *self, TrbSlice *dst, usize start, usize end)
 		return NULL;
 	}
 
-	if (dst == NULL) {
-		dst = trb_talloc(TrbSlice, 1);
+	if (slice == NULL) {
+		slice = trb_talloc(TrbSlice, 1);
 
-		if (dst == NULL) {
+		if (slice == NULL) {
 			trb_msg_error("couldn't allocate memory for the slice!");
 			return NULL;
 		}
 	}
 
-	dst->at = __trb_deque_slice_at;
-	dst->data = self;
-	dst->start = start;
-	dst->end = end;
-	dst->elemsize = self->elemsize;
+	slice->at = __trb_deque_slice_at;
+	slice->data = self;
+	slice->start = start;
+	slice->end = end;
+	slice->elemsize = self->elemsize;
 
-	return dst;
+	return slice;
 }
 
 static inline void __trb_deque_free_bucket(void **bucket)

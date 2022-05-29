@@ -413,7 +413,7 @@ static void *__trb_vector_slice_at(TrbSlice *self, usize index)
 	return trb_vector_cell(vector, self->start + index);
 }
 
-TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *dst, usize start, usize end)
+TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *slice, usize start, usize end)
 {
 	trb_return_val_if_fail(self != NULL, NULL);
 	trb_return_val_if_fail(start < end, NULL);
@@ -423,22 +423,22 @@ TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *dst, usize start, usize en
 		return NULL;
 	}
 
-	if (dst == NULL) {
-		dst = trb_talloc(TrbSlice, 1);
+	if (slice == NULL) {
+		slice = trb_talloc(TrbSlice, 1);
 
-		if (dst == NULL) {
+		if (slice == NULL) {
 			trb_msg_error("couldn't allocate memory for the slice!");
 			return NULL;
 		}
 	}
 
-	dst->at = __trb_vector_slice_at;
-	dst->data = self;
-	dst->start = start;
-	dst->end = end;
-	dst->elemsize = self->elemsize;
+	slice->at = __trb_vector_slice_at;
+	slice->data = self;
+	slice->start = start;
+	slice->end = end;
+	slice->elemsize = self->elemsize;
 
-	return dst;
+	return slice;
 }
 
 TrbVector *trb_vector_copy(const TrbVector *src, TrbVector *dst)

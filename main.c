@@ -236,7 +236,7 @@ int main(int argc, char *argv[])
 	printf("\n");
 
 	TrbSlice deque_slice;
-	trb_deque_slice(&deque_slice, &deque, 0, deque.len);
+	trb_deque_slice(&deque, &deque_slice, 0, deque.len);
 	trb_quicksort(&deque_slice, (TrbCmpFunc) trb_u32cmp);
 	trb_reverse(&deque_slice);
 

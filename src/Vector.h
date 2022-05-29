@@ -300,7 +300,7 @@ bool trb_vector_search(const TrbVector *self, const void *target, TrbCmpFunc cmp
  **/
 bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
-TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *dst, usize start, usize end);
+TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *slice, usize start, usize end);
 
 /**
  * trb_vector_ptr:

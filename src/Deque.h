@@ -50,7 +50,7 @@ bool trb_deque_search(const TrbDeque *self, const void *target, TrbCmpFunc cmp_f
 
 bool trb_deque_search_data(const TrbDeque *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
-TrbSlice *trb_deque_slice(TrbDeque *self, TrbSlice *dst, usize start, usize end);
+TrbSlice *trb_deque_slice(TrbDeque *self, TrbSlice *slice, usize start, usize end);
 
 void trb_deque_destroy(TrbDeque *self, TrbFreeFunc free_func);
 
