@@ -14,9 +14,11 @@ struct _TrbDeque {
 	usize bucketcap;
 	usize offset;
 	usize len;
+	bool clear;
+	bool sorted;
 };
 
-TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize);
+TrbDeque *trb_deque_init(TrbDeque *self, bool clear, usize elemsize);
 
 bool trb_deque_push_back(TrbDeque *self, const void *data);
 
@@ -47,6 +49,8 @@ bool trb_deque_remove_all(TrbDeque *self, void *ret);
 bool trb_deque_search(const TrbDeque *self, const void *target, TrbCmpFunc cmp_func, usize *index);
 
 bool trb_deque_search_data(const TrbDeque *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
+
+TrbSlice *trb_deque_slice(TrbSlice *dst, TrbDeque *src, usize start, usize end);
 
 void trb_deque_destroy(TrbDeque *self, TrbFreeFunc free_func);
 

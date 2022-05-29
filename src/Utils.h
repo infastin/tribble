@@ -2,6 +2,7 @@
 #define UTILS_H_ATMQZMHO
 
 #include "Macros.h"
+#include "Slice.h"
 #include "Types.h"
 
 #include <stdarg.h>
@@ -58,97 +59,83 @@ char *trb_strdup_vfmt(const char *fmt, va_list args) TRB_FORMAT(printf, 1, 0);
 
 /**
  * trb_heapify:
- * @array: The array to be heapified.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The slice to be heapified.
  * @cmp_func: (scope call): The function for comparing elements.
  *
- * Heapifies the array.
+ * Heapifies the slice.
  **/
-void trb_heapify(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
+void trb_heapify(TrbSlice *slice, TrbCmpFunc cmp_func);
 
 /**
  * trb_heapify_data:
- * @array: The array to be heapified.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The slice to be heapified.
  * @cmpd_func: (scope call): The function for comparing elements using user data.
  * @data: User data.
  *
- * Heapifies the array using user data.
+ * Heapifies the slice using user data.
  **/
-void trb_heapify_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
+void trb_heapify_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
  * trb_inssort:
- * @array: The array to be sorted.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The slice to be sorted.
  * @cmp_func: (scope call): The function for comparing elements.
  *
- * Sorts the array using Insertion Sort.
+ * Sorts the slice using Insertion Sort.
  **/
-void trb_inssort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
+void trb_inssort(TrbSlice *slice, TrbCmpFunc cmp_func);
 
 /**
  * trb_inssort_data:
- * @array: The array to be sorted.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The slice to be sorted.
  * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  *
- * Sorts the array using Insertion Sort and user data.
+ * Sorts the slice using Insertion Sort and user data.
  **/
-void trb_inssort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
+void trb_inssort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
  * trb_heapsort:
- * @array: The array to be sorted.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The slice to be sorted.
  * @cmp_func: (scope call): The function for comparing elements.
  *
- * Sorts the array using Heap Sort.
+ * Sorts the slice using Heap Sort.
  **/
-void trb_heapsort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
+void trb_heapsort(TrbSlice *slice, TrbCmpFunc cmp_func);
 
 /**
  * trb_heapsort_data:
- * @array: The array to be sorted.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The slice to be sorted.
  * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  *
- * Sorts the array using Heap Sort and user data.
+ * Sorts the slice using Heap Sort and user data.
  **/
-void trb_heapsort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
+void trb_heapsort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
  * trb_quicksort:
- * @array: The array to be sorted.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The slice to be sorted.
  * @cmp_func: (scope call): The function for comparing elements.
  *
- * Sorts the array using Quicksort by Knuth.
+ * Sorts the slice using Quicksort by Knuth.
  * [Reference](http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf).
  **/
-void trb_quicksort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func);
+void trb_quicksort(TrbSlice *slice, TrbCmpFunc cmp_func);
 
 /**
  * trb_quicksort_data:
- * @array: The array to be sorted.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
+ * @slice: The array to be sorted.
  * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  *
- * Sorts the array using Quicksort by Knuth.
+ * Sorts the slice using Quicksort by Knuth.
  * [Reference](http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf).
  **/
-void trb_quicksort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
+void trb_quicksort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data);
+
+void trb_reverse(TrbSlice *slice);
 
 /**
  * trb_binary_search:

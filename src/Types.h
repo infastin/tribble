@@ -136,6 +136,10 @@ typedef _Bool bool;
 #define TRUE 1
 #define FALSE 0
 
+#ifndef NULL
+	#define NULL ((void *) 0)
+#endif
+
 /**
  * TrbCmpFunc:
  * @a: The first value to be compared.

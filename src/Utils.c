@@ -119,16 +119,18 @@ char *trb_strdup_vfmt(const char *fmt, va_list args)
 }
 
 /* Insertion sort */
-static void __inssort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func)
+static void __trb_inssort(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
+	usize len = trb_slice_len(slice);
+
 	for (i32 i = 1; i < len; ++i) {
 		usize cur = i;
 
 		for (usize j = i - 1; j >= 0; --j) {
-			if (cmp_func(trb_array_cell(array, elemsize, j), trb_array_cell(array, elemsize, cur)) <= 0)
+			if (cmp_func(slice->at(slice, j), slice->at(slice, cur)) <= 0)
 				break;
 
-			trb_array_swap(trb_array_cell(array, elemsize, j), trb_array_cell(array, elemsize, cur), elemsize);
+			trb_array_swap(slice->at(slice, j), slice->at(slice, cur), slice->elemsize);
 
 			cur = j;
 
@@ -138,26 +140,31 @@ static void __inssort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_fun
 	}
 }
 
-void trb_inssort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func)
+void trb_inssort(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmp_func != NULL);
 
-	__inssort(array, len, elemsize, cmp_func);
+	usize len = trb_slice_len(slice);
+	if (len <= 1)
+		return;
+
+	__trb_inssort(slice, cmp_func);
 }
 
 /* Insertion sort with data */
-static void __inssort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+static void __trb_inssort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data)
 {
+	usize len = trb_slice_len(slice);
+
 	for (i32 i = 1; i < len; ++i) {
 		usize cur = i;
 
 		for (usize j = i - 1; j >= 0; --j) {
-			if (cmpd_func(trb_array_cell(array, elemsize, j), trb_array_cell(array, elemsize, cur), data) <= 0)
+			if (cmpd_func(slice->at(slice, j), slice->at(slice, cur), data) <= 0)
 				break;
 
-			trb_array_swap(trb_array_cell(array, elemsize, j), trb_array_cell(array, elemsize, cur), elemsize);
+			trb_array_swap(slice->at(slice, j), slice->at(slice, cur), slice->elemsize);
 
 			cur = j;
 
@@ -167,40 +174,44 @@ static void __inssort_data(void *array, usize len, usize elemsize, TrbCmpDataFun
 	}
 }
 
-void trb_inssort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+void trb_inssort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmpd_func != NULL);
 
-	__inssort_data(array, len, elemsize, cmpd_func, data);
+	usize len = trb_slice_len(slice);
+	if (len <= 1)
+		return;
+
+	__trb_inssort_data(slice, cmpd_func, data);
 }
 
 /* Heapsort */
-static void __heap(void *array, usize start, usize end, usize elemsize, TrbCmpFunc cmp_func)
+static void __trb_heap(TrbSlice *slice, usize start, usize end, TrbCmpFunc cmp_func)
 {
 	usize root = start;
 
 	while ((root << 1) < end) {
 		usize child = (root << 1) + 1;
 
-		if ((child < end) && cmp_func(trb_array_cell(array, elemsize, child), trb_array_cell(array, elemsize, child + 1)) < 0)
+		if ((child < end) && cmp_func(slice->at(slice, child), slice->at(slice, child + 1)) < 0)
 			child++;
 
-		if (cmp_func(trb_array_cell(array, elemsize, root), trb_array_cell(array, elemsize, child)) < 0) {
-			trb_array_swap(trb_array_cell(array, elemsize, root), trb_array_cell(array, elemsize, child), elemsize);
+		if (cmp_func(slice->at(slice, root), slice->at(slice, child)) < 0) {
+			trb_array_swap(slice->at(slice, root), slice->at(slice, child), slice->elemsize);
 			root = child;
 		} else
 			return;
 	}
 }
 
-static void __heapify(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func)
+static void __trb_heapify(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
+	usize len = trb_slice_len(slice);
 	usize start = (len - 1) >> 1;
 
 	while (start >= 0) {
-		__heap(array, start, len - 1, elemsize, cmp_func);
+		__trb_heap(slice, start, len - 1, cmp_func);
 
 		if (start == 0)
 			break;
@@ -209,68 +220,70 @@ static void __heapify(void *array, usize len, usize elemsize, TrbCmpFunc cmp_fun
 	}
 }
 
-void trb_heapify(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func)
+void trb_heapify(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmp_func != NULL);
 
+	usize len = trb_slice_len(slice);
 	if (len <= 1)
 		return;
 
-	__heapify(array, len, elemsize, cmp_func);
+	__trb_heapify(slice, cmp_func);
 }
 
-static void __heapsort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func)
+static void __trb_heapsort(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
+	usize len = trb_slice_len(slice);
 	usize end = len - 1;
 
-	if (len <= 1)
-		return;
-
-	__heapify(array, len, elemsize, cmp_func);
+	__trb_heapify(slice, cmp_func);
 
 	while (end > 0) {
-		trb_array_swap(trb_array_cell(array, elemsize, 0), trb_array_cell(array, elemsize, end), elemsize);
+		trb_array_swap(slice->at(slice, 0), slice->at(slice, end), slice->elemsize);
 		end--;
-		__heap(array, 0, end, elemsize, cmp_func);
+		__trb_heap(slice, 0, end, cmp_func);
 	}
 }
 
-void trb_heapsort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func)
+void trb_heapsort(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmp_func != NULL);
 
-	__heapsort(array, len, elemsize, cmp_func);
+	usize len = trb_slice_len(slice);
+	if (len <= 1)
+		return;
+
+	__trb_heapsort(slice, cmp_func);
 }
 
 /* Heapsort with data */
-static void __heap_data(void *array, usize start, usize end, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+static void __trb_heap_data(TrbSlice *slice, usize start, usize end, TrbCmpDataFunc cmpd_func, void *data)
 {
 	usize root = start;
 
 	while ((root << 1) < end) {
 		usize child = (root << 1) + 1;
 
-		if ((child < end) && cmpd_func(trb_array_cell(array, elemsize, child), trb_array_cell(array, elemsize, child + 1), data) < 0)
+		if ((child < end) && cmpd_func(slice->at(slice, child), slice->at(slice, child + 1), data) < 0)
 			child++;
 
-		if (cmpd_func(trb_array_cell(array, elemsize, root), trb_array_cell(array, elemsize, child), data) < 0) {
-			trb_array_swap(trb_array_cell(array, elemsize, root), trb_array_cell(array, elemsize, child), elemsize);
+		if (cmpd_func(slice->at(slice, root), slice->at(slice, child), data) < 0) {
+			trb_array_swap(slice->at(slice, root), slice->at(slice, child), slice->elemsize);
 			root = child;
 		} else
 			return;
 	}
 }
 
-static void __heapify_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+static void __trb_heapify_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data)
 {
+	usize len = trb_slice_len(slice);
 	usize start = (len - 1) >> 1;
 
 	while (start >= 0) {
-		__heap_data(array, start, len - 1, elemsize, cmpd_func, data);
+		__trb_heap_data(slice, start, len - 1, cmpd_func, data);
 
 		if (start == 0)
 			break;
@@ -279,65 +292,66 @@ static void __heapify_data(void *array, usize len, usize elemsize, TrbCmpDataFun
 	}
 }
 
-void trb_heapify_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+void trb_heapify_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmpd_func != NULL);
 
+	usize len = trb_slice_len(slice);
 	if (len <= 1)
 		return;
 
-	__heapify_data(array, len, elemsize, cmpd_func, data);
+	__trb_heapify_data(slice, cmpd_func, data);
 }
 
-static void __heapsort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+static void __trb_heapsort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data)
 {
+	usize len = trb_slice_len(slice);
 	usize end = len - 1;
 
-	if (len <= 1)
-		return;
-
-	__heapify_data(array, len, elemsize, cmpd_func, data);
+	__trb_heapify_data(slice, cmpd_func, data);
 
 	while (end > 0) {
-		trb_array_swap(trb_array_cell(array, elemsize, 0), trb_array_cell(array, elemsize, end), elemsize);
+		trb_array_swap(slice->at(slice, 0), slice->at(slice, end), slice->elemsize);
 		end--;
-		__heap_data(array, 0, end, elemsize, cmpd_func, data);
+		__trb_heap_data(slice, 0, end, cmpd_func, data);
 	}
 }
 
-void trb_heapsort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+void trb_heapsort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmpd_func != NULL);
 
-	__heapsort_data(array, len, elemsize, cmpd_func, data);
+	usize len = trb_slice_len(slice);
+	if (len <= 1)
+		return;
+
+	__trb_heapsort_data(slice, cmpd_func, data);
 }
 
 /* Based on Knuth vol. 3 */
-static usize __quicksort_partition(void *array, usize left, usize right, usize pivot, usize elemsize, TrbCmpFunc cmp_func)
+static usize __trb_quicksort_partition(TrbSlice *slice, usize left, usize right, usize pivot, TrbCmpFunc cmp_func)
 {
 	usize i = left + 1;
 	usize j = right;
 
 	if (pivot != left)
-		trb_array_swap(trb_array_cell(array, elemsize, left), trb_array_cell(array, elemsize, pivot), elemsize);
+		trb_array_swap(slice->at(slice, left), slice->at(slice, pivot), slice->elemsize);
 
 	while (1) {
-		while (cmp_func(trb_array_cell(array, elemsize, i), trb_array_cell(array, elemsize, left)) < 0)
+		while (cmp_func(slice->at(slice, i), slice->at(slice, left)) < 0)
 			i++;
 
-		while (cmp_func(trb_array_cell(array, elemsize, left), trb_array_cell(array, elemsize, j)) < 0)
+		while (cmp_func(slice->at(slice, left), slice->at(slice, j)) < 0)
 			j--;
 
 		if (j <= i) {
-			trb_array_swap(trb_array_cell(array, elemsize, j), trb_array_cell(array, elemsize, left), elemsize);
+			trb_array_swap(slice->at(slice, j), slice->at(slice, left), slice->elemsize);
 			return j;
 		}
 
-		trb_array_swap(trb_array_cell(array, elemsize, i), trb_array_cell(array, elemsize, j), elemsize);
+		trb_array_swap(slice->at(slice, i), slice->at(slice, j), slice->elemsize);
 
 		i++;
 		j--;
@@ -346,26 +360,26 @@ static usize __quicksort_partition(void *array, usize left, usize right, usize p
 	return 0;
 }
 
-static usize __find_median(void *array, usize a, usize b, usize c, usize elemsize, TrbCmpFunc cmp_func)
+static usize __trb_find_median(TrbSlice *slice, usize a, usize b, usize c, TrbCmpFunc cmp_func)
 {
-	if (cmp_func(trb_array_cell(array, elemsize, a), trb_array_cell(array, elemsize, b)) > 0) {
-		if (cmp_func(trb_array_cell(array, elemsize, b), trb_array_cell(array, elemsize, c)) > 0)
+	if (cmp_func(slice->at(slice, a), slice->at(slice, b)) > 0) {
+		if (cmp_func(slice->at(slice, b), slice->at(slice, c)) > 0)
 			return b;
-		else if (cmp_func(trb_array_cell(array, elemsize, a), trb_array_cell(array, elemsize, c)) > 0)
+		else if (cmp_func(slice->at(slice, a), slice->at(slice, c)) > 0)
 			return c;
 		else
 			return a;
 	} else {
-		if (cmp_func(trb_array_cell(array, elemsize, a), trb_array_cell(array, elemsize, c)) > 0)
+		if (cmp_func(slice->at(slice, a), slice->at(slice, c)) > 0)
 			return a;
-		else if (cmp_func(trb_array_cell(array, elemsize, b), trb_array_cell(array, elemsize, c)) > 0)
+		else if (cmp_func(slice->at(slice, b), slice->at(slice, c)) > 0)
 			return c;
 		else
 			return b;
 	}
 }
 
-static void __quicksort_recursive(void *array, usize left, usize right, usize elemsize, TrbCmpFunc cmp_func)
+static void __trb_quicksort_recursive(TrbSlice *slice, usize left, usize right, TrbCmpFunc cmp_func)
 {
 	usize mid;
 	usize pivot;
@@ -379,48 +393,54 @@ static void __quicksort_recursive(void *array, usize left, usize right, usize el
 			return;
 
 		if ((right - left + 1) <= SORT_LEN_THRESHOLD) {
-			__inssort(trb_array_cell(array, elemsize, left), right - left + 1, elemsize, cmp_func);
+			TrbSlice part_slice;
+			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			__trb_inssort(&part_slice, cmp_func);
 			return;
 		}
 
 		if (++loop_count >= max_loops) {
-			__heapsort(trb_array_cell(array, elemsize, left), right - left + 1, elemsize, cmp_func);
+			TrbSlice part_slice;
+			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			__trb_heapsort(&part_slice, cmp_func);
 			return;
 		}
 
 		mid = left + ((right - left) >> 1);
-		pivot = __find_median(array, left, mid, right, elemsize, cmp_func);
-		new_pivot = __quicksort_partition(array, left, right, pivot, elemsize, cmp_func);
+		pivot = __trb_find_median(slice, left, mid, right, cmp_func);
+		new_pivot = __trb_quicksort_partition(slice, left, right, pivot, cmp_func);
 
 		if (new_pivot == 0)
 			return;
 
 		if ((new_pivot - left - 1) > (right - new_pivot - 1)) {
-			__quicksort_recursive(array, new_pivot + 1, right, elemsize, cmp_func);
+			__trb_quicksort_recursive(slice, new_pivot + 1, right, cmp_func);
 			right = new_pivot - 1;
 		} else {
-			__quicksort_recursive(array, left, new_pivot - 1, elemsize, cmp_func);
+			__trb_quicksort_recursive(slice, left, new_pivot - 1, cmp_func);
 			left = new_pivot + 1;
 		}
 	}
 }
 
-void trb_quicksort(void *array, usize len, usize elemsize, TrbCmpFunc cmp_func)
+void trb_quicksort(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmp_func != NULL);
 
-	__quicksort_recursive(array, 0, len - 1, elemsize, cmp_func);
+	usize len = trb_slice_len(slice);
+	if (len <= 1)
+		return;
+
+	__trb_quicksort_recursive(slice, 0, len - 1, cmp_func);
 }
 
 /* Quicksort with data */
-static usize __quicksort_partition_data(
-	void *array,
+static usize __trb_quicksort_partition_data(
+	TrbSlice *slice,
 	usize left,
 	usize right,
 	usize pivot,
-	usize elemsize,
 	TrbCmpDataFunc cmpd_func,
 	void *data
 )
@@ -429,21 +449,21 @@ static usize __quicksort_partition_data(
 	usize j = right;
 
 	if (pivot != left)
-		trb_array_swap(trb_array_cell(array, elemsize, left), trb_array_cell(array, elemsize, pivot), elemsize);
+		trb_array_swap(slice->at(slice, left), slice->at(slice, pivot), slice->elemsize);
 
 	while (1) {
-		while (cmpd_func(trb_array_cell(array, elemsize, i), trb_array_cell(array, elemsize, left), data) < 0)
+		while (cmpd_func(slice->at(slice, i), slice->at(slice, left), data) < 0)
 			i++;
 
-		while (cmpd_func(trb_array_cell(array, elemsize, left), trb_array_cell(array, elemsize, j), data) < 0)
+		while (cmpd_func(slice->at(slice, left), slice->at(slice, j), data) < 0)
 			j--;
 
 		if (j <= i) {
-			trb_array_swap(trb_array_cell(array, elemsize, j), trb_array_cell(array, elemsize, left), elemsize);
+			trb_array_swap(slice->at(slice, j), slice->at(slice, left), slice->elemsize);
 			return j;
 		}
 
-		trb_array_swap(trb_array_cell(array, elemsize, i), trb_array_cell(array, elemsize, j), elemsize);
+		trb_array_swap(slice->at(slice, i), slice->at(slice, j), slice->elemsize);
 
 		i++;
 		j--;
@@ -452,41 +472,26 @@ static usize __quicksort_partition_data(
 	return 0;
 }
 
-static usize __find_median_data(
-	void *array,
-	usize a,
-	usize b,
-	usize c,
-	usize elemsize,
-	TrbCmpDataFunc cmpd_func,
-	void *data
-)
+static usize __trb_find_median_data(TrbSlice *slice, usize a, usize b, usize c, TrbCmpDataFunc cmpd_func, void *data)
 {
-	if (cmpd_func(trb_array_cell(array, elemsize, a), trb_array_cell(array, elemsize, b), data) > 0) {
-		if (cmpd_func(trb_array_cell(array, elemsize, b), trb_array_cell(array, elemsize, c), data) > 0)
+	if (cmpd_func(slice->at(slice, a), slice->at(slice, b), data) > 0) {
+		if (cmpd_func(slice->at(slice, b), slice->at(slice, c), data) > 0)
 			return b;
-		else if (cmpd_func(trb_array_cell(array, elemsize, a), trb_array_cell(array, elemsize, c), data) > 0)
+		else if (cmpd_func(slice->at(slice, a), slice->at(slice, c), data) > 0)
 			return c;
 		else
 			return a;
 	} else {
-		if (cmpd_func(trb_array_cell(array, elemsize, a), trb_array_cell(array, elemsize, c), data) > 0)
+		if (cmpd_func(slice->at(slice, a), slice->at(slice, c), data) > 0)
 			return a;
-		else if (cmpd_func(trb_array_cell(array, elemsize, b), trb_array_cell(array, elemsize, c), data) > 0)
+		else if (cmpd_func(slice->at(slice, b), slice->at(slice, c), data) > 0)
 			return c;
 		else
 			return b;
 	}
 }
 
-static void __quicksort_recursive_data(
-	void *array,
-	usize left,
-	usize right,
-	usize elemsize,
-	TrbCmpDataFunc cmpd_func,
-	void *data
-)
+static void __trb_quicksort_recursive_data(TrbSlice *slice, usize left, usize right, TrbCmpDataFunc cmpd_func, void *data)
 {
 	usize mid;
 	usize pivot;
@@ -500,39 +505,59 @@ static void __quicksort_recursive_data(
 			return;
 
 		if ((right - left + 1) <= SORT_LEN_THRESHOLD) {
-			__inssort_data(trb_array_cell(array, elemsize, left), right - left + 1, elemsize, cmpd_func, data);
+			TrbSlice part_slice;
+			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			__trb_inssort_data(&part_slice, cmpd_func, data);
 			return;
 		}
 
 		if (++loop_count >= max_loops) {
-			__heapsort_data(trb_array_cell(array, elemsize, left), right - left + 1, elemsize, cmpd_func, data);
+			TrbSlice part_slice;
+			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			__trb_heapsort_data(&part_slice, cmpd_func, data);
 			return;
 		}
 
 		mid = left + ((right - left) >> 1);
-		pivot = __find_median_data(array, left, mid, right, elemsize, cmpd_func, data);
-		new_pivot = __quicksort_partition_data(array, left, right, pivot, elemsize, cmpd_func, data);
+		pivot = __trb_find_median_data(slice, left, mid, right, cmpd_func, data);
+		new_pivot = __trb_quicksort_partition_data(slice, left, right, pivot, cmpd_func, data);
 
 		if (new_pivot == 0)
 			return;
 
 		if ((new_pivot - left - 1) > (right - new_pivot - 1)) {
-			__quicksort_recursive_data(array, new_pivot + 1, right, elemsize, cmpd_func, data);
+			__trb_quicksort_recursive_data(slice, new_pivot + 1, right, cmpd_func, data);
 			right = new_pivot - 1;
 		} else {
-			__quicksort_recursive_data(array, left, new_pivot - 1, elemsize, cmpd_func, data);
+			__trb_quicksort_recursive_data(slice, left, new_pivot - 1, cmpd_func, data);
 			left = new_pivot + 1;
 		}
 	}
 }
 
-void trb_quicksort_data(void *array, usize len, usize elemsize, TrbCmpDataFunc cmpd_func, void *data)
+void trb_quicksort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data)
 {
-	trb_return_if_fail(array != NULL);
-	trb_return_if_fail(elemsize != 0);
+	trb_return_if_fail(slice != NULL);
 	trb_return_if_fail(cmpd_func != NULL);
 
-	__quicksort_recursive_data(array, 0, len - 1, elemsize, cmpd_func, data);
+	usize len = trb_slice_len(slice);
+	if (len <= 1)
+		return;
+
+	__trb_quicksort_recursive_data(slice, 0, len - 1, cmpd_func, data);
+}
+
+void trb_reverse(TrbSlice *slice)
+{
+	trb_return_if_fail(slice != NULL);
+
+	usize len = trb_slice_len(slice);
+	if (len <= 1)
+		return;
+
+	for (usize lo = 0, hi = len - 1; lo < hi; ++lo, --hi) {
+		trb_array_swap(slice->at(slice, lo), slice->at(slice, hi), slice->elemsize);
+	}
 }
 
 /* Binary search */

@@ -196,7 +196,7 @@ ud128 u128_div(u128 num, u128 denom)
 
 	u128 quot;
 
-	isize shift = trb_abs(u128_clz(num) - u128_clz(denom));
+	isize shift = trb_abs_size(u128_clz(num) - u128_clz(denom));
 	denom = u128_shl(denom, shift);
 
 	quot = (u128){ 0, 0 };
@@ -406,8 +406,8 @@ d128 i128_div(i128 num, i128 denom)
 		};
 	}
 
-	u128 unum = { trb_abs64(num.hi), trb_abs64(num.lo) };
-	u128 udenom = { trb_abs64(denom.hi), trb_abs64(denom.lo) };
+	u128 unum = { trb_abs_64(num.hi), trb_abs_64(num.lo) };
+	u128 udenom = { trb_abs_64(denom.hi), trb_abs_64(denom.lo) };
 
 	ud128 div = u128_div(unum, udenom);
 	d128 result = {
@@ -422,17 +422,27 @@ d128 i128_div(i128 num, i128 denom)
 #endif
 }
 
-u32 trb_abs32(i32 num)
+u8 trb_abs_8(i8 num)
 {
 	return (num < 0) ? -num : num;
 }
 
-u64 trb_abs64(i64 num)
+u16 trb_abs_16(i16 num)
 {
 	return (num < 0) ? -num : num;
 }
 
-usize trb_abs(isize num)
+u32 trb_abs_32(i32 num)
+{
+	return (num < 0) ? -num : num;
+}
+
+u64 trb_abs_64(i64 num)
+{
+	return (num < 0) ? -num : num;
+}
+
+usize trb_abs_size(isize num)
 {
 	return (num < 0) ? -num : num;
 }
@@ -453,7 +463,7 @@ u64 trb_pow2_64(u64 value)
 	return (1 << (64 - trb_clz64(value - 1)));
 }
 
-usize trb_pow2(usize value)
+usize trb_pow2_size(usize value)
 {
 	if (value == 0 || value == 1)
 		return 1;
@@ -477,7 +487,7 @@ u64 trb_mul_pow2_64(u64 num, u64 factor)
 	return num << (63 - trb_clz(factor));
 }
 
-usize trb_mul_pow2(usize num, usize factor)
+usize trb_mul_pow2_size(usize num, usize factor)
 {
 	if (factor == 0)
 		return 0;
@@ -515,7 +525,7 @@ ud64 trb_div_pow2_64(u64 num, u64 denom)
 	};
 }
 
-udsize trb_div_pow2(usize num, usize denom)
+udsize trb_div_pow2_size(usize num, usize denom)
 {
 	if (denom == 0) {
 		return (udsize){

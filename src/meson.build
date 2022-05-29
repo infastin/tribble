@@ -1,4 +1,5 @@
 src_files = [
+  'Checked.c',
   'Deque.c',
   'Hash.c',
   'HashTable.c',
@@ -8,6 +9,7 @@ src_files = [
   'Messages.c',
   'Math.c',
   'Rand.c',
+  'Slice.c',
   'SList.c',
   'String.c',
   'Tree.c',
@@ -16,6 +18,7 @@ src_files = [
 ]
 
 header_files = [
+  'Checked.h',
   'Deque.h',
   'Hash.h',
   'HashTable.h',
@@ -26,6 +29,7 @@ header_files = [
   'Math.h',
   'Messages.h',
   'Rand.h',
+  'Slice.h',
   'SList.h',
   'String.h',
   'Tribble.h',

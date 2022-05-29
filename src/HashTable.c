@@ -1,11 +1,11 @@
 #include "HashTable.h"
 
+#include "Checked.h"
 #include "Messages.h"
 
 #include <memory.h>
 
 #define HT_INIT_SLOTS 16
-#define HT_INIT_SLOTS_POW 4
 
 #define htb_bucket(ht, buckets, i) ((void *) (((char *) buckets) + (i) * (ht)->bucketsize))
 #define htb_key(ht, buckets, i) (htb_bucket(ht, buckets, i))
@@ -29,14 +29,14 @@ TrbHashTable *trb_hash_table_init(
 	trb_return_val_if_fail(cmp_func != NULL, NULL);
 	trb_return_val_if_fail(keysize != 0, NULL);
 
-	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
+	usize bucketsize;
+
+	if (trb_chk_add(keysize, valuesize, &bucketsize) || trb_chk_add(bucketsize, 1, &bucketsize)) {
 		trb_msg_error("bucket size overflow!");
 		return FALSE;
 	}
 
-	usize bucketsize = keysize + valuesize + 1;
-
-	if (bucketsize > (USIZE_MAX >> HT_INIT_SLOTS_POW)) {
+	if (trb_chk_mul(bucketsize, HT_INIT_SLOTS, NULL)) {
 		trb_msg_error("hash table capacity overflow!");
 		return FALSE;
 	}
@@ -92,14 +92,14 @@ TrbHashTable *trb_hash_table_init_data(
 	trb_return_val_if_fail(cmpd_func != NULL, NULL);
 	trb_return_val_if_fail(keysize != 0, NULL);
 
-	if (keysize > USIZE_MAX - valuesize || keysize > USIZE_MAX - valuesize - 1) {
+	usize bucketsize;
+
+	if (trb_chk_add(keysize, valuesize, &bucketsize) || trb_chk_add(bucketsize, 1, &bucketsize)) {
 		trb_msg_error("bucket size overflow!");
 		return FALSE;
 	}
 
-	usize bucketsize = keysize + valuesize + 1;
-
-	if (bucketsize > (USIZE_MAX >> HT_INIT_SLOTS_POW)) {
+	if (trb_chk_mul(bucketsize, HT_INIT_SLOTS, NULL)) {
 		trb_msg_error("hash table capacity overflow!");
 		return FALSE;
 	}
@@ -155,12 +155,14 @@ static bool __trb_hash_table_add(TrbHashTable *self, usize slots, void *buckets,
 		}
 
 		for (usize i = pos ?: 1;; ++i) {
-			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+			usize slot;
+
+			if (trb_chk_mul(i, i, &slot) || trb_chk_add(slot, i, &slot) || trb_chk_add(slot >> 1, pos, &slot)) {
 				trb_msg_error("quadratic probing overflow!");
 				return FALSE;
 			}
 
-			usize slot = (pos + ((i + i * i) >> 1)) & (slots - 1);
+			slot &= slots - 1;
 
 			if (*htb_occupied(self, buckets, slot) == FALSE) {
 				pos = slot;
@@ -193,7 +195,7 @@ static bool __trb_hash_table_add(TrbHashTable *self, usize slots, void *buckets,
 
 static bool trb_hash_table_resize(TrbHashTable *self, usize new_slots)
 {
-	if (self->bucketsize > USIZE_MAX / new_slots) {
+	if (trb_chk_mul(self->bucketsize, new_slots, NULL)) {
 		trb_msg_error("hash table capacity overflow!");
 		return FALSE;
 	}
@@ -256,12 +258,14 @@ bool trb_hash_table_insert(TrbHashTable *self, const void *key, const void *valu
 
 	if (*ht_occupied(self, pos) && cmp != 0) {
 		for (usize i = pos ?: 1;; ++i) {
-			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+			usize slot;
+
+			if (trb_chk_mul(i, i, &slot) || trb_chk_add(slot, i, &slot) || trb_chk_add(slot >> 1, pos, &slot)) {
 				trb_msg_error("quadratic probing overflow!");
 				return FALSE;
 			}
 
-			usize slot = (pos + ((i + i * i) >> 1)) & (self->slots - 1);
+			slot &= self->slots - 1;
 
 			if (*ht_occupied(self, slot) == FALSE) {
 				pos = slot;
@@ -370,12 +374,14 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret)
 
 	if (cmp != 0) {
 		for (usize i = pos ?: 1;; ++i) {
-			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+			usize slot;
+
+			if (trb_chk_mul(i, i, &slot) || trb_chk_add(slot, i, &slot) || trb_chk_add(slot >> 1, pos, &slot)) {
 				trb_msg_error("quadratic probing overflow!");
 				return FALSE;
 			}
 
-			usize slot = (pos + ((i + i * i) >> 1)) & (self->slots - 1);
+			slot &= self->slots - 1;
 
 			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
@@ -438,12 +444,14 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 		}
 
 		for (usize i = pos ?: 1;; ++i) {
-			if (i > USIZE_MAX / i || i * i > USIZE_MAX - i || ((i + i * i) >> 1) > USIZE_MAX - pos) {
+			usize slot;
+
+			if (trb_chk_mul(i, i, &slot) || trb_chk_add(slot, i, &slot) || trb_chk_add(slot >> 1, pos, &slot)) {
 				trb_msg_error("quadratic probing overflow!");
 				return FALSE;
 			}
 
-			usize slot = (pos + ((i + i * i) >> 1)) & (self->slots - 1);
+			slot &= self->slots - 1;
 
 			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
@@ -483,7 +491,9 @@ bool trb_hash_table_remove_all(TrbHashTable *self, usize padding, void *ret, usi
 		return FALSE;
 	}
 
-	if (self->keysize + self->valuesize > USIZE_MAX - padding) {
+	usize bucketsize;
+
+	if (trb_chk_add(self->keysize + self->valuesize, padding, &bucketsize)) {
 		trb_msg_error("bucket size overflow: the padding is too big!");
 		return FALSE;
 	}
@@ -492,7 +502,7 @@ bool trb_hash_table_remove_all(TrbHashTable *self, usize padding, void *ret, usi
 
 	for (usize i = 0, j = 0; i < self->slots; ++i) {
 		if (*ht_occupied(self, i)) {
-			u8 *elem = data + (self->keysize + padding + self->valuesize) * j++;
+			u8 *elem = data + bucketsize * j++;
 			memcpy(elem, ht_key(self, i), self->keysize);
 
 			elem += self->keysize + padding;

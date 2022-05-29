@@ -1,5 +1,6 @@
 #include "Deque.h"
 
+#include "Checked.h"
 #include "Macros.h"
 #include "Math.h"
 #include "Messages.h"
@@ -7,11 +8,11 @@
 
 #include <memory.h>
 
-TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize)
+TrbDeque *trb_deque_init(TrbDeque *self, bool clear, usize elemsize)
 {
 	trb_return_val_if_fail(elemsize != 0, NULL);
 
-	if (elemsize > USIZE_MAX / 8) {
+	if (trb_chk_mul(elemsize, 8, NULL)) {
 		trb_msg_error("bucket size overflow!");
 		return NULL;
 	}
@@ -35,8 +36,10 @@ TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize)
 
 	self->len = 0;
 	self->offset = 0;
+	self->clear = clear;
+	self->sorted = FALSE;
 
-	if (trb_vector_init(&self->buckets, TRUE, FALSE, sizeof(void *)) == NULL) {
+	if (trb_vector_init(&self->buckets, TRUE, sizeof(void *)) == NULL) {
 		if (was_allocated)
 			free(self);
 
@@ -44,7 +47,7 @@ TrbDeque *trb_deque_init(TrbDeque *self, usize elemsize)
 		return NULL;
 	}
 
-	if (trb_vector_init(&self->unused, TRUE, FALSE, sizeof(void *)) == NULL) {
+	if (trb_vector_init(&self->unused, TRUE, sizeof(void *)) == NULL) {
 		trb_vector_destroy(&self->buckets, NULL);
 
 		if (was_allocated)
@@ -74,7 +77,10 @@ static bool __trb_deque_add_buckets_back(TrbDeque *self, usize n)
 	}
 
 	for (; n_buckets < n; ++n_buckets) {
-		buckets[n_buckets] = malloc(self->bucketsize);
+		if (self->clear)
+			buckets[n_buckets] = calloc(1, self->bucketsize);
+		else
+			buckets[n_buckets] = malloc(self->bucketsize);
 
 		if (buckets[n_buckets] == NULL) {
 			if (!trb_vector_push_back_many(&self->unused, buckets, n_buckets))
@@ -118,7 +124,10 @@ static bool __trb_deque_add_buckets_front(TrbDeque *self, usize n)
 	}
 
 	for (; n_buckets < n; ++n_buckets) {
-		buckets[n_buckets] = malloc(self->bucketsize);
+		if (self->clear)
+			buckets[n_buckets] = calloc(1, self->bucketsize);
+		else
+			buckets[n_buckets] = malloc(self->bucketsize);
 
 		if (buckets[n_buckets] == NULL) {
 			if (!trb_vector_push_back_many(&self->unused, buckets, n_buckets))
@@ -148,7 +157,15 @@ on_error:
 static bool __trb_deque_get_buckets_back(TrbDeque *self, usize len)
 {
 	if (self->buckets.len == 0) {
-		usize n = (len + (self->bucketcap - 1)) / self->bucketcap;
+		usize n;
+
+		if (trb_chk_add(len, self->bucketcap - 1, &n)) {
+			trb_msg_error("deque capacity overflow!");
+			return FALSE;
+		}
+
+		n /= self->bucketcap;
+
 		return __trb_deque_add_buckets_back(self, n);
 	}
 
@@ -159,6 +176,11 @@ static bool __trb_deque_get_buckets_back(TrbDeque *self, usize len)
 	usize last_len = (other_len == 0)
 						 ? first_len
 						 : (other_len - 1) % self->bucketcap + 1;
+
+	if (trb_chk_add(last_offset + last_len, len, NULL)) {
+		trb_msg_error("deque capacity overflow!");
+		return FALSE;
+	}
 
 	if (last_offset + last_len + len > self->bucketcap) {
 		usize free_space = self->bucketcap - (last_offset + last_len);
@@ -173,7 +195,15 @@ static bool __trb_deque_get_buckets_back(TrbDeque *self, usize len)
 static bool __trb_deque_get_buckets_front(TrbDeque *self, usize len)
 {
 	if (self->buckets.len == 0) {
-		usize n = (len + (self->bucketcap - 1)) / self->bucketcap;
+		usize n;
+
+		if (trb_chk_add(len, self->bucketcap - 1, &n)) {
+			trb_msg_error("deque capacity overflow!");
+			return FALSE;
+		}
+
+		n /= self->bucketcap;
+
 		return __trb_deque_add_buckets_front(self, n);
 	}
 
@@ -208,15 +238,20 @@ static void __trb_deque_memcpy(TrbDeque *self, usize index, const void *data, us
 	}
 }
 
-static void __trb_deque_memmove_higher(TrbDeque *self, usize dst_index, usize src_index, usize len)
+static bool __trb_deque_memmove_higher(TrbDeque *self, usize dst_index, usize src_index, usize len)
 {
 	usize remaining_len = len;
 
-	usize b1_index = (src_index + len) / self->bucketcap;
-	usize e1_index = (src_index + len) % self->bucketcap;
+	if (trb_chk_add(src_index, len, &src_index) || trb_chk_add(dst_index, len, &dst_index)) {
+		trb_msg_error("deque index overflow!");
+		return FALSE;
+	}
 
-	usize b2_index = (dst_index + len) / self->bucketcap;
-	usize e2_index = (dst_index + len) % self->bucketcap;
+	usize b1_index = src_index / self->bucketcap;
+	usize e1_index = src_index % self->bucketcap;
+
+	usize b2_index = dst_index / self->bucketcap;
+	usize e2_index = dst_index % self->bucketcap;
 
 	while (remaining_len != 0) {
 		usize min_index = trb_min(e1_index, e2_index);
@@ -242,6 +277,8 @@ static void __trb_deque_memmove_higher(TrbDeque *self, usize dst_index, usize sr
 
 		remaining_len -= move_len;
 	}
+
+	return TRUE;
 }
 
 static void __trb_deque_memmove_lower(TrbDeque *self, usize dst_index, usize src_index, usize len)
@@ -284,14 +321,24 @@ static bool __trb_deque_insert_many(TrbDeque *self, usize index, const void *dat
 	if (len == 0)
 		return TRUE;
 
+	if (trb_chk_add(self->len, len, NULL)) {
+		trb_msg_error("deque length overflow!");
+		return FALSE;
+	}
+
 	if (index >= self->len) {
-		usize add_len = len + (index - self->len);
+		usize add_len;
+
+		if (trb_chk_add(len, index - self->len, &add_len) || trb_chk_add(self->len, add_len, NULL)) {
+			trb_msg_error("deque index/length overflow!");
+			return FALSE;
+		}
 
 		if (__trb_deque_get_buckets_back(self, add_len) == FALSE)
 			return FALSE;
 
 		__trb_deque_memcpy(self, self->offset + index, data, len);
-		self->len += (index - self->len) + len;
+		self->len += add_len;
 
 		return TRUE;
 	}
@@ -300,10 +347,20 @@ static bool __trb_deque_insert_many(TrbDeque *self, usize index, const void *dat
 		if (__trb_deque_get_buckets_back(self, len) == FALSE)
 			return FALSE;
 
-		usize dst_index = self->offset + index + len;
-		usize src_index = self->offset + index;
+		usize dst_index, src_index;
 
-		__trb_deque_memmove_higher(self, dst_index, src_index, self->len - index);
+		if (
+			trb_chk_add(self->offset, index, &dst_index) ||
+			trb_chk_add(dst_index, len, &dst_index) ||
+			trb_chk_add(self->offset, index, &src_index)
+		) {
+			trb_msg_error("deque index overflow!");
+			return FALSE;
+		}
+
+		if (__trb_deque_memmove_higher(self, dst_index, src_index, self->len - index) == FALSE)
+			return FALSE;
+
 		__trb_deque_memcpy(self, src_index, data, len);
 
 		self->len += len;
@@ -314,6 +371,11 @@ static bool __trb_deque_insert_many(TrbDeque *self, usize index, const void *dat
 	if (index == 0) {
 		if (__trb_deque_get_buckets_front(self, len) == FALSE)
 			return FALSE;
+
+		if (trb_chk_add(self->len, len, NULL)) {
+			trb_msg_error("deque length overflow!");
+			return FALSE;
+		}
 
 		usize offset = ((self->bucketcap + self->offset) - (len % self->bucketcap)) % self->bucketcap;
 
@@ -329,7 +391,12 @@ static bool __trb_deque_insert_many(TrbDeque *self, usize index, const void *dat
 		return FALSE;
 
 	usize dst_index = (self->offset + self->bucketcap - (len % self->bucketcap)) % self->bucketcap;
-	usize src_index = dst_index + len;
+	usize src_index;
+
+	if (trb_chk_add(dst_index, len, &src_index)) {
+		trb_msg_error("deque index overflow!");
+		return FALSE;
+	}
 
 	__trb_deque_memmove_lower(self, dst_index, src_index, index);
 	__trb_deque_memcpy(self, dst_index + index, data, len);
@@ -345,6 +412,11 @@ static bool __trb_deque_push_back_many(TrbDeque *self, const void *data, usize l
 	if (len == 0)
 		return TRUE;
 
+	if (trb_chk_add(self->len, len, NULL) || trb_chk_add(self->offset, self->len, NULL)) {
+		trb_msg_error("deque length overflow!");
+		return FALSE;
+	}
+
 	if (__trb_deque_get_buckets_back(self, len) == FALSE)
 		return FALSE;
 
@@ -359,6 +431,11 @@ static bool __trb_deque_push_front_many(TrbDeque *self, const void *data, usize 
 {
 	if (len == 0)
 		return TRUE;
+
+	if (trb_chk_add(self->len, len, NULL)) {
+		trb_msg_error("deque length overflow!");
+		return FALSE;
+	}
 
 	if (__trb_deque_get_buckets_front(self, len) == FALSE)
 		return FALSE;
@@ -546,6 +623,11 @@ static bool __trb_deque_remove_range(TrbDeque *self, usize index, usize len, voi
 	if (len == 0)
 		return TRUE;
 
+	if (trb_chk_add(index, len, NULL)) {
+		trb_msg_error("deque index overflow!");
+		return FALSE;
+	}
+
 	if (index + len > self->len) {
 		if (len == 1) {
 			trb_msg_warn("element at [%zu] is out of bounds!", index);
@@ -588,7 +670,9 @@ static bool __trb_deque_remove_range(TrbDeque *self, usize index, usize len, voi
 	if (ret != NULL)
 		__trb_deque_memcpy_r(self, self->offset + index, len, ret);
 
-	__trb_deque_memmove_higher(self, dst_index, src_index, min_move);
+	if (__trb_deque_memmove_higher(self, dst_index, src_index, min_move) == FALSE)
+		return FALSE;
+
 	__trb_deque_remove_buckets_front(self, len);
 
 	self->len -= len;
@@ -721,6 +805,54 @@ bool trb_deque_search_data(const TrbDeque *self, const void *target, TrbCmpDataF
 	}
 
 	return FALSE;
+}
+
+static void *__trb_deque_slice_at(TrbSlice *self, usize index)
+{
+	TrbDeque *deque = self->data;
+
+	usize bi, ei;
+	usize len = trb_slice_len(self);
+
+	if (index >= len) {
+		bi = (deque->offset + self->end) / deque->bucketcap;
+		ei = (deque->offset + self->end) % deque->bucketcap;
+	} else {
+		bi = (deque->offset + self->start + index) / deque->bucketcap;
+		ei = (deque->offset + self->start + index) % deque->bucketcap;
+	}
+
+	void *bucket = trb_vector_get(&deque->buckets, void *, bi);
+
+	return trb_array_cell(bucket, self->elemsize, ei);
+}
+
+TrbSlice *trb_deque_slice(TrbSlice *dst, TrbDeque *src, usize start, usize end)
+{
+	trb_return_val_if_fail(src != NULL, NULL);
+	trb_return_val_if_fail(start < end, NULL);
+
+	if (end > src->len) {
+		trb_msg_warn("interval [%zu:%zu) is out of bounds!", start, end);
+		return NULL;
+	}
+
+	if (dst == NULL) {
+		dst = trb_talloc(TrbSlice, 1);
+
+		if (dst == NULL) {
+			trb_msg_error("couldn't allocate memory for the slice!");
+			return NULL;
+		}
+	}
+
+	dst->at = __trb_deque_slice_at;
+	dst->data = src;
+	dst->start = start;
+	dst->end = end;
+	dst->elemsize = src->elemsize;
+
+	return dst;
 }
 
 static inline void __trb_deque_free_bucket(void **bucket)

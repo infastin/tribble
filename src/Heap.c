@@ -21,7 +21,7 @@ TrbHeap *trb_heap_init(TrbHeap *self, usize elemsize, TrbCmpFunc cmp_func)
 		was_allocated = TRUE;
 	}
 
-	if (trb_vector_init(&self->vector, FALSE, FALSE, elemsize) == NULL && was_allocated) {
+	if (trb_vector_init(&self->vector, FALSE, elemsize) == NULL && was_allocated) {
 		free(self);
 		return NULL;
 	}
@@ -51,7 +51,7 @@ TrbHeap *trb_heap_init_data(TrbHeap *self, usize elemsize, TrbCmpDataFunc cmpd_f
 		was_allocated = TRUE;
 	}
 
-	if (trb_vector_init(&self->vector, FALSE, FALSE, elemsize) == NULL && was_allocated) {
+	if (trb_vector_init(&self->vector, FALSE, elemsize) == NULL && was_allocated) {
 		free(self);
 		return NULL;
 	}
@@ -68,10 +68,14 @@ bool trb_heap_insert(TrbHeap *self, const void *data)
 	trb_return_val_if_fail(self != NULL, FALSE);
 
 	if (trb_vector_push_back(&self->vector, data)) {
+		TrbSlice heap_slice;
+		trb_vector_slice(&heap_slice, &self->vector, 0, self->vector.len);
+
 		if (self->with_data)
-			trb_heapify_data(self->vector.data, self->vector.len, self->vector.elemsize, self->cmpd_func, self->data);
+			trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
 		else
-			trb_heapify(self->vector.data, self->vector.len, self->vector.elemsize, self->cmp_func);
+			trb_heapify(&heap_slice, self->cmp_func);
+
 		return TRUE;
 	}
 
@@ -92,10 +96,14 @@ static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)
 	);
 
 	if (trb_vector_pop_back(&self->vector, ret)) {
+		TrbSlice heap_slice;
+		trb_vector_slice(&heap_slice, &self->vector, 0, self->vector.len);
+
 		if (self->with_data)
-			trb_heapify_data(self->vector.data, self->vector.len, self->vector.elemsize, self->cmpd_func, self->data);
+			trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
 		else
-			trb_heapify(self->vector.data, self->vector.len, self->vector.elemsize, self->cmp_func);
+			trb_heapify(&heap_slice, self->cmp_func);
+
 		return TRUE;
 	} else {
 		trb_array_swap(

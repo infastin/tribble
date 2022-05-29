@@ -10,7 +10,7 @@
 void test_push_destroy()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	trb_vector_push_back(&vec, trb_get_ptr(u32, 10));
 	assert(vec.len == 1);
@@ -44,7 +44,7 @@ void test_push_destroy()
 void test_insert()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	trb_vector_push_back(&vec, trb_get_ptr(u32, 10));
 	trb_vector_push_back(&vec, trb_get_ptr(u32, 20));
@@ -79,7 +79,7 @@ void test_insert()
 void test_insert_many()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[6] = { 11, 22, 33, 44, 55, 66 };
@@ -109,7 +109,7 @@ void test_insert_many()
 void test_pop_remove()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	assert(trb_vector_pop_back(&vec, NULL) == FALSE);
 	assert(trb_vector_pop_front(&vec, NULL) == FALSE);
@@ -147,7 +147,7 @@ void test_pop_remove()
 void test_remove_range()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	assert(trb_vector_remove_range(&vec, 10, U64_MAX, NULL) == FALSE);
 
@@ -197,61 +197,10 @@ void test_remove_range()
 	trb_vector_destroy(&vec, NULL);
 }
 
-void test_zero()
-{
-	TrbVector vec;
-	trb_vector_init(&vec, FALSE, TRUE, 4);
-
-	u32 zero = trb_vector_get(&vec, u32, 0);
-	assert(zero == 0);
-
-	u32 arr1[4] = { 10, 20, 30, 40 };
-	u32 arr2[6] = { 11, 22, 33, 44, 55, 66 };
-	u32 arr3[5] = { 12, 23, 34, 45, 56 };
-
-	trb_vector_push_back_many(&vec, arr1, 4);
-	assert(vec.len == 4);
-
-	u32 non_zero = trb_vector_get(&vec, u32, 0);
-	zero = trb_vector_get(&vec, u32, 4);
-	assert(non_zero != 0);
-	assert(zero == 0);
-
-	trb_vector_push_front_many(&vec, arr2, 6);
-	assert(vec.len == 10);
-
-	non_zero = trb_vector_get(&vec, u32, 4);
-	zero = trb_vector_get(&vec, u32, 10);
-	assert(non_zero != 0);
-	assert(zero == 0);
-
-	trb_vector_insert_many(&vec, 5, arr3, 5);
-	assert(vec.len == 15);
-
-	non_zero = trb_vector_get(&vec, u32, 10);
-	zero = trb_vector_get(&vec, u32, 15);
-	assert(non_zero != 0);
-	assert(zero == 0);
-
-	trb_vector_remove_range(&vec, 10, 5, NULL);
-	assert(vec.len == 10);
-
-	zero = trb_vector_get(&vec, u32, 10);
-	assert(zero == 0);
-
-	trb_vector_pop_back(&vec, NULL);
-	assert(vec.len == 9);
-
-	zero = trb_vector_get(&vec, u32, 9);
-	assert(zero == 0);
-
-	trb_vector_destroy(&vec, NULL);
-}
-
 void test_sort_reverse()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };
@@ -263,7 +212,9 @@ void test_sort_reverse()
 	trb_vector_push_back_many(&vec, arr3, 4);
 	trb_vector_push_back_many(&vec, arr4, 4);
 
-	trb_vector_sort(&vec, (TrbCmpFunc) trb_u32cmp);
+	TrbSlice vec_slice;
+	trb_vector_slice(&vec_slice, &vec, 0, vec.len);
+	trb_quicksort(&vec_slice, (TrbCmpFunc) trb_u32cmp);
 	assert(vec.len == 16);
 
 	u32 arr[16] = { 2, 7, 10, 11, 12, 20, 22, 30, 33, 40, 44, 45, 55, 77, 88, 98 };
@@ -273,7 +224,7 @@ void test_sort_reverse()
 		assert(val == arr[i]);
 	}
 
-	trb_vector_reverse(&vec);
+	trb_reverse(&vec_slice);
 	assert(vec.len == 16);
 
 	u32 arr_[16] = { 98, 88, 77, 55, 45, 44, 40, 33, 30, 22, 20, 12, 11, 10, 7, 2 };
@@ -289,7 +240,7 @@ void test_sort_reverse()
 void test_set_get()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };
@@ -331,7 +282,7 @@ void test_set_get()
 void test_set_range()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };
@@ -360,7 +311,7 @@ void test_set_range()
 void test_get_range()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };
@@ -385,7 +336,7 @@ void test_get_range()
 void test_steal()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };
@@ -428,7 +379,7 @@ void test_steal()
 void test_shrink()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };
@@ -451,7 +402,7 @@ void test_shrink()
 void test_reserve()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	trb_vector_require(&vec, 16);
 
@@ -482,7 +433,7 @@ void test_reserve()
 void test_search()
 {
 	TrbVector vec;
-	trb_vector_init(&vec, FALSE, FALSE, 4);
+	trb_vector_init(&vec, FALSE, 4);
 
 	u32 arr1[4] = { 10, 20, 30, 40 };
 	u32 arr2[4] = { 11, 22, 33, 44 };
@@ -513,7 +464,6 @@ int main(int argc, char *argv[])
 	test_insert_many();
 	test_pop_remove();
 	test_remove_range();
-	test_zero();
 	test_sort_reverse();
 	test_set_get();
 	test_steal();

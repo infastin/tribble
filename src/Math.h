@@ -417,34 +417,63 @@ typedef struct {
 } udsize;
 
 /**
- * trb_abs32:
+ * trb_abs_8:
+ * @num: An `i8` integer.
+ *
+ * Gets the absolute value of @num.
+ *
+ * Returns: The absolute value of @num as an `u8`.
+ **/
+u8 trb_abs_8(i8 num);
+
+/**
+ * trb_abs_16:
+ * @num: An `i16` integer.
+ *
+ * Gets the absolute value of @num.
+ *
+ * Returns: The absolute value of @num as an `u16`.
+ **/
+u16 trb_abs_16(i16 num);
+
+/**
+ * trb_abs_32:
  * @num: An `i32` integer.
  *
  * Gets the absolute value of @num.
  *
  * Returns: The absolute value of @num as an `u32`.
  **/
-u32 trb_abs32(i32 num);
+u32 trb_abs_32(i32 num);
 
 /**
- * trb_abs64:
+ * trb_abs_64:
  * @num: An `i64` integer.
  *
  * Gets the absolute value of @num.
  *
  * Returns: The absolute value of @num as an `u64`.
  **/
-u64 trb_abs64(i64 num);
+u64 trb_abs_64(i64 num);
 
 /**
- * trb_abs:
+ * trb_abs_size:
  * @num: An `isize` integer.
  *
  * Gets the absolute value of @num.
  *
  * Returns: The absolute value of @num as an `usize`.
  **/
-usize trb_abs(isize num);
+usize trb_abs_size(isize num);
+
+// clang-format off
+#define trb_abs(num) _Generic((num), \
+	i8: trb_abs_8, \
+	i16: trb_abs_16, \
+	i32: trb_abs_32, \
+	i64: trb_abs_64 \
+)(num)
+// clang-format on
 
 /**
  * trb_pow2_32:
@@ -467,14 +496,21 @@ u32 trb_pow2_32(u32 value);
 u64 trb_pow2_64(u64 value);
 
 /**
- * trb_pow2:
+ * trb_pow2_size:
  * @value: The 32/64-bit integer.
  *
  * Rounds up to the next power of 2.
  *
  * Returns: The next power of 2.
  **/
-usize trb_pow2(usize value);
+usize trb_pow2_size(usize value);
+
+// clang-format off
+#define trb_pow2(value) _Generic((value), \
+	u32: trb_pow2_32, \
+	u64: trb_pow2_64 \
+)(num)
+// clang-format on
 
 /**
  * trb_mul_pow2_32:
@@ -499,7 +535,7 @@ u32 trb_mul_pow2_32(u32 num, u32 factor);
 u64 trb_mul_pow2_64(u64 num, u64 factor);
 
 /**
- * trb_mul_pow2:
+ * trb_mul_pow2_size:
  * @num: The 32/64-bit number.
  * @factor: The 32/64-bit multiplier which is a power of two.
  *
@@ -507,7 +543,14 @@ u64 trb_mul_pow2_64(u64 num, u64 factor);
  *
  * Returns: A product.
  **/
-usize trb_mul_pow2(usize num, usize factor);
+usize trb_mul_pow2_size(usize num, usize factor);
+
+// clang-format off
+#define trb_mul_pow2(num, factor) _Generic((num), \
+	u32: trb_mul_pow2_32, \
+	u64: trb_mul_pow2_64 \
+)(num, factor)
+// clang-format on
 
 /**
  * trb_div_pow2_32:
@@ -532,7 +575,7 @@ ud32 trb_div_pow2_32(u32 num, u32 denom);
 ud64 trb_div_pow2_64(u64 num, u64 denom);
 
 /**
- * trb_div_pow2:
+ * trb_div_pow2_size:
  * @num: The 32/64-bit dividend.
  * @denom: The 32/64-bit divisor which is a power of two.
  *
@@ -540,7 +583,14 @@ ud64 trb_div_pow2_64(u64 num, u64 denom);
  *
  * Returns: A quotient and remainder.
  **/
-udsize trb_div_pow2(usize num, usize denom);
+udsize trb_div_pow2_size(usize num, usize denom);
+
+// clang-format off
+#define trb_div_pow2(num, denom) _Generic((num), \
+	u32: trb_div_pow2_32, \
+	u64: trb_div_pow2_64 \
+)(num, denom)
+// clang-format on
 
 /**
  * trb_clz32:
@@ -613,6 +663,14 @@ udsize trb_div_pow2(usize num, usize denom);
  * Returns: A rotated 64-bit integer.
  **/
 #define trb_rotr64(x, r) (((x) >> (r)) | ((x) << (64 - (r))))
+
+#if USIZE_WIDTH == 64
+	#define trb_rotr(num) trb_rotr64(num)
+	#define trb_rotl(num) trb_rotl64(num)
+#else
+	#define trb_rotr(num) trb_rotr32(num)
+	#define trb_rotl(num) trb_rotl32(num)
+#endif
 
 /**
  * trb_max:

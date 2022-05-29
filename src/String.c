@@ -1,5 +1,6 @@
 #include "String.h"
 
+#include "Checked.h"
 #include "Messages.h"
 #include "Utils.h"
 
@@ -178,94 +179,92 @@ TrbString *trb_string_init_vfmt(TrbString *self, const char *fmt, va_list args)
 	return result;
 }
 
-static bool __trb_string_newcap(TrbString *string, usize newcap)
+static bool __trb_string_newcap(TrbString *self, usize newcap)
 {
 	usize new_allocated = (newcap >> 3) + (newcap < 9 ? 3 : 6);
 
-	if (newcap > USIZE_MAX - new_allocated) {
+	if (trb_chk_add(newcap, new_allocated, &newcap)) {
 		trb_msg_error("string capacity overflow!");
 		return FALSE;
 	}
 
-	newcap += new_allocated;
-
-	char *data = (void *) realloc(string->data, newcap);
+	char *data = (void *) realloc(self->data, newcap);
 
 	if (data == NULL) {
 		trb_msg_error("couldn't reallocate memory for the string buffer!");
 		return FALSE;
 	}
 
-	string->data = data;
-	string->capacity = newcap;
+	self->data = data;
+	self->capacity = newcap;
 
 	return TRUE;
 }
 
-static bool __trb_string_insert_c(TrbString *string, usize index, char c)
+static bool __trb_string_insert_c(TrbString *self, usize index, char c)
 {
-	if (index > USIZE_MAX - 1 || string->len > USIZE_MAX - 1) {
-		trb_msg_error("string capacity overflow!");
+	if (trb_chk_add(index, 2, NULL) || trb_chk_add(self->len, 2, NULL)) {
+		trb_msg_error("string index/length overflow!");
 		return FALSE;
 	}
 
-	if (index >= string->len && index + 2 > string->capacity) {
-		if (__trb_string_newcap(string, index + 2) == FALSE)
+	if (index >= self->len && index + 2 > self->capacity) {
+		if (__trb_string_newcap(self, index + 2) == FALSE)
 			return FALSE;
-	} else if (index < string->len && string->len + 2 > string->capacity) {
-		if (__trb_string_newcap(string, string->len + 2) == FALSE)
+	} else if (index < self->len && self->len + 2 > self->capacity) {
+		if (__trb_string_newcap(self, self->len + 2) == FALSE)
 			return FALSE;
 	}
 
-	if (index >= string->len) {
-		string->len = index + 1;
+	if (index >= self->len) {
+		self->len = index + 1;
 	} else {
-		memmove(&string->data[index + 1], &string->data[index], string->len - index);
-		string->len++;
+		memmove(&self->data[index + 1], &self->data[index], self->len - index);
+		self->len++;
 	}
 
-	string->data[index] = c;
-	string->data[string->len] = '\0';
+	self->data[index] = c;
+	self->data[self->len] = '\0';
 
 	return TRUE;
 }
 
-static bool __trb_string_insert(TrbString *string, usize index, const char *str, usize len)
+static bool __trb_string_insert(TrbString *self, usize index, const char *str, usize len)
 {
 	if (len == 0)
 		return TRUE;
 
 	if (
-		(index > USIZE_MAX - len) ||
-		(index + len > USIZE_MAX - 1) ||
-		(string->len > USIZE_MAX - len) ||
-		(string->len + len > USIZE_MAX - 1)
+		trb_chk_add(index, len, NULL) ||
+		trb_chk_add(index + len, 1, NULL) ||
+		trb_chk_add(self->len, len, NULL) ||
+		trb_chk_add(self->len + len, 1, NULL)
 	) {
-		trb_msg_error("string capacity overflow!");
+		trb_msg_error("string index/length overflow!");
 		return FALSE;
 	}
 
-	if (index >= string->len && index + len + 1 > string->capacity) {
-		if (__trb_string_newcap(string, index + len + 1) == FALSE)
+	if (index >= self->len && index + len + 1 > self->capacity) {
+		if (__trb_string_newcap(self, index + len + 1) == FALSE)
 			return FALSE;
-	} else if (index < string->len && string->len + len + 1 > string->capacity) {
-		if (__trb_string_newcap(string, string->len + len + 1) == FALSE)
+	} else if (index < self->len && self->len + len + 1 > self->capacity) {
+		if (__trb_string_newcap(self, self->len + len + 1) == FALSE)
 			return FALSE;
 	}
 
-	if (index >= string->len) {
-		string->len = index + len;
+	if (index >= self->len) {
+		self->len = index + len;
 	} else {
-		memmove(&string->data[index + len], &string->data[index], string->len - index);
-		string->len += len;
+		memmove(&self->data[index + len], &self->data[index], self->len - index);
+		self->len += len;
 	}
 
-	string->data[string->len] = '\0';
+	self->data[self->len] = '\0';
 
 	if (str == NULL)
-		memset(&string->data[index], 0, len);
+		memset(&self->data[index], 0, len);
 	else
-		memcpy(&string->data[index], str, len);
+		memcpy(&self->data[index], str, len);
 
 	return TRUE;
 }
@@ -407,7 +406,7 @@ static bool __trb_string_erase(TrbString *self, usize index, usize len, char *re
 	if (len == 0)
 		return TRUE;
 
-	if (index > USIZE_MAX - len) {
+	if (trb_chk_add(index, len, NULL)) {
 		trb_msg_error("string index overflow!");
 		return FALSE;
 	}
@@ -464,8 +463,8 @@ static bool __trb_string_overwrite(TrbString *self, usize index, const char *str
 	if (len == 0)
 		return TRUE;
 
-	if (index > USIZE_MAX - len) {
-		trb_msg_error("string capacity overflow!");
+	if (trb_chk_add(index, len, NULL) || trb_chk_add(index + len, 1, NULL)) {
+		trb_msg_error("string index/length overflow!");
 		return FALSE;
 	}
 
@@ -541,8 +540,8 @@ bool trb_string_overwrite_c(TrbString *self, usize index, char c)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (index > USIZE_MAX - 1) {
-		trb_msg_error("string capacity overflow!");
+	if (trb_chk_add(index, 2, NULL)) {
+		trb_msg_error("string index overflow!");
 		return FALSE;
 	}
 

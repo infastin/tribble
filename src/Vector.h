@@ -1,9 +1,8 @@
 #ifndef VECTOR_H_KSABYJ3T
 #define VECTOR_H_KSABYJ3T
 
+#include "Slice.h"
 #include "Types.h"
-
-#include <stdint.h>
 
 typedef struct _TrbVector TrbVector;
 
@@ -13,9 +12,7 @@ typedef struct _TrbVector TrbVector;
  * @len: The size of the vector.
  * @capacity: The capacity of the vector buffer.
  * @elemsize: The size of each element.
- * @zero_terminated: Indicates whether vector is zero-terminated or not.
  * @clear: Indicates whether elements should be cleared to 0 when allocated or not.
- * @sorted: Indicates whether vector is sorted or not.
  *
  * A dynamic size array.
  **/
@@ -24,16 +21,13 @@ struct _TrbVector {
 	usize len;
 	usize capacity;
 	usize elemsize;
-	bool zero_terminated;
 	bool clear;
-	bool sorted;
 };
 
 /**
  * trb_vector_init:
  * @self: (nullable): The pointer to the `TrbVector` to be initialized.
  * @clear: %TRUE if elements should be cleared to 0 when allocated.
- * @zero_terminated: %TRUE if the array should have terminating zero.
  * @elemsize: The size of each element in bytes.
  *
  * Creates a new dynamic size array.
@@ -41,7 +35,7 @@ struct _TrbVector {
  * Returns: (nullable): A new dynamic size array.
  * Can return %NULL if an error occurs.
  **/
-TrbVector *trb_vector_init(TrbVector *self, bool clear, bool zero_terminated, usize elemsize);
+TrbVector *trb_vector_init(TrbVector *self, bool clear, usize elemsize);
 
 /**
  * trb_vector_copy:
@@ -191,14 +185,6 @@ bool trb_vector_pop_front(TrbVector *self, void *ret);
 bool trb_vector_pop_front_many(TrbVector *self, usize len, void *ret);
 
 /**
- * trb_vector_reverse:
- * @self: The array to be reversed.
- *
- * Reverses the array.
- **/
-void trb_vector_reverse(TrbVector *self);
-
-/**
  * trb_vector_remove_range:
  * @self: The array where to remove.
  * @index: The index of the first element to be removed.
@@ -221,25 +207,6 @@ bool trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
  * Returns: %TRUE on success.
  **/
 bool trb_vector_remove_all(TrbVector *self, void *ret);
-
-/**
- * trb_vector_sort:
- * @self: The array to be sorted.
- * @cmp_func: (scope call): The comparison function for sorting entries.
- *
- * Sorts the array.
- **/
-void trb_vector_sort(TrbVector *self, TrbCmpFunc cmp_func);
-
-/**
- * trb_vector_sort_data:
- * @self: The array to be sorted.
- * @cmpd_func: (scope call): The comparison function for sorting entries.
- * @data: User data.
- *
- * Sorts the array using user data.
- **/
-void trb_vector_sort_data(TrbVector *self, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
  * trb_vector_steal:
@@ -332,6 +299,8 @@ bool trb_vector_search(const TrbVector *self, const void *target, TrbCmpFunc cmp
  * Returns: %TRUE if found, %FALSE if not.
  **/
 bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
+
+TrbSlice *trb_vector_slice(TrbSlice *dst, TrbVector *self, usize start, usize end);
 
 /**
  * trb_vector_ptr:
