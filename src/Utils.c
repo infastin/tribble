@@ -123,10 +123,10 @@ static void __trb_inssort(TrbSlice *slice, TrbCmpFunc cmp_func)
 {
 	usize len = trb_slice_len(slice);
 
-	for (i32 i = 1; i < len; ++i) {
+	for (usize i = 1; i < len; ++i) {
 		usize cur = i;
 
-		for (usize j = i - 1; j >= 0; --j) {
+		for (usize j = i - 1;; --j) {
 			if (cmp_func(slice->at(slice, j), slice->at(slice, cur)) <= 0)
 				break;
 
@@ -157,10 +157,10 @@ static void __trb_inssort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *
 {
 	usize len = trb_slice_len(slice);
 
-	for (i32 i = 1; i < len; ++i) {
+	for (usize i = 1; i < len; ++i) {
 		usize cur = i;
 
-		for (usize j = i - 1; j >= 0; --j) {
+		for (usize j = i - 1;; --j) {
 			if (cmpd_func(slice->at(slice, j), slice->at(slice, cur), data) <= 0)
 				break;
 
@@ -210,7 +210,7 @@ static void __trb_heapify(TrbSlice *slice, TrbCmpFunc cmp_func)
 	usize len = trb_slice_len(slice);
 	usize start = (len - 1) >> 1;
 
-	while (start >= 0) {
+	while (1) {
 		__trb_heap(slice, start, len - 1, cmp_func);
 
 		if (start == 0)
@@ -282,7 +282,7 @@ static void __trb_heapify_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *
 	usize len = trb_slice_len(slice);
 	usize start = (len - 1) >> 1;
 
-	while (start >= 0) {
+	while (1) {
 		__trb_heap_data(slice, start, len - 1, cmpd_func, data);
 
 		if (start == 0)
@@ -385,8 +385,8 @@ static void __trb_quicksort_recursive(TrbSlice *slice, usize left, usize right, 
 	usize pivot;
 	usize new_pivot;
 
-	i32 loop_count = 0;
-	i32 max_loops = 32 - __builtin_clzl(right - left);
+	usize loop_count = 0;
+	usize max_loops = 32 - __builtin_clzl(right - left);
 
 	while (1) {
 		if (right <= left)
@@ -497,8 +497,8 @@ static void __trb_quicksort_recursive_data(TrbSlice *slice, usize left, usize ri
 	usize pivot;
 	usize new_pivot;
 
-	i32 loop_count = 0;
-	i32 max_loops = 32 - __builtin_clzl(right - left);
+	usize loop_count = 0;
+	usize max_loops = 32 - __builtin_clzl(right - left);
 
 	while (1) {
 		if (right <= left)

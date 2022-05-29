@@ -152,7 +152,7 @@ TrbString *trb_string_init_fmt(TrbString *self, const char *fmt, ...)
 	char *buf;
 	usize len = trb_vstrfmt(&buf, fmt, args);
 
-	if (len == -1) {
+	if (len == (usize) -1) {
 		trb_msg_error("%s", strerror(errno));
 		return NULL;
 	}
@@ -168,7 +168,7 @@ TrbString *trb_string_init_vfmt(TrbString *self, const char *fmt, va_list args)
 	char *buf;
 	usize len = trb_vstrfmt(&buf, fmt, args);
 
-	if (len == -1) {
+	if (len == (usize) -1) {
 		trb_msg_error("%s", strerror(errno));
 		return NULL;
 	}
@@ -276,7 +276,7 @@ static bool __trb_string_insert_vfmt(TrbString *self, usize index, const char *f
 
 	char *buf;
 	usize len = trb_vstrfmt(&buf, fmt, args);
-	if (len == -1) {
+	if (len == (usize) -1) {
 		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}
@@ -493,7 +493,7 @@ static bool __trb_string_overwrite_vfmt(TrbString *self, usize index, const char
 
 	char *buf;
 	usize len = trb_vstrfmt(&buf, fmt, args);
-	if (len == -1) {
+	if (len == (usize) -1) {
 		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}
@@ -628,7 +628,7 @@ bool trb_string_assign_fmt(TrbString *self, const char *fmt, ...)
 	va_start(args, fmt);
 
 	usize len = trb_vstrfmt(&buf, fmt, args);
-	if (len == -1) {
+	if (len == (usize) -1) {
 		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}
@@ -656,7 +656,7 @@ bool trb_string_assign_vfmt(TrbString *self, const char *fmt, va_list args)
 	char *buf;
 
 	usize len = trb_vstrfmt(&buf, fmt, args);
-	if (len == -1) {
+	if (len == (usize) -1) {
 		trb_msg_error("%s", strerror(errno));
 		return FALSE;
 	}

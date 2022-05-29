@@ -15,12 +15,13 @@ static const char *message_flag_to_color(TrbMessageFlags flag)
 		return "\033[1;35m";
 	case TRB_MESSAGE_WARNING:
 		return "\033[1;33m";
-	case TRB_MESSAGE_PRINT:
-		return "\033[1;32m";
 	case TRB_MESSAGE_INFO:
 		return "\033[1;36m";
 	case TRB_MESSAGE_DEBUG:
 		return "\033[1;34m";
+	case TRB_MESSAGE_PRINT:
+	default:
+		return "\033[1;32m";
 	}
 
 	return "";
@@ -40,12 +41,13 @@ static const char *message_flag_to_prefix(TrbMessageFlags flag, bool *to_stdout)
 	case TRB_MESSAGE_WARNING:
 		*to_stdout = false;
 		return "WARNING";
-	case TRB_MESSAGE_PRINT:
-		return "MESSAGE";
 	case TRB_MESSAGE_INFO:
 		return "INFO";
 	case TRB_MESSAGE_DEBUG:
 		return "DEBUG";
+	case TRB_MESSAGE_PRINT:
+	default:
+		return "MESSAGE";
 	}
 
 	return "";

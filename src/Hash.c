@@ -31,14 +31,17 @@ u32 trb_murmurhash3_32(const void *key, u32 keysize, u32 seed)
 	u32 k = 0;
 
 	switch (keysize & 3) {
-	case 3: k ^= tail[2] << 16;
-	case 2: k ^= tail[1] << 8;
+	case 3: k ^= tail[2] << 16; fallthrough;
+	case 2: k ^= tail[1] << 8; fallthrough;
 	case 1:
 		k ^= tail[0];
 		k *= c1;
 		k = trb_rotl32(k, 15);
 		k *= c2;
 		h ^= k;
+		break;
+	case 0: break;
+	default: break;
 	};
 
 	h ^= keysize;
@@ -94,31 +97,35 @@ u64 trb_murmurhash3_64(const void *key, u64 keysize, u64 seed)
 	u64 k2 = 0;
 
 	switch (keysize & 15) {
-	case 15: k2 ^= ((u64) tail[14]) << 48;
-	case 14: k2 ^= ((u64) tail[13]) << 40;
-	case 13: k2 ^= ((u64) tail[12]) << 32;
-	case 12: k2 ^= ((u64) tail[11]) << 24;
-	case 11: k2 ^= ((u64) tail[10]) << 16;
-	case 10: k2 ^= ((u64) tail[9]) << 8;
+	case 15: k2 ^= ((u64) tail[14]) << 48; fallthrough;
+	case 14: k2 ^= ((u64) tail[13]) << 40; fallthrough;
+	case 13: k2 ^= ((u64) tail[12]) << 32; fallthrough;
+	case 12: k2 ^= ((u64) tail[11]) << 24; fallthrough;
+	case 11: k2 ^= ((u64) tail[10]) << 16; fallthrough;
+	case 10: k2 ^= ((u64) tail[9]) << 8; fallthrough;
 	case 9:
 		k2 ^= ((u64) tail[8]) << 0;
 		k2 *= c2;
 		k2 = trb_rotl64(k2, 33);
 		k2 *= c1;
 		h2 ^= k2;
-	case 8: k1 ^= ((u64) tail[7]) << 56;
-	case 7: k1 ^= ((u64) tail[6]) << 48;
-	case 6: k1 ^= ((u64) tail[5]) << 40;
-	case 5: k1 ^= ((u64) tail[4]) << 32;
-	case 4: k1 ^= ((u64) tail[3]) << 24;
-	case 3: k1 ^= ((u64) tail[2]) << 16;
-	case 2: k1 ^= ((u64) tail[1]) << 8;
+		fallthrough;
+	case 8: k1 ^= ((u64) tail[7]) << 56; fallthrough;
+	case 7: k1 ^= ((u64) tail[6]) << 48; fallthrough;
+	case 6: k1 ^= ((u64) tail[5]) << 40; fallthrough;
+	case 5: k1 ^= ((u64) tail[4]) << 32; fallthrough;
+	case 4: k1 ^= ((u64) tail[3]) << 24; fallthrough;
+	case 3: k1 ^= ((u64) tail[2]) << 16; fallthrough;
+	case 2: k1 ^= ((u64) tail[1]) << 8; fallthrough;
 	case 1:
 		k1 ^= ((u64) tail[0]) << 0;
 		k1 *= c1;
 		k1 = trb_rotl64(k1, 31);
 		k1 *= c2;
 		h1 ^= k1;
+		break;
+	case 0: break;
+	default: break;
 	};
 
 	h1 ^= keysize;
@@ -205,18 +212,19 @@ u32 trb_jhash32(const void *key, u32 keysize, u32 seed)
 
 	c += keysize;
 	switch (len) {
-	case 11: c += (u32) k[10] << 24;
-	case 10: c += (u32) k[9] << 16;
-	case 9: c += (u32) k[8] << 8;
-	case 8: b += (u32) k[7] << 24;
-	case 7: b += (u32) k[6] << 16;
-	case 6: b += (u32) k[5] << 8;
-	case 5: b += k[4];
-	case 4: a += (u32) k[3] << 24;
-	case 3: a += (u32) k[2] << 16;
-	case 2: a += (u32) k[1] << 8;
-	case 1: a += k[0];
+	case 11: c += (u32) k[10] << 24; fallthrough;
+	case 10: c += (u32) k[9] << 16; fallthrough;
+	case 9: c += (u32) k[8] << 8; fallthrough;
+	case 8: b += (u32) k[7] << 24; fallthrough;
+	case 7: b += (u32) k[6] << 16; fallthrough;
+	case 6: b += (u32) k[5] << 8; fallthrough;
+	case 5: b += k[4]; fallthrough;
+	case 4: a += (u32) k[3] << 24; fallthrough;
+	case 3: a += (u32) k[2] << 16; fallthrough;
+	case 2: a += (u32) k[1] << 8; fallthrough;
+	case 1: a += k[0]; break;
 	case 0: break;
+	default: break;
 	}
 
 	trb_jhash32_mix(a, b, c);
@@ -284,34 +292,34 @@ u64 trb_jhash64(const void *key, u64 keysize, u64 seed)
 
 	c += keysize;
 	switch (len) {
-	case 23: c += (u64) k[22] << 56;
-	case 22: c += (u64) k[21] << 48;
-	case 21: c += (u64) k[20] << 40;
-	case 20: c += (u64) k[19] << 32;
-	case 19: c += (u64) k[18] << 24;
-	case 18: c += (u64) k[17] << 16;
-	case 17: c += (u64) k[16] << 8;
-	case 16: b += (u64) k[15] << 56;
-	case 15: b += (u64) k[14] << 48;
-	case 14: b += (u64) k[13] << 40;
-	case 13: b += (u64) k[12] << 32;
-	case 12: b += (u64) k[11] << 24;
-	case 11: b += (u64) k[10] << 16;
-	case 10: b += (u64) k[9] << 8;
-	case 9: b += (u64) k[8];
-	case 8: a += (u64) k[7] << 56;
-	case 7: a += (u64) k[6] << 48;
-	case 6: a += (u64) k[5] << 40;
-	case 5: a += (u64) k[4] << 32;
-	case 4: a += (u64) k[3] << 24;
-	case 3: a += (u64) k[2] << 16;
-	case 2: a += (u64) k[1] << 8;
-	case 1: a += (u64) k[0];
+	case 23: c += (u64) k[22] << 56; fallthrough;
+	case 22: c += (u64) k[21] << 48; fallthrough;
+	case 21: c += (u64) k[20] << 40; fallthrough;
+	case 20: c += (u64) k[19] << 32; fallthrough;
+	case 19: c += (u64) k[18] << 24; fallthrough;
+	case 18: c += (u64) k[17] << 16; fallthrough;
+	case 17: c += (u64) k[16] << 8; fallthrough;
+	case 16: b += (u64) k[15] << 56; fallthrough;
+	case 15: b += (u64) k[14] << 48; fallthrough;
+	case 14: b += (u64) k[13] << 40; fallthrough;
+	case 13: b += (u64) k[12] << 32; fallthrough;
+	case 12: b += (u64) k[11] << 24; fallthrough;
+	case 11: b += (u64) k[10] << 16; fallthrough;
+	case 10: b += (u64) k[9] << 8; fallthrough;
+	case 9: b += (u64) k[8]; fallthrough;
+	case 8: a += (u64) k[7] << 56; fallthrough;
+	case 7: a += (u64) k[6] << 48; fallthrough;
+	case 6: a += (u64) k[5] << 40; fallthrough;
+	case 5: a += (u64) k[4] << 32; fallthrough;
+	case 4: a += (u64) k[3] << 24; fallthrough;
+	case 3: a += (u64) k[2] << 16; fallthrough;
+	case 2: a += (u64) k[1] << 8; fallthrough;
+	case 1: a += (u64) k[0]; break;
 	case 0: break;
+	default: break;
 	}
 
 	trb_jhash64_mix(a, b, c);
-
 	return c;
 }
 
@@ -376,15 +384,11 @@ u32 trb_siphash32(const void *key, u32 keysize, u32 seed)
 	}
 
 	switch (left) {
-	case 3:
-		b |= (u32) d[2] << 16;
-	case 2:
-		b |= (u32) d[1] << 8;
-	case 1:
-		b |= (u32) d[0];
-		break;
-	case 0:
-		break;
+	case 3: b |= (u32) d[2] << 16; fallthrough;
+	case 2: b |= (u32) d[1] << 8; fallthrough;
+	case 1: b |= (u32) d[0]; break;
+	case 0: break;
+	default: break;
 	}
 
 	v3 ^= b;
@@ -455,14 +459,15 @@ u64 trb_siphash64(const void *key, u64 keysize, u64 seed)
 	}
 
 	switch (left) {
-	case 7: b |= ((u64) d[6]) << 48;
-	case 6: b |= ((u64) d[5]) << 40;
-	case 5: b |= ((u64) d[4]) << 32;
-	case 4: b |= ((u64) d[3]) << 24;
-	case 3: b |= ((u64) d[2]) << 16;
-	case 2: b |= ((u64) d[1]) << 8;
-	case 1: b |= ((u64) d[0]);
+	case 7: b |= ((u64) d[6]) << 48; fallthrough;
+	case 6: b |= ((u64) d[5]) << 40; fallthrough;
+	case 5: b |= ((u64) d[4]) << 32; fallthrough;
+	case 4: b |= ((u64) d[3]) << 24; fallthrough;
+	case 3: b |= ((u64) d[2]) << 16; fallthrough;
+	case 2: b |= ((u64) d[1]) << 8; fallthrough;
+	case 1: b |= ((u64) d[0]); break;
 	case 0: break;
+	default: break;
 	}
 
 	v3 ^= b;

@@ -1,8 +1,8 @@
 project('libtribble', 'c',
   version: '1.0.0',
   default_options: [
-    'buildtype=debug',
-    'warning_level=1',
+    'buildtype=debugoptimized',
+    'warning_level=3',
     'c_std=gnu2x',
     'girgen=disabled',
     'gi_docgen=disabled',
@@ -20,6 +20,19 @@ pkg_api_name = '@0@-@1@'.format(meson.project_name(), apiversion)
 add_project_arguments([
   '-pipe',
   '-funsigned-char',
+  '-Wduplicated-branches',
+  '-Wimplicit-fallthrough',
+  '-Wmisleading-indentation',
+  '-Wunused',
+  '-Wno-pedantic',
+  '-Wno-format-zero-length',
+  '-Wimplicit',
+  '-Werror=format=2',
+  '-Werror=init-self',
+  '-Werror=missing-include-dirs',
+  '-Werror=pointer-arith',
+  '-Wstrict-prototypes',
+  '-Werror=implicit-function-declaration',
 ], language: 'c')
 
 datadir = get_option('datadir')

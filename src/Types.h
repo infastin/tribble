@@ -140,6 +140,10 @@ typedef _Bool bool;
 	#define NULL ((void *) 0)
 #endif
 
+#ifndef fallthrough
+	#define fallthrough [[fallthrough]]
+#endif
+
 /**
  * TrbCmpFunc:
  * @a: The first value to be compared.

@@ -109,7 +109,7 @@ usize get_name_index(const char *name)
 		}
 	}
 
-	return -1;
+	return (usize) -1;
 }
 
 void generate_names()
@@ -118,16 +118,16 @@ void generate_names()
 		char name[32] = { 0 };
 		do {
 			random_name(name);
-		} while (get_name_index(name) != -1);
+		} while (get_name_index(name) != (usize) -1);
 		memcpy(names[names_len++], name, 32);
 	}
 }
 
-usize test_hash_func(const void *key, usize keysize, usize seed)
+usize test_hash_func(const void *key, usize, usize)
 {
 	usize index = get_name_index(key);
 
-	if (index == -1)
+	if (index == (usize) -1)
 		return trb_xs128ss_next(&state) & 31;
 
 	return ((index + 1) << 1) & 63;
@@ -266,7 +266,7 @@ void test_no_value()
 	trb_hash_table_destroy(&ht, NULL, NULL);
 }
 
-int main(int argc, char *argv[])
+int main()
 {
 	trb_xs128ss_init(&state, 0xdeadbeef);
 

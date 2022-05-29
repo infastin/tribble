@@ -450,7 +450,7 @@ void test_splice()
 	trb_list_destroy(&list3, int_trb_list_free);
 }
 
-int main(int argc, char *argv[])
+int main()
 {
 	test_push_destroy();
 	test_reverse();

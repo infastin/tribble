@@ -457,7 +457,7 @@ void test_search()
 	trb_vector_destroy(&vec, NULL);
 }
 
-int main(int argc, char *argv[])
+int main()
 {
 	test_push_destroy();
 	test_insert();

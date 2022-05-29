@@ -185,7 +185,7 @@ bool trb_tree_insert(TrbTree *self, TrbTreeNode *node)
 	return TRUE;
 }
 
-static TrbTreeNode *__trb_tree_remove_prepare(TrbTree *self, TrbTreeNode *node)
+static TrbTreeNode *__trb_tree_remove_prepare(TrbTreeNode *node)
 {
 	if (node->left == NULL && node->right == NULL)
 		return node;
@@ -207,7 +207,7 @@ void trb_tree_remove(TrbTree *self, TrbTreeNode *node)
 	trb_return_if_fail(self != NULL);
 	trb_return_if_fail(node != NULL);
 
-	TrbTreeNode *s = __trb_tree_remove_prepare(self, node);
+	TrbTreeNode *s = __trb_tree_remove_prepare(node);
 	TrbTreeNode *current = s->parent;
 	TrbTreeNode *pivot = NULL;
 

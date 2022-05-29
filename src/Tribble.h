@@ -1,6 +1,7 @@
 #ifndef TRIBBLE_H_SWHO2NAT
 #define TRIBBLE_H_SWHO2NAT
 
+#include "Checked.h"
 #include "Deque.h"
 #include "Hash.h"
 #include "HashTable.h"
@@ -12,6 +13,7 @@
 #include "Messages.h"
 #include "Rand.h"
 #include "SList.h"
+#include "Slice.h"
 #include "String.h"
 #include "Tree.h"
 #include "Types.h"

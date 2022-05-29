@@ -272,7 +272,6 @@ bool trb_hash_table_insert(TrbHashTable *self, const void *key, const void *valu
 				break;
 			}
 
-			i32 cmp;
 			if (self->with_data) {
 				cmp = self->cmpd_func(key, ht_key(self, slot), self->data);
 			} else {
@@ -386,7 +385,6 @@ bool trb_hash_table_remove(TrbHashTable *self, const void *key, void *ret)
 			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
 
-			i32 cmp;
 			if (self->with_data) {
 				cmp = self->cmpd_func(key, ht_key(self, slot), self->data);
 			} else {
@@ -456,7 +454,6 @@ bool trb_hash_table_lookup(const TrbHashTable *self, const void *key, void *ret)
 			if (*ht_occupied(self, slot) == FALSE)
 				return FALSE;
 
-			i32 cmp;
 			if (self->with_data) {
 				cmp = self->cmpd_func(key, ht_key(self, slot), self->data);
 			} else {
