@@ -827,12 +827,12 @@ static void *__trb_deque_slice_at(TrbSlice *self, usize index)
 	return trb_array_cell(bucket, self->elemsize, ei);
 }
 
-TrbSlice *trb_deque_slice(TrbSlice *dst, TrbDeque *src, usize start, usize end)
+TrbSlice *trb_deque_slice(TrbDeque *self, TrbSlice *dst, usize start, usize end)
 {
-	trb_return_val_if_fail(src != NULL, NULL);
+	trb_return_val_if_fail(self != NULL, NULL);
 	trb_return_val_if_fail(start < end, NULL);
 
-	if (end > src->len) {
+	if (end > self->len) {
 		trb_msg_warn("interval [%zu:%zu) is out of bounds!", start, end);
 		return NULL;
 	}
@@ -847,10 +847,10 @@ TrbSlice *trb_deque_slice(TrbSlice *dst, TrbDeque *src, usize start, usize end)
 	}
 
 	dst->at = __trb_deque_slice_at;
-	dst->data = src;
+	dst->data = self;
 	dst->start = start;
 	dst->end = end;
-	dst->elemsize = src->elemsize;
+	dst->elemsize = self->elemsize;
 
 	return dst;
 }

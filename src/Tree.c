@@ -268,7 +268,7 @@ void trb_tree_remove(TrbTree *self, TrbTreeNode *node)
 	node->height = 1;
 }
 
-TrbTree *trb_tree_copy(TrbTree *dst, const TrbTree *src, TrbCopyFunc copy_func, bool *status)
+TrbTree *trb_tree_copy(const TrbTree *src, TrbTree *dst, TrbCopyFunc copy_func, bool *status)
 {
 	trb_return_val_if_fail(src != NULL, NULL);
 	trb_return_val_if_fail(copy_func != NULL, NULL);

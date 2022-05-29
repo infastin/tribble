@@ -134,8 +134,8 @@ void trb_tree_postorder(TrbTree *self, TrbUserFunc func, void *userdata);
 
 /**
  * trb_tree_copy:
- * @dst: (optional) (inout): The pointer to the destination tree.
  * @src: The pointer to the source tree.
+ * @dst: (optional) (inout): The pointer to the destination tree.
  * @copy_func: (scope call): The function for copying nodes.
  * @status: (optional) (out): The pointer to retrieve the status of execution (%TRUE for success).
  *
@@ -144,7 +144,7 @@ void trb_tree_postorder(TrbTree *self, TrbUserFunc func, void *userdata);
  * Returns: (nullable): A copy of the tree.
  * Can return %NULL if an allocation error occurs.
  **/
-TrbTree *trb_tree_copy(TrbTree *dst, const TrbTree *src, TrbCopyFunc copy_func, bool *status);
+TrbTree *trb_tree_copy(const TrbTree *src, TrbTree *dst, TrbCopyFunc copy_func, bool *status);
 
 /**
  * trb_tree_destroy:

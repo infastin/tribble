@@ -413,12 +413,12 @@ static void *__trb_vector_slice_at(TrbSlice *self, usize index)
 	return trb_vector_cell(vector, self->start + index);
 }
 
-TrbSlice *trb_vector_slice(TrbSlice *dst, TrbVector *src, usize start, usize end)
+TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *dst, usize start, usize end)
 {
-	trb_return_val_if_fail(src != NULL, NULL);
+	trb_return_val_if_fail(self != NULL, NULL);
 	trb_return_val_if_fail(start < end, NULL);
 
-	if (end > src->len) {
+	if (end > self->len) {
 		trb_msg_warn("interval [%zu:%zu) is out of bounds!", start, end);
 		return NULL;
 	}
@@ -433,15 +433,15 @@ TrbSlice *trb_vector_slice(TrbSlice *dst, TrbVector *src, usize start, usize end
 	}
 
 	dst->at = __trb_vector_slice_at;
-	dst->data = src;
+	dst->data = self;
 	dst->start = start;
 	dst->end = end;
-	dst->elemsize = src->elemsize;
+	dst->elemsize = self->elemsize;
 
 	return dst;
 }
 
-TrbVector *trb_vector_copy(TrbVector *dst, const TrbVector *src)
+TrbVector *trb_vector_copy(const TrbVector *src, TrbVector *dst)
 {
 	trb_return_val_if_fail(src != NULL, NULL);
 

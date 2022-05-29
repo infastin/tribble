@@ -39,15 +39,15 @@ TrbVector *trb_vector_init(TrbVector *self, bool clear, usize elemsize);
 
 /**
  * trb_vector_copy:
- * @dst: (optional) (inout): The pointer to the destination array.
  * @src: The array to be copied.
+ * @dst: (optional) (inout): The pointer to the destination array.
  *
  * Creates a copy of the array.
  *
  * Returns: (nullable): A copy of the array.
  * Can return %NULL if an allocation error occurs.
  **/
-TrbVector *trb_vector_copy(TrbVector *dst, const TrbVector *src);
+TrbVector *trb_vector_copy(const TrbVector *src, TrbVector *dst);
 
 /**
  * trb_vector_push_back:
@@ -300,7 +300,7 @@ bool trb_vector_search(const TrbVector *self, const void *target, TrbCmpFunc cmp
  **/
 bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
-TrbSlice *trb_vector_slice(TrbSlice *dst, TrbVector *self, usize start, usize end);
+TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *dst, usize start, usize end);
 
 /**
  * trb_vector_ptr:

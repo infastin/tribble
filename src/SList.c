@@ -428,7 +428,7 @@ TrbSList *trb_slist_pop_front(TrbSList *self)
 	return first;
 }
 
-TrbSList *trb_slist_copy(TrbSList *dst, const TrbSList *src, TrbCopyFunc copy_func, bool *status)
+TrbSList *trb_slist_copy(const TrbSList *src, TrbSList *dst, TrbCopyFunc copy_func, bool *status)
 {
 	trb_return_val_if_fail(src != NULL, FALSE);
 	trb_return_val_if_fail(copy_func != NULL, FALSE);

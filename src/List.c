@@ -450,7 +450,7 @@ void trb_list_remove(TrbList *node)
 	node->prev = node;
 }
 
-TrbList *trb_list_copy(TrbList *dst, const TrbList *src, TrbCopyFunc copy_func, bool *status)
+TrbList *trb_list_copy(const TrbList *src, TrbList *dst, TrbCopyFunc copy_func, bool *status)
 {
 	trb_return_val_if_fail(src != NULL, FALSE);
 	trb_return_val_if_fail(copy_func != NULL, FALSE);

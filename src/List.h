@@ -203,8 +203,8 @@ void trb_list_splice(TrbList *self, TrbList *node);
 
 /**
  * trb_list_copy:
- * @dst: The destination list.
  * @src: The source list.
+ * @dst: The destination list.
  * @copy_func: (scope call): The function for copying nodes.
  * @status: (optional) (out): The pointer to retrieve the status of execution (%TRUE for success).
  *
@@ -213,7 +213,7 @@ void trb_list_splice(TrbList *self, TrbList *node);
  * Returns: (nullable): A copy of the list.
  * Can return %NULL if an allocation error occurs.
  **/
-TrbList *trb_list_copy(TrbList *dst, const TrbList *src, TrbCopyFunc copy_func, bool *status);
+TrbList *trb_list_copy(const TrbList *src, TrbList *dst, TrbCopyFunc copy_func, bool *status);
 
 /**
  * trb_list_destroy:
