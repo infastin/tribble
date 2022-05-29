@@ -52,7 +52,7 @@ struct _TrbHashTable {
  * Creates a new #TrbHashTable.
  *
  * Returns: (nullable): A new #TrbHashTable.
- * Can return %NULL if an error occurs
+ * Can return %NULL if an error occurs.
  **/
 TrbHashTable *trb_hash_table_init(
 	TrbHashTable *self,

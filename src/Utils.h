@@ -135,50 +135,44 @@ void trb_quicksort(TrbSlice *slice, TrbCmpFunc cmp_func);
  **/
 void trb_quicksort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data);
 
+/**
+ * trb_reverse:
+ * @slice: The array to be reversed.
+ *
+ * Reverses the slice.
+ **/
 void trb_reverse(TrbSlice *slice);
 
 /**
  * trb_binary_search:
- * @array: The array to be searchen.
+ * @slice: The slice to be searched.
  * @target: The pointer to the data to be found.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
  * @cmp_func: (scope call): The function for comparing elements.
  * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
- * Searches for the entry in the array using binary search.
+ * Searches for the entry in the slice using binary search.
  *
- * The array should be sorted if you want to use this function.
+ * The slice should be sorted if you want to use this function.
  *
  * Returns: %TRUE if found, %FALSE if not.
  **/
-bool trb_binary_search(const void *array, const void *target, usize len, usize elemsize, TrbCmpFunc cmp_func, usize *index);
+bool trb_binary_search(const TrbSlice *slice, const void *target, TrbCmpFunc cmp_func, usize *index);
 
 /**
  * trb_binary_search_data:
- * @array: The array to be searchen.
+ * @slice: The slice to be searched.
  * @target: The pointer to the data to be found.
- * @len: The length of the array.
- * @elemsize: The size of each element in the array.
  * @cmpd_func: (scope call): The function for comparing elements.
  * @data: User data.
  * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
- * Searches for the entry in the array using binary search and user data.
+ * Searches for the entry in the slice using binary search and user data.
  *
- * The array should be sorted if you want to use this function.
+ * The slice should be sorted if you want to use this function.
  *
  * Returns: %TRUE if found, %FALSE if not.
  **/
-bool trb_binary_search_data(
-	const void *array,
-	const void *target,
-	usize len,
-	usize elemsize,
-	TrbCmpDataFunc cmpd_func,
-	void *data,
-	usize *index
-);
+bool trb_binary_search_data(const TrbSlice *slice, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
 /**
  * trb_u8cmp:

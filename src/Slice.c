@@ -3,7 +3,7 @@
 #include "Macros.h"
 #include "Messages.h"
 
-static void *__trb_slice_at(TrbSlice *self, usize index)
+static void *__trb_slice_at(const TrbSlice *self, usize index)
 {
 	trb_return_val_if_fail(self != NULL, NULL);
 
@@ -38,7 +38,7 @@ TrbSlice *trb_slice_init(TrbSlice *self, void *data, usize elemsize, usize start
 	return self;
 }
 
-TrbSlice *trb_slice_reslice(TrbSlice *dst, TrbSlice *src, usize start, usize end)
+TrbSlice *trb_slice_reslice(TrbSlice *src, TrbSlice *dst, usize start, usize end)
 {
 	trb_return_val_if_fail(src != NULL, NULL);
 	trb_return_val_if_fail(start < end, NULL);

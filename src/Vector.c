@@ -402,7 +402,7 @@ bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDat
 	return FALSE;
 }
 
-static void *__trb_vector_slice_at(TrbSlice *self, usize index)
+static void *__trb_vector_slice_at(const TrbSlice *self, usize index)
 {
 	TrbVector *vector = self->data;
 

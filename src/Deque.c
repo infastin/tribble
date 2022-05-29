@@ -807,7 +807,7 @@ bool trb_deque_search_data(const TrbDeque *self, const void *target, TrbCmpDataF
 	return FALSE;
 }
 
-static void *__trb_deque_slice_at(TrbSlice *self, usize index)
+static void *__trb_deque_slice_at(const TrbSlice *self, usize index)
 {
 	TrbDeque *deque = self->data;
 

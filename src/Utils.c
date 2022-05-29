@@ -394,14 +394,14 @@ static void __trb_quicksort_recursive(TrbSlice *slice, usize left, usize right, 
 
 		if ((right - left + 1) <= SORT_LEN_THRESHOLD) {
 			TrbSlice part_slice;
-			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
 			__trb_inssort(&part_slice, cmp_func);
 			return;
 		}
 
 		if (++loop_count >= max_loops) {
 			TrbSlice part_slice;
-			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
 			__trb_heapsort(&part_slice, cmp_func);
 			return;
 		}
@@ -506,14 +506,14 @@ static void __trb_quicksort_recursive_data(TrbSlice *slice, usize left, usize ri
 
 		if ((right - left + 1) <= SORT_LEN_THRESHOLD) {
 			TrbSlice part_slice;
-			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
 			__trb_inssort_data(&part_slice, cmpd_func, data);
 			return;
 		}
 
 		if (++loop_count >= max_loops) {
 			TrbSlice part_slice;
-			trb_slice_reslice(&part_slice, slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
 			__trb_heapsort_data(&part_slice, cmpd_func, data);
 			return;
 		}
@@ -561,11 +561,12 @@ void trb_reverse(TrbSlice *slice)
 }
 
 /* Binary search */
-bool trb_binary_search(const void *array, const void *target, usize len, usize elemsize, TrbCmpFunc cmp_func, usize *index)
+bool trb_binary_search(const TrbSlice *slice, const void *target, TrbCmpFunc cmp_func, usize *index)
 {
-	trb_return_val_if_fail(array != NULL, FALSE);
-	trb_return_val_if_fail(elemsize != 0, FALSE);
+	trb_return_val_if_fail(slice != NULL, FALSE);
 	trb_return_val_if_fail(cmp_func != NULL, FALSE);
+
+	usize len = trb_slice_len(slice);
 
 	if (len == 0)
 		return FALSE;
@@ -576,14 +577,14 @@ bool trb_binary_search(const void *array, const void *target, usize len, usize e
 	while (left <= right) {
 		usize mid = left + ((right - left) >> 1);
 
-		if (cmp_func(trb_array_cell(array, elemsize, mid), target) == 0) {
+		if (cmp_func(slice->at(slice, mid), target) == 0) {
 			if (index != NULL)
 				*index = mid;
 
 			return TRUE;
 		}
 
-		if (cmp_func(trb_array_cell(array, elemsize, mid), target) < 0)
+		if (cmp_func(slice->at(slice, mid), target) < 0)
 			left = mid + 1;
 		else
 			right = mid - 1;
@@ -592,19 +593,12 @@ bool trb_binary_search(const void *array, const void *target, usize len, usize e
 	return FALSE;
 }
 
-bool trb_binary_search_data(
-	const void *array,
-	const void *target,
-	usize len,
-	usize elemsize,
-	TrbCmpDataFunc cmpd_func,
-	void *data,
-	usize *index
-)
+bool trb_binary_search_data(const TrbSlice *slice, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index)
 {
-	trb_return_val_if_fail(array != NULL, FALSE);
-	trb_return_val_if_fail(elemsize != 0, FALSE);
+	trb_return_val_if_fail(slice != NULL, FALSE);
 	trb_return_val_if_fail(cmpd_func != NULL, FALSE);
+
+	usize len = trb_slice_len(slice);
 
 	if (len == 0)
 		return FALSE;
@@ -615,14 +609,14 @@ bool trb_binary_search_data(
 	while (left <= right) {
 		usize mid = left + ((right - left) >> 1);
 
-		if (cmpd_func(trb_array_cell(array, elemsize, mid), target, data) == 0) {
+		if (cmpd_func(slice->at(slice, mid), target, data) == 0) {
 			if (index != NULL)
 				*index = mid;
 
 			return TRUE;
 		}
 
-		if (cmpd_func(trb_array_cell(array, elemsize, mid), target, data) < 0)
+		if (cmpd_func(slice->at(slice, mid), target, data) < 0)
 			left = mid + 1;
 		else
 			right = mid - 1;
