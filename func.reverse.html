@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.abs64</title>
+  <title>Tribble.reverse</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta property="og:title" content="Tribble.abs64"/>
-  <meta property="og:description" content="Reference for Tribble.abs64"/>
-  <meta name="twitter:title" content="Tribble.abs64"/>
-  <meta name="twitter:description" content="Reference for Tribble.abs64"/>
+  <meta property="og:title" content="Tribble.reverse"/>
+  <meta property="og:description" content="Reference for Tribble.reverse"/>
+  <meta name="twitter:title" content="Tribble.reverse"/>
+  <meta name="twitter:description" content="Reference for Tribble.reverse"/>
 
 
   
@@ -87,7 +87,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <section id="main" class="content">
   <header>
     <h3>Function </h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span>abs64</h1>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>reverse</h1>
   </header>
 
   <section>
@@ -96,14 +96,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Math.h#L437">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L138">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">u64</span><span class="w"></span>
-<span class="n">trb_abs64</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">i64</span><span class="w"> </span><span class="n">num</span><span class="w"></span>
+        <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"></span>
+<span class="n">trb_reverse</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbSlice</span><span class="o">*</span><span class="w"> </span><span class="n">slice</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -115,12 +115,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Math.h#L429">[src]</a>
-        
       </h4>
 
       <div class="docblock">
-        <p>Gets the absolute value of <code>num</code>.</p>
+        No description available.
       </div>
 
       <div class="docblock">
@@ -148,12 +146,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>num</code></td>
-            <td><a href="alias.i64.html"><code>i64</code></a></td>
+            <td><code>slice</code></td>
+            <td><a href="struct.Slice.html"><code>TrbSlice</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>An <code>i64</code> integer.</p></td>
+            <td>No description available.</td>
           </tr>
           
           
@@ -162,7 +160,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           
-          
+          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
           
           
           
@@ -171,32 +169,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
     </div>
     
 
-    
-    <div class="return-value toggle-wrapper">
-      <h4 id="return-value">
-        Return value
-        <a href="#return-value" class="anchor"></a>
-      </h4>
-
-      <div class="docblock">
-        <table class="returns">
-          <tr class="arg-name">
-            <td>Returns:</td>
-            <td><a href="alias.u64.html"><code>u64</code></a></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p>The absolute value of <code>num</code> as an <code>u64</code>.</p></td>
-          </tr>
-          
-          
-          
-          
-          
-          
-        </table>
-      </div>
-    </div>
     
   </section>
 </section>

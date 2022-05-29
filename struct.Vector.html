@@ -80,6 +80,15 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 
 
 
+<div class="section">
+  <h5>Functions</h5>
+  <div class="links">
+  
+    <a class="func" href="type_func.Vector.slice.html">slice</a>
+  
+  </div>
+</div>
+
 
 
 <div class="section">
@@ -122,17 +131,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Vector.require.html">require</a>
   
-    <a class="method" href="method.Vector.reverse.html">reverse</a>
-  
     <a class="method" href="method.Vector.search.html">search</a>
   
     <a class="method" href="method.Vector.search_data.html">search_data</a>
   
     <a class="method" href="method.Vector.shrink.html">shrink</a>
-  
-    <a class="method" href="method.Vector.sort.html">sort</a>
-  
-    <a class="method" href="method.Vector.sort_data.html">sort_data</a>
   
     <a class="method" href="method.Vector.steal.html">steal</a>
   
@@ -161,7 +164,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           Description
           <a href="#description" class="anchor"></a>
           
-          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L10">[src]</a>
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L9">[src]</a>
           
         </h4>
 
@@ -170,9 +173,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">zero_terminated</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">clear</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">sorted</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -212,18 +213,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
               </tr>
             
               <tr>
-                <td><code>zero_terminated</code></td>
-                <td><p>Indicates whether vector is zero-terminated or&nbsp;not.</p></td>
-              </tr>
-            
-              <tr>
                 <td><code>clear</code></td>
                 <td><p>Indicates whether elements should be cleared to 0 when allocated or&nbsp;not.</p></td>
-              </tr>
-            
-              <tr>
-                <td><code>sorted</code></td>
-                <td><p>Indicates whether vector is sorted or&nbsp;not.</p></td>
               </tr>
             
             </table>
@@ -245,6 +236,27 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 
     
 
+    
+    <div class="toggle-wrapper methods">
+      <h4 id="type-functions">
+        Functions
+        <a href="#type-functions" class="anchor"></a>
+      </h4>
+
+      <div class="docblock">
+      
+      <div class="">
+        <h6><a href="type_func.Vector.slice.html">trb_vector_slice</a></h6>
+
+        <div class="docblock">
+          No description available.
+        </div>
+
+        
+      </div>
+      
+      </div>
+    </div>
     
 
     
@@ -443,16 +455,6 @@ If <code>data</code> is <code>NULL</code>, adds zeroes to the beginning of the&n
         </div>
       
         <div class="">
-          <h6><a href="method.Vector.reverse.html">trb_vector_reverse</a></h6>
-
-          <div class="docblock">
-            <p>Reverses the&nbsp;array.</p>
-          </div>
-
-          
-        </div>
-      
-        <div class="">
           <h6><a href="method.Vector.search.html">trb_vector_search</a></h6>
 
           <div class="docblock">
@@ -477,26 +479,6 @@ If <code>data</code> is <code>NULL</code>, adds zeroes to the beginning of the&n
 
           <div class="docblock">
             <p>Frees unused memory of the array&nbsp;buffer.</p>
-          </div>
-
-          
-        </div>
-      
-        <div class="">
-          <h6><a href="method.Vector.sort.html">trb_vector_sort</a></h6>
-
-          <div class="docblock">
-            <p>Sorts the&nbsp;array.</p>
-          </div>
-
-          
-        </div>
-      
-        <div class="">
-          <h6><a href="method.Vector.sort_data.html">trb_vector_sort_data</a></h6>
-
-          <div class="docblock">
-            <p>Sorts the array using user&nbsp;data.</p>
           </div>
 
           
@@ -543,6 +525,8 @@ Array&#8217;s buffer becomes <code>NULL</code>.</p>
       
 
       
+<li class="toc-list-item"><a href="#type-functions"><span class="link-text">Functions</span></a></li>
+
 
       
 <li class="toc-list-item"><a href="#methods"><span class="link-text">Methods</span></a></li>

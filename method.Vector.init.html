@@ -116,17 +116,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Vector.require.html">require</a>
   
-    <a class="method" href="method.Vector.reverse.html">reverse</a>
-  
     <a class="method" href="method.Vector.search.html">search</a>
   
     <a class="method" href="method.Vector.search_data.html">search_data</a>
   
     <a class="method" href="method.Vector.shrink.html">shrink</a>
-  
-    <a class="method" href="method.Vector.sort.html">sort</a>
-  
-    <a class="method" href="method.Vector.sort_data.html">sort_data</a>
   
     <a class="method" href="method.Vector.steal.html">steal</a>
   
@@ -152,7 +146,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L44">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L38">[src]</a>
         
       </h4>
 
@@ -161,7 +155,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <span class="n">trb_vector_init</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">clear</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">zero_terminated</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
@@ -174,7 +167,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L32">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Vector.h#L27">[src]</a>
         
       </h4>
 
@@ -215,24 +208,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <tr class="arg-description">
             <td>&nbsp;</td>
             <td><p><code>TRUE</code> if elements should be cleared to 0 when&nbsp;allocated.</p></td>
-          </tr>
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          
-          <tr class="arg-name">
-            <td><code>zero_terminated</code></td>
-            <td><code>bool</code></td>
-          </tr>
-          <tr class="arg-description">
-            <td>&nbsp;</td>
-            <td><p><code>TRUE</code> if the array should have terminating&nbsp;zero.</p></td>
           </tr>
           
           
