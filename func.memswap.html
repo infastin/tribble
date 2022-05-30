@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.array_swap</title>
+  <title>Tribble.memswap</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta property="og:title" content="Tribble.array_swap"/>
-  <meta property="og:description" content="Reference for Tribble.array_swap"/>
-  <meta name="twitter:title" content="Tribble.array_swap"/>
-  <meta name="twitter:description" content="Reference for Tribble.array_swap"/>
+  <meta property="og:title" content="Tribble.memswap"/>
+  <meta property="og:description" content="Reference for Tribble.memswap"/>
+  <meta name="twitter:title" content="Tribble.memswap"/>
+  <meta name="twitter:description" content="Reference for Tribble.memswap"/>
 
 
   
@@ -87,7 +87,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <section id="main" class="content">
   <header>
     <h3>Function Macro</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span>array_swap</h1>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>memswap</h1>
   </header>
 
   <section>
@@ -96,15 +96,15 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Macros.h#L17">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Macros.h#L40">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_array_swap (</span>
+        <pre><code><div class="highlight"><pre><span></span><span class="cp">#define trb_memswap (</span>
 <span class="w">  </span><span class="n">a</span><span class="p">,</span><span class="w"></span>
 <span class="w">  </span><span class="n">b</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">elemsize</span><span class="w"></span>
+<span class="w">  </span><span class="n">size</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -116,10 +116,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a href="#description" class="anchor"></a>
         
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Macros.h#L32">[src]</a>
+        
       </h4>
 
       <div class="docblock">
-        No description available.
+        <p>Swaps <code>size</code> bytes in <code>a</code> and <code>b</code>.</p>
       </div>
 
       <div class="docblock">
@@ -154,7 +156,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The first&nbsp;pointer.</p></td>
           </tr>
           
           
@@ -172,7 +174,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The second&nbsp;pointer.</p></td>
           </tr>
           
           
@@ -185,12 +187,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           <tr class="arg-name">
-            <td><code>elemsize</code></td>
+            <td><code>size</code></td>
             <td><code>-</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td>No description available.</td>
+            <td><p>The amount of bytes to be&nbsp;swapped.</p></td>
           </tr>
           
           

@@ -149,24 +149,20 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           Description
           <a href="#description" class="anchor"></a>
           
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Deque.h#L9">[src]</a>
+          
         </h4>
 
         <pre><code><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">TrbDeque</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="n">TrbVector</span><span class="w"> </span><span class="n">buckets</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">TrbVector</span><span class="w"> </span><span class="n">unused</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">bucketsize</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">bucketcap</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">offset</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">clear</span><span class="p">;</span><span class="w"></span>
-<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">sorted</span><span class="p">;</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </code></pre>
 
         <div class="docblock">
-          No description available.
+          <p>A double-ended&nbsp;queue.</p>
         </div>
 
         
@@ -180,48 +176,18 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
             <table>
             
               <tr>
-                <td><code>buckets</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
-                <td><code>unused</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
                 <td><code>elemsize</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
-                <td><code>bucketsize</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
-                <td><code>bucketcap</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
-                <td><code>offset</code></td>
-                <td>No description available.</td>
+                <td><p>The size of each&nbsp;element.</p></td>
               </tr>
             
               <tr>
                 <td><code>len</code></td>
-                <td>No description available.</td>
+                <td><p>The size of the&nbsp;deque.</p></td>
               </tr>
             
               <tr>
                 <td><code>clear</code></td>
-                <td>No description available.</td>
-              </tr>
-            
-              <tr>
-                <td><code>sorted</code></td>
-                <td>No description available.</td>
+                <td><p>Indicates whether elements should be cleared to 0 when allocated or&nbsp;not.</p></td>
               </tr>
             
             </table>
@@ -258,7 +224,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.destroy.html">trb_deque_destroy</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Frees the deque&nbsp;buckets.</p>
           </div>
 
           
@@ -268,7 +234,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.free.html">trb_deque_free</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Frees the deque&nbsp;completely.</p>
           </div>
 
           
@@ -278,7 +244,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.init.html">trb_deque_init</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Creates a new double-ended&nbsp;queue.</p>
           </div>
 
           
@@ -288,7 +254,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.insert.html">trb_deque_insert</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Inserts the element into the deque at the given index.
+If <code>data</code> is <code>NULL</code>, inserts a zero into the&nbsp;deque.</p>
           </div>
 
           
@@ -298,7 +265,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.insert_many.html">trb_deque_insert_many</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Inserts elements into the deque at the given index.
+If <code>data</code> is <code>NULL</code>, inserts zeroes into the&nbsp;deque.</p>
           </div>
 
           
@@ -308,7 +276,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.pop_back.html">trb_deque_pop_back</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Removes the last element from the&nbsp;deque.</p>
           </div>
 
           
@@ -318,7 +286,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.pop_back_many.html">trb_deque_pop_back_many</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Removes last <code>len</code> elements from the&nbsp;deque.</p>
           </div>
 
           
@@ -328,7 +296,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.pop_front.html">trb_deque_pop_front</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Removes the first element from the&nbsp;deque.</p>
           </div>
 
           
@@ -338,7 +306,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.pop_front_many.html">trb_deque_pop_front_many</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Removes first <code>len</code> elements from the&nbsp;deque.</p>
           </div>
 
           
@@ -348,7 +316,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.push_back.html">trb_deque_push_back</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Adds the element to the end of the deque.
+If <code>data</code> is <code>NULL</code>, adds a zero to the end of the&nbsp;deque.</p>
           </div>
 
           
@@ -358,7 +327,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.push_back_many.html">trb_deque_push_back_many</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Adds elements to the end of the deque.
+If <code>data</code> is <code>NULL</code>, adds zeroes to the end of the&nbsp;deque.</p>
           </div>
 
           
@@ -368,7 +338,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.push_front.html">trb_deque_push_front</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Adds the element to the beginning of the deque.
+If <code>data</code> is <code>NULL</code>, adds a zero to the beginning of the&nbsp;deque.</p>
           </div>
 
           
@@ -378,7 +349,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.push_front_many.html">trb_deque_push_front_many</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Adds elements to the beginning of the deque.
+If <code>data</code> is <code>NULL</code>, adds zeroes to the beginning of the&nbsp;deque.</p>
           </div>
 
           
@@ -388,7 +360,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.remove.html">trb_deque_remove</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Removes the entry at the given index from the&nbsp;deque.</p>
           </div>
 
           
@@ -398,7 +370,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.remove_all.html">trb_deque_remove_all</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Removes all elements from the&nbsp;deque.</p>
           </div>
 
           
@@ -408,7 +380,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.remove_range.html">trb_deque_remove_range</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Removes the range of elements from the&nbsp;deque.</p>
           </div>
 
           
@@ -418,7 +390,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.search.html">trb_deque_search</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Searches for the entry in the&nbsp;deque.</p>
           </div>
 
           
@@ -428,7 +400,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.search_data.html">trb_deque_search_data</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Searches for the entry in the deque using user&nbsp;data.</p>
           </div>
 
           
@@ -438,7 +410,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.shrink.html">trb_deque_shrink</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Frees unused memory of the deque&nbsp;buckets.</p>
           </div>
 
           
@@ -448,7 +420,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <h6><a href="method.Deque.slice.html">trb_deque_slice</a></h6>
 
           <div class="docblock">
-            No description available.
+            <p>Slices the <code>TrbDeque</code>.</p>
           </div>
 
           
