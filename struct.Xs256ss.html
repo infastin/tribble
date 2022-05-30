@@ -113,7 +113,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           Description
           <a href="#description" class="anchor"></a>
           
-          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L141">[src]</a>
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L144">[src]</a>
           
         </h4>
 
@@ -178,7 +178,8 @@ It has excellent (sub-ns) speed and it passes all&nbsp;tests.</p>
           <h6><a href="method.Xs256ss.init.html">trb_xs256ss_init</a></h6>
 
           <div class="docblock">
-            <p>Initializes the state of <code>TrbXs256ss</code> with the given&nbsp;seed.</p>
+            <p>Initializes the state of <code>TrbXs256ss</code> with the given seed.
+If allocated on the heap, use <code>free()</code> to release the allocated&nbsp;memory.</p>
           </div>
 
           

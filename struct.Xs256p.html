@@ -115,7 +115,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           Description
           <a href="#description" class="anchor"></a>
           
-          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L178">[src]</a>
+          <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Rand.h#L182">[src]</a>
           
         </h4>
 
@@ -183,7 +183,8 @@ can be used to generate 64-bit outputs,&nbsp;too.</p>
           <h6><a href="method.Xs256p.init.html">trb_xs256p_init</a></h6>
 
           <div class="docblock">
-            <p>Initializes the state of <code>TrbXs256p</code> with the given&nbsp;seed.</p>
+            <p>Initializes the state of <code>TrbXs256p</code> with the given seed.
+If allocated on the heap, use <code>free()</code> to release the allocated&nbsp;memory.</p>
           </div>
 
           
