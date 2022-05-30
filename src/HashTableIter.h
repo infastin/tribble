@@ -61,7 +61,7 @@ struct _TrbHashTableIter {
  * @ht: The hash table to be iterated.
  *
  * Creates a new #HashTableIter.
- * If allocated on heap, use `free()` to release the allocated memory.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new #HashTableIter.
  * Can return %NULL if an alloction error occurs.

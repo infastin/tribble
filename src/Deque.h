@@ -234,8 +234,10 @@ bool trb_deque_search_data(const TrbDeque *self, const void *target, TrbCmpDataF
  * @end: The end position in the deque.
  *
  * Slices the #TrbDeque.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
- * Returns: A new #TrbSlice.
+ * Returns: (nullable): A new #TrbSlice.
+ * Can return %NULL if an error occurs.
  **/
 TrbSlice *trb_deque_slice(TrbDeque *self, TrbSlice *slice, usize start, usize end);
 

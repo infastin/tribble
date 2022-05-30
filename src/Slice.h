@@ -52,6 +52,7 @@ struct _TrbSlice {
  * @end: The end position in the @array.
  *
  * Creates a new #TrbSlice from an array.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new #TrbSlice.
  * Can return %NULL if an allocation error occurs.
@@ -68,6 +69,7 @@ TrbSlice *trb_slice_init(TrbSlice *self, void *array, usize elemsize, usize star
  * It is relative to the @src start position.
  *
  * Creates a new #TrbSlice of another #TrbSlice.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new #TrbSlice.
  * Can return %NULL if an error occurs.

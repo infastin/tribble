@@ -25,6 +25,7 @@ struct _TrbSM64 {
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbSM64 with the given seed.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.
@@ -72,6 +73,7 @@ struct _TrbXs128ss {
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs128ss with the given seed.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.
@@ -112,6 +114,7 @@ struct _TrbXs128p {
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs128p with the given seed.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.
@@ -159,6 +162,7 @@ struct _TrbXs256ss {
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs256ss with the given seed.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.
@@ -199,6 +203,7 @@ struct _TrbXs256p {
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbXs256p with the given seed.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.
@@ -244,6 +249,7 @@ struct _TrbPcg64 {
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbPcg64 with the given seed.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.
@@ -314,6 +320,7 @@ struct _TrbPcg128 {
  * @seed: The seed to initialize with.
  *
  * Initializes the state of #TrbPcg128 with the given seed.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.

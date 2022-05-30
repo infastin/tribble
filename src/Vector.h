@@ -308,8 +308,10 @@ bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDat
  * @end: The end position in the vector.
  *
  * Slices the #TrbVector.
+ * If allocated on the heap, use `free()` to release the allocated memory.
  *
- * Returns: A new #TrbSlice.
+ * Returns: (nullable): A new #TrbSlice.
+ * Can return %NULL if an error occurs.
  **/
 TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *slice, usize start, usize end);
 

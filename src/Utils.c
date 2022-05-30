@@ -394,14 +394,14 @@ static void __trb_quicksort_recursive(TrbSlice *slice, usize left, usize right, 
 
 		if ((right - left + 1) <= SORT_LEN_THRESHOLD) {
 			TrbSlice part_slice;
-			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right + 1);
 			__trb_inssort(&part_slice, cmp_func);
 			return;
 		}
 
 		if (++loop_count >= max_loops) {
 			TrbSlice part_slice;
-			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right + 1);
 			__trb_heapsort(&part_slice, cmp_func);
 			return;
 		}
@@ -506,14 +506,14 @@ static void __trb_quicksort_recursive_data(TrbSlice *slice, usize left, usize ri
 
 		if ((right - left + 1) <= SORT_LEN_THRESHOLD) {
 			TrbSlice part_slice;
-			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right + 1);
 			__trb_inssort_data(&part_slice, cmpd_func, data);
 			return;
 		}
 
 		if (++loop_count >= max_loops) {
 			TrbSlice part_slice;
-			trb_slice_reslice(slice, &part_slice, left, right - left + 1);
+			trb_slice_reslice(slice, &part_slice, left, right + 1);
 			__trb_heapsort_data(&part_slice, cmpd_func, data);
 			return;
 		}
