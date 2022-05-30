@@ -130,7 +130,7 @@ static void __trb_inssort(TrbSlice *slice, TrbCmpFunc cmp_func)
 			if (cmp_func(slice->at(slice, j), slice->at(slice, cur)) <= 0)
 				break;
 
-			trb_array_swap(slice->at(slice, j), slice->at(slice, cur), slice->elemsize);
+			trb_memswap(slice->at(slice, j), slice->at(slice, cur), slice->elemsize);
 
 			cur = j;
 
@@ -164,7 +164,7 @@ static void __trb_inssort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *
 			if (cmpd_func(slice->at(slice, j), slice->at(slice, cur), data) <= 0)
 				break;
 
-			trb_array_swap(slice->at(slice, j), slice->at(slice, cur), slice->elemsize);
+			trb_memswap(slice->at(slice, j), slice->at(slice, cur), slice->elemsize);
 
 			cur = j;
 
@@ -198,7 +198,7 @@ static void __trb_heap(TrbSlice *slice, usize start, usize end, TrbCmpFunc cmp_f
 			child++;
 
 		if (cmp_func(slice->at(slice, root), slice->at(slice, child)) < 0) {
-			trb_array_swap(slice->at(slice, root), slice->at(slice, child), slice->elemsize);
+			trb_memswap(slice->at(slice, root), slice->at(slice, child), slice->elemsize);
 			root = child;
 		} else
 			return;
@@ -240,7 +240,7 @@ static void __trb_heapsort(TrbSlice *slice, TrbCmpFunc cmp_func)
 	__trb_heapify(slice, cmp_func);
 
 	while (end > 0) {
-		trb_array_swap(slice->at(slice, 0), slice->at(slice, end), slice->elemsize);
+		trb_memswap(slice->at(slice, 0), slice->at(slice, end), slice->elemsize);
 		end--;
 		__trb_heap(slice, 0, end, cmp_func);
 	}
@@ -270,7 +270,7 @@ static void __trb_heap_data(TrbSlice *slice, usize start, usize end, TrbCmpDataF
 			child++;
 
 		if (cmpd_func(slice->at(slice, root), slice->at(slice, child), data) < 0) {
-			trb_array_swap(slice->at(slice, root), slice->at(slice, child), slice->elemsize);
+			trb_memswap(slice->at(slice, root), slice->at(slice, child), slice->elemsize);
 			root = child;
 		} else
 			return;
@@ -312,7 +312,7 @@ static void __trb_heapsort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void 
 	__trb_heapify_data(slice, cmpd_func, data);
 
 	while (end > 0) {
-		trb_array_swap(slice->at(slice, 0), slice->at(slice, end), slice->elemsize);
+		trb_memswap(slice->at(slice, 0), slice->at(slice, end), slice->elemsize);
 		end--;
 		__trb_heap_data(slice, 0, end, cmpd_func, data);
 	}
@@ -337,7 +337,7 @@ static usize __trb_quicksort_partition(TrbSlice *slice, usize left, usize right,
 	usize j = right;
 
 	if (pivot != left)
-		trb_array_swap(slice->at(slice, left), slice->at(slice, pivot), slice->elemsize);
+		trb_memswap(slice->at(slice, left), slice->at(slice, pivot), slice->elemsize);
 
 	while (1) {
 		while (cmp_func(slice->at(slice, i), slice->at(slice, left)) < 0)
@@ -347,11 +347,11 @@ static usize __trb_quicksort_partition(TrbSlice *slice, usize left, usize right,
 			j--;
 
 		if (j <= i) {
-			trb_array_swap(slice->at(slice, j), slice->at(slice, left), slice->elemsize);
+			trb_memswap(slice->at(slice, j), slice->at(slice, left), slice->elemsize);
 			return j;
 		}
 
-		trb_array_swap(slice->at(slice, i), slice->at(slice, j), slice->elemsize);
+		trb_memswap(slice->at(slice, i), slice->at(slice, j), slice->elemsize);
 
 		i++;
 		j--;
@@ -449,7 +449,7 @@ static usize __trb_quicksort_partition_data(
 	usize j = right;
 
 	if (pivot != left)
-		trb_array_swap(slice->at(slice, left), slice->at(slice, pivot), slice->elemsize);
+		trb_memswap(slice->at(slice, left), slice->at(slice, pivot), slice->elemsize);
 
 	while (1) {
 		while (cmpd_func(slice->at(slice, i), slice->at(slice, left), data) < 0)
@@ -459,11 +459,11 @@ static usize __trb_quicksort_partition_data(
 			j--;
 
 		if (j <= i) {
-			trb_array_swap(slice->at(slice, j), slice->at(slice, left), slice->elemsize);
+			trb_memswap(slice->at(slice, j), slice->at(slice, left), slice->elemsize);
 			return j;
 		}
 
-		trb_array_swap(slice->at(slice, i), slice->at(slice, j), slice->elemsize);
+		trb_memswap(slice->at(slice, i), slice->at(slice, j), slice->elemsize);
 
 		i++;
 		j--;
@@ -556,7 +556,7 @@ void trb_reverse(TrbSlice *slice)
 		return;
 
 	for (usize lo = 0, hi = len - 1; lo < hi; ++lo, --hi) {
-		trb_array_swap(slice->at(slice, lo), slice->at(slice, hi), slice->elemsize);
+		trb_memswap(slice->at(slice, lo), slice->at(slice, hi), slice->elemsize);
 	}
 }
 

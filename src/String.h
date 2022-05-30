@@ -488,8 +488,6 @@ void trb_string_free(TrbString *self);
  * @index: The position of the character.
  *
  * Gets the pointer to the character in the string at the given index.
- *
- * Returns: The pointer to the character.
  **/
 #define trb_string_ptr(self, index) (&(self)->data[index])
 
@@ -499,8 +497,6 @@ void trb_string_free(TrbString *self);
  * @index: The position of the character.
  *
  * Gets the character in the string at the given index.
- *
- * Returns: The character.
  **/
 #define trb_string_get(self, index) ((self)->data[index])
 

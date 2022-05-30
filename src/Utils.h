@@ -137,7 +137,7 @@ void trb_quicksort_data(TrbSlice *slice, TrbCmpDataFunc cmpd_func, void *data);
 
 /**
  * trb_reverse:
- * @slice: The array to be reversed.
+ * @slice: The slice to be reversed.
  *
  * Reverses the slice.
  **/

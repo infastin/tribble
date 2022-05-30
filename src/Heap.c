@@ -89,7 +89,7 @@ static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)
 		return FALSE;
 	}
 
-	trb_array_swap(
+	trb_memswap(
 		trb_array_cell(self->vector.data, self->vector.elemsize, index),
 		trb_array_cell(self->vector.data, self->vector.elemsize, self->vector.len - 1),
 		self->vector.elemsize
@@ -106,7 +106,7 @@ static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)
 
 		return TRUE;
 	} else {
-		trb_array_swap(
+		trb_memswap(
 			trb_array_cell(self->vector.data, self->vector.elemsize, index),
 			trb_array_cell(self->vector.data, self->vector.elemsize, self->vector.len - 1),
 			self->vector.elemsize

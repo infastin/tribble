@@ -8,7 +8,7 @@
  * TrbSM64:
  * @s: The state of the generator.
  *
- * SplitMix64 - is a fast, high-quality seudorandom number generator.
+ * SplitMix64 - is a fast, high-quality pseudorandom number generator.
  * Recommended for initializing generators of the xoshiro familiy from a 64-bit seed.
  *
  * [Reference](https://prng.di.unimi.it/).

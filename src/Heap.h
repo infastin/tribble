@@ -135,8 +135,6 @@ void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
  * @index: The position of the entry.
  *
  * Gets the pointer to the entry in the heap at the given index.
- *
- * Returns: The pointer to the entry.
  **/
 #define trb_heap_ptr(self, type, index) (trb_vector_ptr(&(self)->vector, type, index))
 
@@ -147,8 +145,6 @@ void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
  * @index: The position of the entry.
  *
  * Gets the value of the entry in the heap at the given index.
- *
- * Returns: The value of the entry.
  **/
 #define trb_heap_get(self, type, index) (trb_vector_get(&(self)->vector, type, index))
 

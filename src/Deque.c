@@ -37,7 +37,6 @@ TrbDeque *trb_deque_init(TrbDeque *self, bool clear, usize elemsize)
 	self->len = 0;
 	self->offset = 0;
 	self->clear = clear;
-	self->sorted = FALSE;
 
 	if (trb_vector_init(&self->buckets, TRUE, sizeof(void *)) == NULL) {
 		if (was_allocated)
@@ -896,9 +895,9 @@ void trb_deque_destroy(TrbDeque *self, TrbFreeFunc free_func)
 	self->offset = 0;
 }
 
-void trb_deque_shrink(TrbDeque *self)
+bool trb_deque_shrink(TrbDeque *self)
 {
-	trb_return_if_fail(self != NULL);
+	trb_return_val_if_fail(self != NULL, FALSE);
 
 	for (usize i = 0; i < self->unused.len; ++i) {
 		void *bucket = trb_vector_get(&self->buckets, void *, i);
@@ -907,8 +906,10 @@ void trb_deque_shrink(TrbDeque *self)
 
 	self->unused.len = 0;
 
-	trb_vector_shrink(&self->unused);
-	trb_vector_shrink(&self->buckets);
+	if (!trb_vector_shrink(&self->unused))
+		return FALSE;
+
+	return trb_vector_shrink(&self->buckets);
 }
 
 void trb_deque_free(TrbDeque *self, TrbFreeFunc free_func)
