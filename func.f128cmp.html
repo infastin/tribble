@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.i128.shr</title>
+  <title>Tribble.f128cmp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta priority="og:title" content="Tribble.i128.shr"/>
-  <meta priority="og:description" content="Reference for Tribble.i128.shr"/>
-  <meta name="twitter:title" content="Tribble.i128.shr"/>
-  <meta name="twitter:description" content="Reference for Tribble.i128.shr"/>
+  <meta property="og:title" content="Tribble.f128cmp"/>
+  <meta property="og:description" content="Reference for Tribble.f128cmp"/>
+  <meta name="twitter:title" content="Tribble.f128cmp"/>
+  <meta name="twitter:description" content="Reference for Tribble.f128cmp"/>
 
 
   
@@ -70,42 +70,14 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         
       </div>
       
+
 <div class="section">
-  <h5>Type</h5>
+  <h5>Functions</h5>
   <div class="links">
-    <a href="struct.i128.html">i128</a>
-  </div>
-</div>
-<div class="section">
-  <h5>Methods</h5>
-  <div class="links">
-  
-    <a class="method" href="method.i128.add.html">add</a>
-  
-    <a class="method" href="method.i128.and.html">and</a>
-  
-    <a class="method" href="method.i128.cmp.html">cmp</a>
-  
-    <a class="method" href="method.i128.div.html">div</a>
-  
-    <a class="method" href="method.i128.minus.html">minus</a>
-  
-    <a class="method" href="method.i128.mul.html">mul</a>
-  
-    <a class="method" href="method.i128.not.html">not</a>
-  
-    <a class="method" href="method.i128.or.html">or</a>
-  
-    <a class="method" href="method.i128.shl.html">shl</a>
-  
-    <a class="method current" href="method.i128.shr.html">shr</a>
-  
-    <a class="method" href="method.i128.sub.html">sub</a>
-  
-    <a class="method" href="method.i128.xor.html">xor</a>
   
   </div>
 </div>
+
 
     </nav>
     
@@ -114,25 +86,25 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
     
 <section id="main" class="content">
   <header>
-    <h3>Method</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.i128.html">i128</a><span class="sep"></span>shr</h1>
+    <h3>Function </h3>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span>f128cmp</h1>
   </header>
 
   <section>
     <div class="declaration toggle-wrapper">
-      <h4 style="display:flex;" id="declaration">
+      <h4 id="declaration" style="display:flex;">
         Declaration
-        <a class="anchor" href="#declaration"></a>
+        <a href="#declaration" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Math.h#L239">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L318">[src]</a>
         
       </h4>
 
-      <div class="docblock c-decl">
-        <pre><code><div class="highlight"><pre><span></span><span class="n">i128</span><span class="w"></span>
-<span class="n">i128_shr</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">i128</span><span class="w"> </span><span class="n">num</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">shift</span><span class="w"></span>
+      <div class="docblock">
+        <pre><code><div class="highlight"><pre><span></span><span class="n">i32</span><span class="w"></span>
+<span class="n">trb_f128cmp</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">f128</span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">f128</span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -140,16 +112,16 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
     </div>
 
     <div class="description toggle-wrapper">
-      <h4 style="display:flex;" id="description">
+      <h4 id="description" style="display:flex;">
         Description
-        <a class="anchor" href="#description"></a>
+        <a href="#description" class="anchor"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Math.h#L230">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Utils.h#L309">[src]</a>
         
       </h4>
 
       <div class="docblock">
-        <p>Shifts <code>num</code> by <code>shift</code> bits to the&nbsp;right.</p>
+        <p>Compares two <code>f128</code>.</p>
       </div>
 
       <div class="docblock">
@@ -158,7 +130,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           
-          <tr><td>This method is not directly available to language bindings.</td></tr>
+          <tr><td>This function is not directly available to language bindings</td></tr>
           
           
           
@@ -179,12 +151,12 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
-            <td><code>shift</code></td>
-            <td><a href="alias.usize.html"><code>usize</code></a></td>
+            <td><code>a</code></td>
+            <td><a href="alias.f128.html"><code>f128</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The second&nbsp;operand.</p></td>
+            <td><p>The first value to be&nbsp;compared.</p></td>
           </tr>
           
           
@@ -193,7 +165,25 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           
+          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
           
+          
+          <tr class="arg-name">
+            <td><code>b</code></td>
+            <td><a href="alias.f128.html"><code>f128</code></a></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td><p>The second value to be&nbsp;compared.</p></td>
+          </tr>
+          
+          
+          
+          
+          
+          
+          
+          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
           
           
           
@@ -213,11 +203,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="returns">
           <tr class="arg-name">
             <td>Returns:</td>
-            <td><a href="struct.i128.html"><code>i128</code></a></td>
+            <td><a href="alias.i32.html"><code>i32</code></a></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>A result of the operation <code>num</code> &gt;&gt; <code>shift</code>.</p></td>
+            <td><p>-1 if <code>a</code> &lt; <code>b</code>; 0 if <code>a</code> == <code>b</code>; 1 if <code>a</code> &gt; <code>b</code>.</p></td>
           </tr>
           
           
@@ -229,7 +219,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
       </div>
     </div>
     
-
   </section>
 </section>
 

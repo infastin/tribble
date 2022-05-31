@@ -181,27 +181,6 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <tbody>
           
           <tr class="section-item">
-            <td><a title="d128" class="symbol" href="struct.d128.html">d128</a></td>
-            
-            <td class="docblock-summary"><p>Stores the result of division of two <code>i128</code>.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="d32" class="symbol" href="struct.d32.html">d32</a></td>
-            
-            <td class="docblock-summary"><p>Stores the result of division of two <code>i32</code>.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="d64" class="symbol" href="struct.d64.html">d64</a></td>
-            
-            <td class="docblock-summary"><p>Stores the result of division of two <code>i64</code>.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
             <td><a title="Deque" class="symbol" href="struct.Deque.html">Deque</a></td>
             
             <td class="docblock-summary"><p>A double-ended&nbsp;queue.</p></td>
@@ -209,7 +188,21 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           
           <tr class="section-item">
-            <td><a title="dsize" class="symbol" href="struct.dsize.html">dsize</a></td>
+            <td><a title="div32" class="symbol" href="struct.div32.html">div32</a></td>
+            
+            <td class="docblock-summary"><p>Stores the result of division of two <code>i32</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="div64" class="symbol" href="struct.div64.html">div64</a></td>
+            
+            <td class="docblock-summary"><p>Stores the result of division of two <code>i64</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
+            <td><a title="divsize" class="symbol" href="struct.divsize.html">divsize</a></td>
             
             <td class="docblock-summary"><p>Stores the result of division of two <code>isize</code>.</p></td>
             
@@ -232,14 +225,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           <tr class="section-item">
             <td><a title="Heap" class="symbol" href="struct.Heap.html">Heap</a></td>
             
-            <td class="docblock-summary"><p>A heap data structure represented as an&nbsp;array.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="i128" class="symbol" href="struct.i128.html">i128</a></td>
-            
-            <td class="docblock-summary"><p>A signed 128-bit integer&nbsp;type.</p></td>
+            <td class="docblock-summary"><p>A max-heap data structure represented as an&nbsp;array.</p></td>
             
           </tr>
           
@@ -311,35 +297,21 @@ Recommended for initializing generators of the xoshiro familiy from a 64-bit&nbs
           </tr>
           
           <tr class="section-item">
-            <td><a title="u128" class="symbol" href="struct.u128.html">u128</a></td>
-            
-            <td class="docblock-summary"><p>An unsigned 128-bit integer&nbsp;type.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="ud128" class="symbol" href="struct.ud128.html">ud128</a></td>
-            
-            <td class="docblock-summary"><p>Stores the result of division of two <code>u128</code>.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="ud32" class="symbol" href="struct.ud32.html">ud32</a></td>
+            <td><a title="udiv32" class="symbol" href="struct.udiv32.html">udiv32</a></td>
             
             <td class="docblock-summary"><p>Stores the result of division of two <code>u32</code>.</p></td>
             
           </tr>
           
           <tr class="section-item">
-            <td><a title="ud64" class="symbol" href="struct.ud64.html">ud64</a></td>
+            <td><a title="udiv64" class="symbol" href="struct.udiv64.html">udiv64</a></td>
             
             <td class="docblock-summary"><p>Stores the result of division of two <code>u64</code>.</p></td>
             
           </tr>
           
           <tr class="section-item">
-            <td><a title="udsize" class="symbol" href="struct.udsize.html">udsize</a></td>
+            <td><a title="udivsize" class="symbol" href="struct.udivsize.html">udivsize</a></td>
             
             <td class="docblock-summary"><p>Stores the result of division of two <code>usize</code>.</p></td>
             
@@ -410,6 +382,13 @@ It has excellent (sub-ns) speed and it passes all&nbsp;tests.</p></td>
           <tbody>
           
           <tr class="section-item">
+            <td><a title="f128" class="symbol" href="alias.f128.html">f128</a></td>
+            
+            <td class="docblock-summary"><p>A quadruple precision floating-point number&nbsp;type.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
             <td><a title="f32" class="symbol" href="alias.f32.html">f32</a></td>
             
             <td class="docblock-summary"><p>A single precision floating-point number&nbsp;type.</p></td>
@@ -455,13 +434,6 @@ It has excellent (sub-ns) speed and it passes all&nbsp;tests.</p></td>
             <td><a title="isize" class="symbol" href="alias.isize.html">isize</a></td>
             
             <td class="docblock-summary"><p>A signed pointer size integer&nbsp;type.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="real" class="symbol" href="alias.real.html">real</a></td>
-            
-            <td class="docblock-summary"><p>A quadruple precision floating-point number&nbsp;type.</p></td>
             
           </tr>
           
@@ -893,6 +865,13 @@ It has excellent (sub-ns) speed and it passes all&nbsp;tests.</p></td>
           </tr>
           
           <tr class="section-item">
+            <td><a title="f128cmp" class="symbol" href="func.f128cmp.html">f128cmp</a></td>
+            
+            <td class="docblock-summary"><p>Compares two <code>f128</code>.</p></td>
+            
+          </tr>
+          
+          <tr class="section-item">
             <td><a title="f32cmp" class="symbol" href="func.f32cmp.html">f32cmp</a></td>
             
             <td class="docblock-summary"><p>Compares two <code>f32</code>.</p></td>
@@ -1098,13 +1077,6 @@ It has excellent (sub-ns) speed and it passes all&nbsp;tests.</p></td>
             
             <td class="docblock-summary"><p>Sorts the slice using Quicksort by Knuth.
 <a href="http://math.utoledo.edu/~codenth/Fall_14/4380/Notes/trb_quicksort.pdf">Reference</a>.</p></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="realcmp" class="symbol" href="func.realcmp.html">realcmp</a></td>
-            
-            <td class="docblock-summary"><p>Compares two <code>real</code>.</p></td>
             
           </tr>
           
@@ -1381,27 +1353,6 @@ Returns a quotient and&nbsp;remainder.</p></td>
           </tr>
           
           <tr class="section-item">
-            <td><a title="I128_C" class="symbol" href="func.I128_C.html">I128_C</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="I128_HI" class="symbol" href="func.I128_HI.html">I128_HI</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="I128_LO" class="symbol" href="func.I128_LO.html">I128_LO</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
             <td><a title="I16_C" class="symbol" href="func.I16_C.html">I16_C</a></td>
             
             <td class="docblock-summary"></td>
@@ -1625,27 +1576,6 @@ Returns a rotated 64-bit&nbsp;integer.</p></td>
           </tr>
           
           <tr class="section-item">
-            <td><a title="U128_C" class="symbol" href="func.U128_C.html">U128_C</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="U128_HI" class="symbol" href="func.U128_HI.html">U128_HI</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="U128_LO" class="symbol" href="func.U128_LO.html">U128_LO</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
             <td><a title="U16_C" class="symbol" href="func.U16_C.html">U16_C</a></td>
             
             <td class="docblock-summary"></td>
@@ -1713,42 +1643,7 @@ Returns a rotated 64-bit&nbsp;integer.</p></td>
           </tr>
           
           <tr class="section-item">
-            <td><a title="I128_MAX" class="symbol" href="const.I128_MAX.html">I128_MAX</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="I128_MIN" class="symbol" href="const.I128_MIN.html">I128_MIN</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="I128_WIDTH" class="symbol" href="const.I128_WIDTH.html">I128_WIDTH</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
             <td><a title="TRUE" class="symbol" href="const.TRUE.html">TRUE</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="U128_MAX" class="symbol" href="const.U128_MAX.html">U128_MAX</a></td>
-            
-            <td class="docblock-summary"></td>
-            
-          </tr>
-          
-          <tr class="section-item">
-            <td><a title="U128_WIDTH" class="symbol" href="const.U128_WIDTH.html">U128_WIDTH</a></td>
             
             <td class="docblock-summary"></td>
             
