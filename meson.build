@@ -3,7 +3,7 @@ project('libtribble', 'c',
   default_options: [
     'buildtype=debugoptimized',
     'warning_level=3',
-    'c_std=gnu11',
+    'c_std=gnu2x',
     'girgen=disabled',
     'gi_docgen=disabled',
   ],
