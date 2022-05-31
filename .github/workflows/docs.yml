@@ -15,7 +15,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Install dependencies
-      run: sudo apt install gi-docgen meson libgirepository1.0-dev ninja-build gcc
+      run: sudo apt install gi-docgen meson libgirepository1.0-dev ninja-build clang-14
+    - name: Update Alternatives
+      run: sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 10 && sudo update-alternatives --set clang /usr/bin/clang-14
     - name: Init Meson
       run: make init
     - name: Make docs

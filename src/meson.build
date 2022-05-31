@@ -61,7 +61,7 @@ if girgen
       '--quiet',
       '--c-include=Tribble.h',
       '--accept-unprefixed',
-      ],
+    ],
     export_packages: pkg_api_name,
     nsversion: apiversion,
     install: true,
