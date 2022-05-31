@@ -275,27 +275,27 @@ f64 trb_pcg64_next_f64(TrbPcg64 *self)
 	return ldexp(fr, -64);
 }
 
-TrbPcg128 *trb_pcg128_init(TrbPcg128 *self, u128 seed)
+typedef unsigned _BitInt(128) u128;
+
+#define U128_C(hi, lo) (((u128) U64_C(hi) << 64) | ((u128) U64_C(lo)))
+
+TrbPcg128 *trb_pcg128_init(TrbPcg128 *self, u64 seed)
 {
 	if (self == NULL) {
 		self = trb_talloc(TrbPcg128, 1);
 
 		if (self == NULL) {
-			trb_msg_error("couldn't allocate memory for the Pcg64 state");
+			trb_msg_error("couldn't allocate memory for the Pcg128 state");
 			return NULL;
 		}
 	}
 
-	self->s = U128_C(0, 0);
-
 	const u128 multi = U128_C(2549297995355413924, 4865540595714422341);
 	const u128 inc = U128_C(6364136223846793005, 1442695040888963407);
 
-	self->s = u128_mul(self->s, multi);
-	self->s = u128_add(self->s, inc);
-	self->s = u128_add(self->s, seed);
-	self->s = u128_mul(self->s, multi);
-	self->s = u128_add(self->s, inc);
+	u128 state = (inc + seed) * multi + inc;
+	self->s[0] = (u64) (state & U64_MAX);
+	self->s[1] = (u64) (state >> 64);
 
 	return self;
 }
@@ -305,18 +305,13 @@ u64 trb_pcg128_next_u64(TrbPcg128 *self)
 	const u128 multi = U128_C(2549297995355413924, 4865540595714422341);
 	const u128 inc = U128_C(6364136223846793005, 1442695040888963407);
 
-	self->s = u128_mul(self->s, multi);
-	self->s = u128_add(self->s, inc);
+	u128 state = *(u128 *) self->s;
 
-	u128 res = u128_shr(self->s, 43);
-	res = u128_xor(res, self->s);
+	state = (state * multi) + inc;
+	self->s[0] = (u64) (state & U64_MAX);
+	self->s[1] = (u64) (state >> 64);
 
-	u128 sh = u128_shr(self->s, 124);
-	sh = u128_add(sh, U128_C(0, 45));
-
-	res = u128_shr(res, U128_LO(sh));
-
-	return U128_LO(res);
+	return (u64) (((state >> 43) ^ state) >> ((state >> 124) + 45));
 }
 
 f64 trb_pcg128_next_f64(TrbPcg128 *self)
@@ -324,26 +319,4 @@ f64 trb_pcg128_next_f64(TrbPcg128 *self)
 	u64 r = trb_pcg128_next_u64(self);
 	f64 fr = (double) r;
 	return ldexp(fr, -64);
-}
-
-u128 trb_pcg128_next_u128(TrbPcg128 *self)
-{
-	const u128 multi = U128_C(2549297995355413924, 4865540595714422341);
-	const u128 inc = U128_C(6364136223846793005, 1442695040888963407);
-	const u128 bc = U128_C(17766728186571221404, 12605985483714917081);
-
-	self->s = u128_mul(self->s, multi);
-	self->s = u128_add(self->s, inc);
-
-	u128 sh = u128_shr(self->s, 122);
-	sh = u128_add(sh, U128_C(0, 6));
-
-	u128 word = u128_shr(self->s, U128_LO(sh));
-	word = u128_xor(word, self->s);
-	word = u128_mul(word, bc);
-
-	u128 res = u128_shr(word, 86);
-	res = u128_xor(res, word);
-
-	return res;
 }

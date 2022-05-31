@@ -307,14 +307,14 @@ i32 trb_f32cmp(const f32 *a, const f32 *b);
 i32 trb_f64cmp(const f64 *a, const f64 *b);
 
 /**
- * trb_realcmp:
+ * trb_f128cmp:
  * @a: The first value to be compared.
  * @b: The second value to be compared.
  *
- * Compares two `real`.
+ * Compares two `f128`.
  *
  * Returns: -1 if @a < @b; 0 if @a == @b; 1 if @a > @b.
  **/
-i32 trb_realcmp(const real *a, const real *b);
+i32 trb_f128cmp(const f128 *a, const f128 *b);
 
 #endif /* end of include guard: UTILS_H_ATMQZMHO */

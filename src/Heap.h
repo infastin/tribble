@@ -1,24 +1,25 @@
 #ifndef HEAP_H_MGLIJUQF
 #define HEAP_H_MGLIJUQF
 
+#include "Deque.h"
 #include "Types.h"
-#include "Vector.h"
 
 typedef struct _TrbHeap TrbHeap;
 
 /**
  * TrbHeap:
- * @vector: A #Vector representation of the heap.
  * @cmp_func: The function for comparing elements.
  * @cmpd_func: The function for comparing elements using user data.
  * @data: User data.
  * @with_data: Indicates whether #TrbHeap has been initialized with data or not.
  *
- * A heap data structure represented as an array.
+ * A max-heap data structure represented as an array.
  **/
 struct _TrbHeap {
-	TrbVector vector;
+	/* <private> */
+	TrbDeque deque;
 
+	/* <public> */
 	union {
 		TrbCmpFunc cmp_func;
 		TrbCmpDataFunc cmpd_func;
@@ -30,26 +31,26 @@ struct _TrbHeap {
 
 /**
  * trb_heap_init:
- * @self: (nullable): The pointer to the `TrbHeap` to be initialized.
+ * @self: (nullable): The pointer to the #TrbHeap to be initialized.
  * @elemsize: The size of each element in bytes.
  * @cmp_func: The function for comparing elements.
  *
  * Creates a new #TrbHeap.
  *
- * Returns: A new #TrbHeap. Can return `NULL` if an error occurs.
+ * Returns: A new #TrbHeap. Can return %NULL if an error occurs.
  **/
 TrbHeap *trb_heap_init(TrbHeap *self, usize elemsize, TrbCmpFunc cmp_func);
 
 /**
  * trb_heap_init_data:
- * @self: (nullable): The pointer to the `TrbHeap` to be initialized.
+ * @self: (nullable): The pointer to the #TrbHeap to be initialized.
  * @elemsize: The size of each element in bytes.
  * @cmpd_func: The function for comparing elements.
  * @data: User data.
  *
  * Creates a new #TrbHeap with the comparison function that accepts user data.
  *
- * Returns: A new #TrbHeap. Can return `NULL` if an error occurs.
+ * Returns: A new #TrbHeap. Can return %NULL if an error occurs.
  **/
 TrbHeap *trb_heap_init_data(TrbHeap *self, usize elemsize, TrbCmpDataFunc cmpd_func, void *data);
 
@@ -60,7 +61,7 @@ TrbHeap *trb_heap_init_data(TrbHeap *self, usize elemsize, TrbCmpDataFunc cmpd_f
  *
  * Inserts the element in the heap.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
 bool trb_heap_insert(TrbHeap *self, const void *data);
 
@@ -72,7 +73,7 @@ bool trb_heap_insert(TrbHeap *self, const void *data);
  *
  * Removes the element from the heap.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
 bool trb_heap_remove(TrbHeap *self, usize index, void *ret);
 
@@ -83,7 +84,7 @@ bool trb_heap_remove(TrbHeap *self, usize index, void *ret);
  *
  * Removes the last element from the heap.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
 bool trb_heap_pop_back(TrbHeap *self, void *ret);
 
@@ -94,7 +95,7 @@ bool trb_heap_pop_back(TrbHeap *self, void *ret);
  *
  * Removes the first element from the heap.
  *
- * Returns: `TRUE` on success.
+ * Returns: %TRUE on success.
  **/
 bool trb_heap_pop_front(TrbHeap *self, void *ret);
 
@@ -106,7 +107,7 @@ bool trb_heap_pop_front(TrbHeap *self, void *ret);
  *
  * Searches for the entry in the heap.
  *
- * Returns: `TRUE` if found, `FALSE` if not.
+ * Returns: %TRUE if found, %FALSE if not.
  **/
 bool trb_heap_search(const TrbHeap *self, const void *target, usize *index);
 
@@ -136,7 +137,7 @@ void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
  *
  * Gets the pointer to the entry in the heap at the given index.
  **/
-#define trb_heap_ptr(self, type, index) (trb_vector_ptr(&(self)->vector, type, index))
+#define trb_heap_ptr(self, type, index) (trb_deque_ptr(&(self)->deque, type, index))
 
 /**
  * trb_heap_get:
@@ -146,6 +147,6 @@ void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
  *
  * Gets the value of the entry in the heap at the given index.
  **/
-#define trb_heap_get(self, type, index) (trb_vector_get(&(self)->vector, type, index))
+#define trb_heap_get(self, type, index) (trb_deque_get(&(self)->deque, type, index))
 
 #endif /* end of include guard: HEAP_H_MGLIJUQF */

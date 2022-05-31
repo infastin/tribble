@@ -21,7 +21,7 @@ TrbHeap *trb_heap_init(TrbHeap *self, usize elemsize, TrbCmpFunc cmp_func)
 		was_allocated = TRUE;
 	}
 
-	if (trb_vector_init(&self->vector, FALSE, elemsize) == NULL && was_allocated) {
+	if (trb_deque_init(&self->deque, FALSE, elemsize) == NULL && was_allocated) {
 		free(self);
 		return NULL;
 	}
@@ -51,7 +51,7 @@ TrbHeap *trb_heap_init_data(TrbHeap *self, usize elemsize, TrbCmpDataFunc cmpd_f
 		was_allocated = TRUE;
 	}
 
-	if (trb_vector_init(&self->vector, FALSE, elemsize) == NULL && was_allocated) {
+	if (trb_deque_init(&self->deque, FALSE, elemsize) == NULL && was_allocated) {
 		free(self);
 		return NULL;
 	}
@@ -67,9 +67,9 @@ bool trb_heap_insert(TrbHeap *self, const void *data)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (trb_vector_push_back(&self->vector, data)) {
+	if (trb_deque_push_back(&self->deque, data)) {
 		TrbSlice heap_slice;
-		trb_vector_slice(&self->vector, &heap_slice, 0, self->vector.len);
+		trb_deque_slice(&self->deque, &heap_slice, 0, self->deque.len);
 
 		if (self->with_data)
 			trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
@@ -84,20 +84,19 @@ bool trb_heap_insert(TrbHeap *self, const void *data)
 
 static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)
 {
-	if (index >= self->vector.len) {
+	if (index >= self->deque.len) {
 		trb_msg_warn("element at [%zu] is out of bounds!", index);
 		return FALSE;
 	}
 
-	trb_memswap(
-		trb_array_cell(self->vector.data, self->vector.elemsize, index),
-		trb_array_cell(self->vector.data, self->vector.elemsize, self->vector.len - 1),
-		self->vector.elemsize
-	);
+	void *at_index = trb_deque_ptr(&self->deque, void, index);
+	void *last = trb_deque_ptr(&self->deque, void, self->deque.len - 1);
 
-	if (trb_vector_pop_back(&self->vector, ret)) {
+	trb_memswap(at_index, last, self->deque.elemsize);
+
+	if (trb_deque_pop_back(&self->deque, ret)) {
 		TrbSlice heap_slice;
-		trb_vector_slice(&self->vector, &heap_slice, 0, self->vector.len);
+		trb_deque_slice(&self->deque, &heap_slice, 0, self->deque.len);
 
 		if (self->with_data)
 			trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
@@ -106,11 +105,7 @@ static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)
 
 		return TRUE;
 	} else {
-		trb_memswap(
-			trb_array_cell(self->vector.data, self->vector.elemsize, index),
-			trb_array_cell(self->vector.data, self->vector.elemsize, self->vector.len - 1),
-			self->vector.elemsize
-		);
+		trb_memswap(at_index, last, self->deque.elemsize);
 	}
 
 	return FALSE;
@@ -126,12 +121,12 @@ bool trb_heap_pop_back(TrbHeap *self, void *ret)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 
-	if (self->vector.len == 0) {
+	if (self->deque.len == 0) {
 		trb_msg_warn("heap is empty!");
 		return FALSE;
 	}
 
-	return __trb_heap_remove(self, self->vector.len - 1, ret);
+	return __trb_heap_remove(self, self->deque.len - 1, ret);
 }
 
 bool trb_heap_pop_front(TrbHeap *self, void *ret)
@@ -146,8 +141,8 @@ bool trb_heap_search(const TrbHeap *self, const void *target, usize *index)
 
 	usize i = 0;
 
-	while (i < self->vector.len) {
-		void *current = trb_array_cell(self->vector.data, self->vector.elemsize, i);
+	while (i < self->deque.len) {
+		void *current = trb_deque_ptr(&self->deque, void, i);
 
 		i32 cmp;
 
@@ -173,7 +168,7 @@ bool trb_heap_search(const TrbHeap *self, const void *target, usize *index)
 void trb_heap_destroy(TrbHeap *self, TrbFreeFunc free_func)
 {
 	trb_return_if_fail(self != NULL);
-	trb_vector_destroy(&self->vector, free_func);
+	trb_deque_destroy(&self->deque, free_func);
 }
 
 void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func)

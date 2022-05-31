@@ -311,7 +311,7 @@ typedef struct _TrbPcg128 TrbPcg128;
  *
  **/
 struct _TrbPcg128 {
-	u128 s;
+	u64 s[2];
 };
 
 /**
@@ -325,7 +325,7 @@ struct _TrbPcg128 {
  * Returns: (nullable): A new state.
  * Can return %NULL if an allocation error occurs.
  **/
-TrbPcg128 *trb_pcg128_init(TrbPcg128 *self, u128 seed);
+TrbPcg128 *trb_pcg128_init(TrbPcg128 *self, u64 seed);
 
 /**
  * trb_pcg128_next_u64:
@@ -348,16 +348,5 @@ u64 trb_pcg128_next_u64(TrbPcg128 *self);
  * Returns: A random number in the interval [0, 1).
  **/
 f64 trb_pcg128_next_f64(TrbPcg128 *self);
-
-/**
- * trb_pcg128_next_u128:
- * @self: The pointer to the state.
- *
- * Generates a random number with the given state.
- * Uses the PCG128 RXS M XS generator.
- *
- * Returns: A random number in the range [0, %U128_MAX].
- **/
-u128 trb_pcg128_next_u128(TrbPcg128 *self);
 
 #endif /* end of include guard: RAND_H_B1PCU4KT */

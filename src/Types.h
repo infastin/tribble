@@ -124,10 +124,10 @@ typedef float f32;
 typedef double f64;
 
 /**
- * real:
+ * f128:
  * A quadruple precision floating-point number type.
  **/
-typedef long double real;
+typedef long double f128;
 
 #ifndef bool
 typedef _Bool bool;

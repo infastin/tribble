@@ -3,7 +3,7 @@ project('libtribble', 'c',
   default_options: [
     'buildtype=debugoptimized',
     'warning_level=3',
-    'c_std=gnu2x',
+    'c_std=gnu11',
     'girgen=disabled',
     'gi_docgen=disabled',
   ],
@@ -20,7 +20,6 @@ pkg_api_name = '@0@-@1@'.format(meson.project_name(), apiversion)
 add_project_arguments([
   '-pipe',
   '-funsigned-char',
-  '-Wduplicated-branches',
   '-Wimplicit-fallthrough',
   '-Wmisleading-indentation',
   '-Wunused',
@@ -28,10 +27,11 @@ add_project_arguments([
   '-Wno-format-zero-length',
   '-Wimplicit',
   '-Werror=format=2',
+  '-Wno-format-nonliteral',
   '-Werror=init-self',
   '-Werror=missing-include-dirs',
   '-Werror=pointer-arith',
-  '-Wstrict-prototypes',
+  '-Wno-strict-prototypes',
   '-Werror=implicit-function-declaration',
 ], language: 'c')
 

@@ -866,7 +866,7 @@ i32 trb_f64cmp(const f64 *a, const f64 *b)
 	return 0;
 }
 
-i32 trb_realcmp(const real *a, const real *b)
+i32 trb_f128cmp(const f128 *a, const f128 *b)
 {
 	if (a == NULL && b == NULL)
 		return 0;
