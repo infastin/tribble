@@ -3,6 +3,8 @@
 #include "Messages.h"
 #include "Utils.h"
 
+#include <memory.h>
+
 TrbHeap *trb_heap_init(TrbHeap *self, usize elemsize, TrbCmpFunc cmp_func)
 {
 	trb_return_val_if_fail(cmp_func != NULL, NULL);
@@ -80,6 +82,33 @@ bool trb_heap_insert(TrbHeap *self, const void *data)
 	}
 
 	return FALSE;
+}
+
+bool trb_heap_set(TrbHeap *self, usize index, const void *data)
+{
+	trb_return_val_if_fail(self != NULL, NULL);
+
+	if (index >= self->deque.len) {
+		trb_msg_warn("element at [%zu] is out of bounds!", index);
+		return FALSE;
+	}
+
+	void *at_index = trb_deque_ptr(&self->deque, void, index);
+
+	if (data != NULL)
+		memcpy(at_index, data, self->deque.elemsize);
+	else
+		memset(at_index, 0, self->deque.elemsize);
+
+	TrbSlice heap_slice;
+	trb_deque_slice(&self->deque, &heap_slice, 0, self->deque.len);
+
+	if (self->with_data)
+		trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
+	else
+		trb_heapify(&heap_slice, self->cmp_func);
+
+	return TRUE;
 }
 
 static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)

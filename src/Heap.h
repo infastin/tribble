@@ -100,6 +100,18 @@ bool trb_heap_pop_back(TrbHeap *self, void *ret);
 bool trb_heap_pop_front(TrbHeap *self, void *ret);
 
 /**
+ * trb_heap_set:
+ * @self: The heap with the element.
+ * @index: The index of the element.
+ * @data: The pointer to the data to be set.
+ *
+ * Changes the value of the element at the given index to @data.
+ *
+ * Returns: %TRUE on success.
+ **/
+bool trb_heap_set(TrbHeap *self, usize index, const void *data);
+
+/**
  * trb_heap_search:
  * @self: The heap where to search.
  * @target: The pointer to the data to be found.
