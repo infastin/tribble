@@ -1,6 +1,6 @@
-#include "List.h"
-#include "Macros.h"
-#include "Messages.h"
+#include "trb-list.h"
+#include "trb-macros.h"
+#include "trb-messages.h"
 
 #include <assert.h>
 #include <stdio.h>

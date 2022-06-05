@@ -1,7 +1,7 @@
-#include "HashTable.h"
-#include "Macros.h"
-#include "Messages.h"
-#include "Rand.h"
+#include "trb-hash-table.h"
+#include "trb-macros.h"
+#include "trb-messages.h"
+#include "trb-rand.h"
 
 #include <assert.h>
 #include <stdio.h>

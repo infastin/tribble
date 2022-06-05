@@ -1,6 +1,6 @@
-#include "Macros.h"
-#include "Utils.h"
-#include "Vector.h"
+#include "trb-macros.h"
+#include "trb-utils.h"
+#include "trb-vector.h"
 
 #include <assert.h>
 #include <memory.h>

@@ -1,4 +1,4 @@
-#include "Tribble.h"
+#include "tribble.h"
 
 #define convert(ptr) ((u8(*)[])(ptr))
 
