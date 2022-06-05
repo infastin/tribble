@@ -70,6 +70,9 @@ bool trb_heap_insert(TrbHeap *self, const void *data)
 	trb_return_val_if_fail(self != NULL, FALSE);
 
 	if (trb_deque_push_back(&self->deque, data)) {
+		if (self->deque.len == 1)
+			return TRUE;
+
 		TrbSlice heap_slice;
 		trb_deque_slice(&self->deque, &heap_slice, 0, self->deque.len);
 
@@ -164,21 +167,46 @@ bool trb_heap_pop_front(TrbHeap *self, void *ret)
 	return __trb_heap_remove(self, 0, ret);
 }
 
-bool trb_heap_search(const TrbHeap *self, const void *target, usize *index)
+bool trb_heap_search(const TrbHeap *self, const void *target, TrbCmpFunc cmp_func, usize *index)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
+
+	cmp_func = cmp_func ?: self->cmp_func;
 
 	usize i = 0;
 
 	while (i < self->deque.len) {
 		void *current = trb_deque_ptr(&self->deque, void, i);
 
-		i32 cmp;
+		i32 cmp = cmp_func(current, target);
 
-		if (self->with_data)
-			cmp = self->cmpd_func(current, target, self->data);
-		else
-			cmp = self->cmp_func(current, target);
+		if (cmp > 0) {
+			i = (i << 1) + 1;
+		} else if (cmp < 0) {
+			i = (i << 1) + 2;
+		} else {
+			if (index != NULL)
+				*index = i;
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+bool trb_heap_search_data(const TrbHeap *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index)
+{
+	trb_return_val_if_fail(self != NULL, FALSE);
+
+	cmpd_func = cmpd_func ?: self->cmpd_func;
+	data = data ?: self->data;
+
+	usize i = 0;
+
+	while (i < self->deque.len) {
+		void *current = trb_deque_ptr(&self->deque, void, i);
+
+		i32 cmp = cmpd_func(current, target, data);
 
 		if (cmp > 0) {
 			i = (i << 1) + 1;

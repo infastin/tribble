@@ -416,7 +416,7 @@ static void *__trb_vector_slice_at(const TrbSlice *self, usize index)
 TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *slice, usize start, usize end)
 {
 	trb_return_val_if_fail(self != NULL, NULL);
-	trb_return_val_if_fail(start < end, NULL);
+	trb_return_val_if_fail(start <= end, NULL);
 
 	if (end > self->len) {
 		trb_msg_warn("interval [%zu:%zu) is out of bounds!", start, end);

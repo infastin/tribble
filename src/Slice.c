@@ -41,7 +41,7 @@ TrbSlice *trb_slice_init(TrbSlice *self, void *data, usize elemsize, usize start
 TrbSlice *trb_slice_reslice(TrbSlice *src, TrbSlice *dst, usize start, usize end)
 {
 	trb_return_val_if_fail(src != NULL, NULL);
-	trb_return_val_if_fail(start < end, NULL);
+	trb_return_val_if_fail(start <= end, NULL);
 
 	usize len = src->end - src->start;
 	if (end > len) {

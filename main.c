@@ -1,27 +1,44 @@
 #include "Tribble.h"
 
+#define convert(ptr) ((u8(*)[])(ptr))
+
+i32 my_cmp(const u32 *a, const u32 *b)
+{
+	i32 res = trb_u32cmp(a, b);
+	return -res;
+}
+
 int main()
 {
-	TrbPcg128 *rng = trb_pcg128_init(NULL, U128_C(0xa0b, 0xdeadbeef));
-	TrbVector *vector = trb_vector_init(NULL, TRUE, sizeof(u64));
+	TrbHeap heap;
+	trb_heap_init(&heap, 4, (TrbCmpFunc) my_cmp);
 
-	for (usize i = 0; i < 64; ++i) {
-		u64 num = trb_pcg128_next_u64(rng) % 1000;
-		trb_vector_push_back(vector, &num);
+	TrbPcg64 rng;
+	trb_pcg64_init(&rng, 0xdeadbfef);
+
+	for (int i = 0; i < 10; ++i) {
+		u32 val = trb_pcg64_next_u32(&rng) % 100;
+		trb_heap_insert(&heap, &val);
 	}
 
-	TrbSlice *vector_slice = trb_vector_slice(vector, NULL, 0, vector->len);
-
-	trb_quicksort(vector_slice, (TrbCmpFunc) trb_u64cmp);
-
-	for (usize i = 0; i < 64; ++i) {
-		u64 num = *(u64 *) vector_slice->at(vector_slice, i);
-		printf("%lu ", num);
+	for (int i = 0; i < 10; ++i) {
+		u32 val = trb_heap_get(&heap, u32, i);
+		printf("%u ", val);
 	}
 
-	free(vector_slice);
-	trb_vector_free(vector, NULL);
-	free(rng);
+	printf("\n");
+
+	*trb_heap_ptr(&heap, u32, 0) = 99;
+
+	TrbSlice slice;
+	trb_deque_slice(&heap.deque, &slice, 0, heap.deque.len);
+
+	trb_heapify(&slice, (TrbCmpFunc) my_cmp);
+
+	for (int i = 0; i < 10; ++i) {
+		u32 val = trb_heap_get(&heap, u32, i);
+		printf("%u ", val);
+	}
 
 	return 0;
 }

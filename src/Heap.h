@@ -115,13 +115,30 @@ bool trb_heap_set(TrbHeap *self, usize index, const void *data);
  * trb_heap_search:
  * @self: The heap where to search.
  * @target: The pointer to the data to be found.
+ * @cmp_func: (scope call) (nullable): The function for comparing values.
+ * If %NULL, the function specified during initialization will be used.
  * @index: (optional) (out): The pointer to retrieve the index of found value.
  *
  * Searches for the entry in the heap.
  *
  * Returns: %TRUE if found, %FALSE if not.
  **/
-bool trb_heap_search(const TrbHeap *self, const void *target, usize *index);
+bool trb_heap_search(const TrbHeap *self, const void *target, TrbCmpFunc cmp_func, usize *index);
+
+/**
+ * trb_heap_search:
+ * @self: The heap where to search.
+ * @target: The pointer to the data to be found.
+ * @cmpd_func: (scope call) (nullable): The function for comparing values.
+ * If %NULL, the function specified during initialization will be used.
+ * @data: User data. If %NULL, the data specified during initialization will be used.
+ * @index: (optional) (out): The pointer to retrieve the index of found value.
+ *
+ * Searches for the entry in the heap using user data.
+ *
+ * Returns: %TRUE if found, %FALSE if not.
+ **/
+bool trb_heap_search_data(const TrbHeap *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index);
 
 /**
  * trb_heap_destroy:

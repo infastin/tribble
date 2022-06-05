@@ -19,6 +19,7 @@ pkg_api_name = '@0@-@1@'.format(meson.project_name(), apiversion)
 
 add_project_arguments([
   '-pipe',
+  '-Wduplicated-branches',
   '-funsigned-char',
   '-Wimplicit-fallthrough',
   '-Wmisleading-indentation',
@@ -31,7 +32,7 @@ add_project_arguments([
   '-Werror=init-self',
   '-Werror=missing-include-dirs',
   '-Werror=pointer-arith',
-  '-Wno-strict-prototypes',
+  '-Wstrict-prototypes',
   '-Werror=implicit-function-declaration',
 ], language: 'c')
 

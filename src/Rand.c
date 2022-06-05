@@ -275,9 +275,10 @@ f64 trb_pcg64_next_f64(TrbPcg64 *self)
 	return ldexp(fr, -64);
 }
 
-typedef unsigned _BitInt(128) u128;
+typedef unsigned __int128 u128;
 
 #define U128_C(hi, lo) (((u128) U64_C(hi) << 64) | ((u128) U64_C(lo)))
+#define U128_TO(hi, lo) (((u128) (hi) << 64) | ((u128) (lo)))
 
 TrbPcg128 *trb_pcg128_init(TrbPcg128 *self, u64 seed)
 {
@@ -305,7 +306,7 @@ u64 trb_pcg128_next_u64(TrbPcg128 *self)
 	const u128 multi = U128_C(2549297995355413924, 4865540595714422341);
 	const u128 inc = U128_C(6364136223846793005, 1442695040888963407);
 
-	u128 state = *(u128 *) self->s;
+	u128 state = U128_TO(self->s[1], self->s[0]);
 
 	state = (state * multi) + inc;
 	self->s[0] = (u64) (state & U64_MAX);
