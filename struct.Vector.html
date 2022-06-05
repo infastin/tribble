@@ -164,6 +164,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <pre><code><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">TrbVector</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">offset</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">capacity</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="n">usize</span><span class="w"> </span><span class="n">elemsize</span><span class="p">;</span><span class="w"></span>
 <span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">clear</span><span class="p">;</span><span class="w"></span>
@@ -193,6 +194,11 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
               <tr>
                 <td><code>len</code></td>
                 <td><p>The size of the&nbsp;vector.</p></td>
+              </tr>
+            
+              <tr>
+                <td><code>offset</code></td>
+                <td><p>The offset of the first element in the&nbsp;vector.</p></td>
               </tr>
             
               <tr>
