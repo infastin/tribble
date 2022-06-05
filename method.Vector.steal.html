@@ -148,7 +148,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/trb-vector.h#L224">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/trb-vector.h#L225">[src]</a>
         
       </h4>
 
@@ -156,7 +156,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <pre><code><div class="highlight"><pre><span></span><span class="kt">void</span><span class="o">*</span><span class="w"></span>
 <span class="n">trb_vector_steal</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
 <span class="w">  </span><span class="n">TrbVector</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="n">usize</span><span class="o">*</span><span class="w"> </span><span class="n">len</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="o">*</span><span class="w"> </span><span class="n">len</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="o">*</span><span class="w"> </span><span class="n">offset</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -208,6 +209,24 @@ Array creates a new&nbsp;buffer.</p>
           <tr class="arg-description">
             <td>&nbsp;</td>
             <td><p>The pointer to retrieve the number of elements in the&nbsp;vector.</p></td>
+          </tr>
+          <tr><td>&nbsp;</td><td title="direction: out">The argument will be set by the function.</td></tr>
+          
+          
+          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
+          
+          
+          
+          <tr><td>&nbsp;</td><td title="transfer: full">The instance takes ownership of the data, and is responsible for freeing it.</td></tr>
+          
+          
+          <tr class="arg-name">
+            <td><code>offset</code></td>
+            <td><a href="alias.usize.html"><code>usize</code></a></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td><p>The pointer to retrieve the offset of the first number in the vector&nbsp;buffer.</p></td>
           </tr>
           <tr><td>&nbsp;</td><td title="direction: out">The argument will be set by the function.</td></tr>
           
