@@ -1,7 +1,7 @@
 BUILD_DIR=build/
 
 init:
-	meson $(BUILD_DIR)
+	CC=clang meson $(BUILD_DIR)
 
 build:
 	ninja -C $(BUILD_DIR) all

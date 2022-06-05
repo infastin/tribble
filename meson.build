@@ -41,6 +41,7 @@ if cc.get_id() == 'gcc'
   ]
 elif cc.get_id() == 'clang'
   cc_args += [
+    '-gcodeview',
     '-pipe',
     '-funsigned-char',
     '-Wimplicit-fallthrough',

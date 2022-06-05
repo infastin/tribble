@@ -275,7 +275,7 @@ f64 trb_pcg64_next_f64(TrbPcg64 *self)
 	return ldexp(fr, -64);
 }
 
-typedef unsigned __int128 u128;
+typedef unsigned _BitInt(128) u128;
 
 #define U128_C(hi, lo) (((u128) U64_C(hi) << 64) | ((u128) U64_C(lo)))
 #define U128_TO(hi, lo) (((u128) (hi) << 64) | ((u128) (lo)))
