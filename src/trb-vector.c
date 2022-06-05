@@ -5,8 +5,8 @@
 #include "trb-types.h"
 #include "trb-utils.h"
 
-#include <memory.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define VECTOR_INIT_CAP 8
 #define BINARY_SEARCH_LEN_THRESHOLD 64

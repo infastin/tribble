@@ -1,6 +1,5 @@
 #include "trb-math.h"
 
-#include <memory.h>
 #include <stdlib.h>
 
 u8 trb_abs_8(i8 num)

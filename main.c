@@ -1,5 +1,7 @@
 #include "tribble.h"
 
+#include <stdio.h>
+
 #define convert(ptr) ((u8(*)[])(ptr))
 
 i32 my_cmp(const u32 *a, const u32 *b)

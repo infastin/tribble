@@ -3,7 +3,7 @@
 #include "trb-checked.h"
 #include "trb-messages.h"
 
-#include <memory.h>
+#include <string.h>
 
 #define HT_INIT_SLOTS 16
 

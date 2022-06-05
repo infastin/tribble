@@ -2,7 +2,7 @@
 
 #include "trb-messages.h"
 
-#include <memory.h>
+#include <string.h>
 
 #define htb_bucket(ht, buckets, i) ((void *) (((char *) buckets) + (i) * (ht)->bucketsize))
 #define htb_key(ht, buckets, i) (htb_bucket(ht, buckets, i))

@@ -3,7 +3,7 @@
 #include "trb-messages.h"
 #include "trb-utils.h"
 
-#include <memory.h>
+#include <string.h>
 
 TrbHeap *trb_heap_init(TrbHeap *self, usize elemsize, TrbCmpFunc cmp_func)
 {

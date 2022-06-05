@@ -5,7 +5,7 @@
 #include "trb-messages.h"
 #include "trb-types.h"
 
-#include <malloc.h>
+#include <stdlib.h>
 
 typedef enum {
 	LEFT,

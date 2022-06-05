@@ -6,7 +6,7 @@
 #include "trb-messages.h"
 #include "trb-utils.h"
 
-#include <memory.h>
+#include <string.h>
 
 TrbDeque *trb_deque_init(TrbDeque *self, bool clear, usize elemsize)
 {
