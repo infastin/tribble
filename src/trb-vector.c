@@ -49,6 +49,7 @@ TrbVector *trb_vector_init(TrbVector *self, bool clear, usize elemsize)
 	}
 
 	self->len = 0;
+	self->offset = 0;
 	self->capacity = VECTOR_INIT_CAP;
 	self->elemsize = elemsize;
 	self->clear = clear;
@@ -98,35 +99,60 @@ static bool __trb_vector_insert_many(TrbVector *self, usize index, const void *d
 
 	if (
 		trb_chk_add(index, len, NULL) ||
-		trb_chk_add(self->len, len, NULL)
+		trb_chk_add(index + len, self->offset, NULL) ||
+		trb_chk_add(self->len, len, NULL) ||
+		trb_chk_add(self->len + len, self->offset, NULL)
 	) {
 		trb_msg_error("vector index/length overflow!");
 		return FALSE;
 	}
 
-	if (index >= self->len && index + len > self->capacity) {
-		if (__trb_vector_newcap(self, index + len) == FALSE)
+	if (index >= self->len && self->offset + index + len > self->capacity) {
+		if (__trb_vector_newcap(self, self->offset + index + len) == FALSE)
 			return FALSE;
-	} else if (index < self->len && self->len + len > self->capacity) {
-		if (__trb_vector_newcap(self, self->len + len) == FALSE)
+	} else if (index < self->len && self->offset + self->len + len > self->capacity) {
+		if (__trb_vector_newcap(self, self->offset + self->len + len) == FALSE)
 			return FALSE;
+	}
+
+	if (self->offset >= self->len / 2) {
+		memmove(
+			trb_vector_cell(self, 0),
+			trb_vector_cell(self, self->offset),
+			self->len * self->elemsize
+		);
+
+		self->offset = 0;
 	}
 
 	if (index >= self->len) {
-		self->len = index + len;
+		self->len = index;
+	} else if (index == 0) {
+		if (self->offset >= len) {
+			self->offset -= len;
+		} else {
+			memmove(
+				trb_vector_cell(self, len - self->offset),
+				trb_vector_cell(self, self->offset),
+				self->len * self->elemsize
+			);
+
+			self->offset = 0;
+		}
 	} else {
 		memmove(
-			trb_vector_cell(self, index + len), trb_vector_cell(self, index),
+			trb_vector_cell(self, self->offset + index + len),
+			trb_vector_cell(self, self->offset + index),
 			(self->len - index) * self->elemsize
 		);
-
-		self->len += len;
 	}
 
+	self->len += len;
+
 	if (data == NULL)
-		memset(trb_vector_cell(self, index), 0, len * self->elemsize);
+		memset(trb_vector_cell(self, self->offset + index), 0, len * self->elemsize);
 	else
-		memcpy(trb_vector_cell(self, index), data, len * self->elemsize);
+		memcpy(trb_vector_cell(self, self->offset + index), data, len * self->elemsize);
 
 	return TRUE;
 }
@@ -172,7 +198,7 @@ static bool __trb_vector_remove_range(TrbVector *self, usize index, usize len, v
 	if (len == 0)
 		return TRUE;
 
-	if (trb_chk_add(index, len, NULL)) {
+	if (trb_chk_add(index, len, NULL) || trb_chk_add(index + len, self->offset, NULL)) {
 		trb_msg_error("vector index overflow!");
 		return FALSE;
 	}
@@ -188,11 +214,14 @@ static bool __trb_vector_remove_range(TrbVector *self, usize index, usize len, v
 	}
 
 	if (ret != NULL)
-		memcpy(ret, trb_vector_cell(self, index), len * self->elemsize);
+		memcpy(ret, trb_vector_cell(self, self->offset + index), len * self->elemsize);
 
-	if (index + len != self->len) {
+	if (index == 0) {
+		self->offset += len;
+	} else if (index + len != self->len) {
 		memmove(
-			trb_vector_cell(self, index), trb_vector_cell(self, index + len),
+			trb_vector_cell(self, self->offset + index),
+			trb_vector_cell(self, self->offset + index + len),
 			(self->len - len - index) * self->elemsize
 		);
 	}
@@ -301,6 +330,7 @@ void *trb_vector_steal(TrbVector *self, usize *len)
 		*len = self->len;
 
 	self->len = 0;
+	self->offset = 0;
 	self->capacity = VECTOR_INIT_CAP;
 
 	if (self->clear)
@@ -334,6 +364,7 @@ void trb_vector_destroy(TrbVector *self, TrbFreeFunc free_func)
 	self->data = NULL;
 	self->capacity = 0;
 	self->len = 0;
+	self->offset = 0;
 }
 
 void *trb_vector_steal0(TrbVector *self, usize *len)
@@ -351,6 +382,7 @@ void *trb_vector_steal0(TrbVector *self, usize *len)
 		*len = self->len;
 
 	self->len = 0;
+	self->offset = 0;
 	self->capacity = 0;
 	self->data = NULL;
 
@@ -373,7 +405,7 @@ bool trb_vector_search(const TrbVector *self, const void *target, TrbCmpFunc cmp
 		return FALSE;
 
 	for (usize i = 0; i < self->len; ++i) {
-		if (cmp_func(trb_vector_cell(self, i), target) == 0) {
+		if (cmp_func(trb_vector_cell(self, self->offset + i), target) == 0) {
 			if (index != NULL)
 				*index = i;
 			return TRUE;
@@ -392,7 +424,7 @@ bool trb_vector_search_data(const TrbVector *self, const void *target, TrbCmpDat
 		return FALSE;
 
 	for (usize i = 0; i < self->len; ++i) {
-		if (cmpd_func(trb_vector_cell(self, i), target, data) == 0) {
+		if (cmpd_func(trb_vector_cell(self, self->offset + i), target, data) == 0) {
 			if (index != NULL)
 				*index = i;
 			return TRUE;
@@ -408,9 +440,9 @@ static void *__trb_vector_slice_at(const TrbSlice *self, usize index)
 
 	usize len = trb_slice_len(self);
 	if (index >= len)
-		return trb_vector_cell(vector, self->end);
+		return trb_vector_cell(vector, vector->offset + self->end);
 
-	return trb_vector_cell(vector, self->start + index);
+	return trb_vector_cell(vector, vector->offset + self->start + index);
 }
 
 TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *slice, usize start, usize end)
@@ -478,6 +510,7 @@ TrbVector *trb_vector_copy(const TrbVector *src, TrbVector *dst)
 
 	dst->elemsize = src->elemsize;
 	dst->len = src->len;
+	dst->offset = src->offset;
 	dst->capacity = src->capacity;
 	dst->clear = src->clear;
 
@@ -504,6 +537,16 @@ bool trb_vector_shrink(TrbVector *self)
 
 	if (mincap == 0) {
 		mincap = VECTOR_INIT_CAP;
+	}
+
+	if (self->offset != 0) {
+		memmove(
+			trb_vector_cell(self, 0),
+			trb_vector_cell(self, self->offset),
+			self->len * self->elemsize
+		);
+
+		self->offset = 0;
 	}
 
 	void *data = realloc(self->data, mincap * self->elemsize);

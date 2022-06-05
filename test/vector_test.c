@@ -369,6 +369,7 @@ void test_steal()
 		assert(arr__[i] == arr_[i]);
 	}
 
+	free(arr_);
 	free(arr__);
 
 	assert(vec.capacity == 0);

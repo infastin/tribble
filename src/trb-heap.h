@@ -1,8 +1,8 @@
 #ifndef HEAP_H_MGLIJUQF
 #define HEAP_H_MGLIJUQF
 
-#include "trb-deque.h"
 #include "trb-types.h"
+#include "trb-vector.h"
 
 typedef struct _TrbHeap TrbHeap;
 
@@ -17,7 +17,7 @@ typedef struct _TrbHeap TrbHeap;
  **/
 struct _TrbHeap {
 	/* <private> */
-	TrbDeque deque;
+	TrbVector vector;
 
 	/* <public> */
 	union {
@@ -166,7 +166,7 @@ void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
  *
  * Gets the pointer to the entry in the heap at the given index.
  **/
-#define trb_heap_ptr(self, type, index) (trb_deque_ptr(&(self)->deque, type, index))
+#define trb_heap_ptr(self, type, index) (trb_vector_ptr(&(self)->vector, type, index))
 
 /**
  * trb_heap_get:
@@ -176,6 +176,6 @@ void trb_heap_free(TrbHeap *self, TrbFreeFunc free_func);
  *
  * Gets the value of the entry in the heap at the given index.
  **/
-#define trb_heap_get(self, type, index) (trb_deque_get(&(self)->deque, type, index))
+#define trb_heap_get(self, type, index) (trb_vector_get(&(self)->vector, type, index))
 
 #endif /* end of include guard: HEAP_H_MGLIJUQF */

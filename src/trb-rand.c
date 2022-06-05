@@ -264,8 +264,11 @@ f32 trb_pcg64_next_f32(TrbPcg64 *self)
 
 u64 trb_pcg64_next_u64(TrbPcg64 *self)
 {
-	u64 res = ((self->s >> ((self->s >> 59u) + 5u)) ^ self->s) * U64_C(12605985483714917081);
-	return (res >> 43u) ^ res;
+	u64 oldstate = self->s;
+	self->s = self->s * U64_C(6364136223846793005) + U64_C(1442695040888963407);
+
+	u64 word = ((oldstate >> ((oldstate >> 59u) + 5u)) ^ oldstate) * U64_C(12605985483714917081);
+	return (word >> 43u) ^ word;
 }
 
 f64 trb_pcg64_next_f64(TrbPcg64 *self)

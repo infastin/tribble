@@ -10,6 +10,7 @@ typedef struct _TrbVector TrbVector;
  * TrbVector:
  * @data: The vector buffer.
  * @len: The size of the vector.
+ * @offset: The offset of the first element in the vector.
  * @capacity: The capacity of the vector buffer.
  * @elemsize: The size of each element.
  * @clear: Indicates whether elements should be cleared to 0 when allocated or not.
@@ -19,6 +20,7 @@ typedef struct _TrbVector TrbVector;
 struct _TrbVector {
 	void *data;
 	usize len;
+	usize offset;
 	usize capacity;
 	usize elemsize;
 	bool clear;
@@ -323,7 +325,7 @@ TrbSlice *trb_vector_slice(TrbVector *self, TrbSlice *slice, usize start, usize 
  *
  * Gets the pointer to the entry in the vector at the given index.
  **/
-#define trb_vector_ptr(self, type, index) ((type *) &((char *) ((self)->data))[(index) * (self)->elemsize])
+#define trb_vector_ptr(self, type, index) ((type *) &((char *) ((self)->data))[((self)->offset + (index)) * (self)->elemsize])
 
 /**
  * trb_vector_get:
