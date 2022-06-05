@@ -315,7 +315,7 @@ bool trb_vector_remove_range(TrbVector *self, usize index, usize len, void *ret)
 	return __trb_vector_remove_range(self, index, len, ret);
 }
 
-void *trb_vector_steal(TrbVector *self, usize *len)
+void *trb_vector_steal(TrbVector *self, usize *len, usize *offset)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 
@@ -328,6 +328,9 @@ void *trb_vector_steal(TrbVector *self, usize *len)
 
 	if (len != NULL)
 		*len = self->len;
+
+	if (offset != NULL)
+		*offset = self->offset;
 
 	self->len = 0;
 	self->offset = 0;
@@ -367,7 +370,7 @@ void trb_vector_destroy(TrbVector *self, TrbFreeFunc free_func)
 	self->offset = 0;
 }
 
-void *trb_vector_steal0(TrbVector *self, usize *len)
+void *trb_vector_steal0(TrbVector *self, usize *len, usize *offset)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
 
@@ -380,6 +383,9 @@ void *trb_vector_steal0(TrbVector *self, usize *len)
 
 	if (len != NULL)
 		*len = self->len;
+
+	if (offset != NULL)
+		*offset = self->offset;
 
 	self->len = 0;
 	self->offset = 0;

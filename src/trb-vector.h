@@ -214,6 +214,7 @@ bool trb_vector_remove_all(TrbVector *self, void *ret);
  * trb_vector_steal:
  * @self: The vector where to steal the buffer.
  * @len: (optional) (out): The pointer to retrieve the number of elements in the vector.
+ * @offset: (optional) (out): The pointer to retrieve the offset of the first number in the vector buffer.
  *
  * Steals the vector buffer.
  * Array creates a new buffer.
@@ -221,12 +222,13 @@ bool trb_vector_remove_all(TrbVector *self, void *ret);
  * Returns: (transfer full) (nullable): The buffer on success.
  * Can return %NULL on failure.
  **/
-void *trb_vector_steal(TrbVector *self, usize *len);
+void *trb_vector_steal(TrbVector *self, usize *len, usize *offset);
 
 /**
  * trb_vector_steal0:
  * @self: The vector where to steal the buffer.
  * @len: (optional) (out): The pointer to retrieve the number of the elements in the vector.
+ * @offset: (optional) (out): The pointer to retrieve the offset of the first number in the vector buffer.
  *
  * Steals the vector buffer.
  * Array's buffer becomes %NULL.
@@ -234,7 +236,7 @@ void *trb_vector_steal(TrbVector *self, usize *len);
  * Returns: (transfer full) (nullable): The buffer on success.
  * Can return %NULL on failure.
  **/
-void *trb_vector_steal0(TrbVector *self, usize *len);
+void *trb_vector_steal0(TrbVector *self, usize *len, usize *offset);
 
 /**
  * trb_vector_require:
