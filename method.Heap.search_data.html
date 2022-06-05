@@ -13,7 +13,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Tribble.Heap.insert</title>
+  <title>Tribble.Heap.search_data</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <meta charset="utf-8" />
@@ -24,10 +24,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
 
   
-  <meta priority="og:title" content="Tribble.Heap.insert"/>
-  <meta priority="og:description" content="Reference for Tribble.Heap.insert"/>
-  <meta name="twitter:title" content="Tribble.Heap.insert"/>
-  <meta name="twitter:description" content="Reference for Tribble.Heap.insert"/>
+  <meta priority="og:title" content="Tribble.Heap.search_data"/>
+  <meta priority="og:description" content="Reference for Tribble.Heap.search_data"/>
+  <meta name="twitter:title" content="Tribble.Heap.search_data"/>
+  <meta name="twitter:description" content="Reference for Tribble.Heap.search_data"/>
 
 
   
@@ -88,7 +88,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Heap.init_data.html">init_data</a>
   
-    <a class="method current" href="method.Heap.insert.html">insert</a>
+    <a class="method" href="method.Heap.insert.html">insert</a>
   
     <a class="method" href="method.Heap.pop_back.html">pop_back</a>
   
@@ -98,7 +98,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
   
     <a class="method" href="method.Heap.search.html">search</a>
   
-    <a class="method" href="method.Heap.search_data.html">search_data</a>
+    <a class="method current" href="method.Heap.search_data.html">search_data</a>
   
     <a class="method" href="method.Heap.set.html">set</a>
   
@@ -113,7 +113,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
 <section id="main" class="content">
   <header>
     <h3>Method</h3>
-    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Heap.html">Heap</a><span class="sep"></span>insert</h1>
+    <h1><a href="index.html">Tribble</a><span class="sep"></span><a href="struct.Heap.html">Heap</a><span class="sep"></span>search_data</h1>
   </header>
 
   <section>
@@ -122,15 +122,18 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Declaration
         <a class="anchor" href="#declaration"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Heap.h#L66">[src]</a>
+        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Heap.h#L141">[src]</a>
         
       </h4>
 
       <div class="docblock c-decl">
         <pre><code><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"></span>
-<span class="n">trb_heap_insert</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
-<span class="w">  </span><span class="n">TrbHeap</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="w"></span>
+<span class="n">trb_heap_search_data</span><span class="w"> </span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">TrbHeap</span><span class="o">*</span><span class="w"> </span><span class="n">self</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">target</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">TrbCmpDataFunc</span><span class="w"> </span><span class="n">cmpd_func</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">usize</span><span class="o">*</span><span class="w"> </span><span class="n">index</span><span class="w"></span>
 <span class="p">)</span><span class="w"></span>
 </pre></div>
 </code></pre>
@@ -142,12 +145,10 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         Description
         <a class="anchor" href="#description"></a>
         
-        <a class="srclink" title="go to source location" href="https://github.com/infastin/tribble/blob/master/src/Heap.h#L57">[src]</a>
-        
       </h4>
 
       <div class="docblock">
-        <p>Inserts the element in the&nbsp;heap.</p>
+        No description available.
       </div>
 
       <div class="docblock">
@@ -155,6 +156,8 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           
           
           
+          
+          <tr><td>This method is not directly available to language bindings.</td></tr>
           
           
           
@@ -175,15 +178,69 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
         <table class="arguments">
           
           <tr class="arg-name">
+            <td><code>target</code></td>
+            <td><code>void*</code></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td>No description available.</td>
+          </tr>
+          
+          <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
+          
+          
+          
+          
+          
+          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
+          
+          
+          <tr class="arg-name">
+            <td><code>cmpd_func</code></td>
+            <td><a href="callback.CmpDataFunc.html"><code>TrbCmpDataFunc</code></a></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td>No description available.</td>
+          </tr>
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          <tr class="arg-name">
             <td><code>data</code></td>
             <td><code>void*</code></td>
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p>The element to be&nbsp;inserted.</p></td>
+            <td>No description available.</td>
           </tr>
           
           <tr><td>&nbsp;</td><td>The argument can be <code>NULL</code>.</td></tr>
+          
+          
+          
+          
+          
+          <tr><td>&nbsp;</td><td title="transfer: none">The data is owned by the caller of the function.</td></tr>
+          
+          
+          <tr class="arg-name">
+            <td><code>index</code></td>
+            <td><a href="alias.usize.html"><code>usize</code></a></td>
+          </tr>
+          <tr class="arg-description">
+            <td>&nbsp;</td>
+            <td>No description available.</td>
+          </tr>
+          
+          
           
           
           
@@ -213,7 +270,7 @@ SPDX-License-Identifier: Apache-2.0 OR GPL-3.0-or-later
           </tr>
           <tr class="arg-description">
             <td>&nbsp;</td>
-            <td><p><code>TRUE</code> on&nbsp;success.</p></td>
+            <td>No description available.</td>
           </tr>
           
           
