@@ -80,11 +80,18 @@ typedef uintptr_t usize;
 #define I32_C(C) INT32_C(c)
 #define I64_C(c) INT64_C(c)
 
-#define I8_WIDTH INT8_WIDTH
-#define I16_WIDTH INT16_WIDTH
-#define I32_WIDTH INT32_WIDTH
-#define I64_WIDTH INT64_WIDTH
-#define ISIZE_WIDTH INTPTR_WIDTH
+#define I8_WIDTH 8
+#define I16_WIDTH 16
+#define I32_WIDTH 32
+#define I64_WIDTH 64
+
+#if ISIZE_MAX == I16_MAX
+	#define ISIZE_WIDTH 16
+#elif ISIZE_MAX == I32_MAX
+	#define ISIZE_WIDTH 32
+#elif ISIZE_MAX == I64_MAX
+	#define ISIZE_WIDTH 64
+#endif
 
 #define U8_MAX UINT8_MAX
 #define U16_MAX UINT16_MAX
@@ -97,11 +104,18 @@ typedef uintptr_t usize;
 #define U32_C(C) UINT32_C(c)
 #define U64_C(c) UINT64_C(c)
 
-#define U8_WIDTH UINT8_WIDTH
-#define U16_WIDTH UINT16_WIDTH
-#define U32_WIDTH UINT32_WIDTH
-#define U64_WIDTH UINT64_WIDTH
-#define USIZE_WIDTH UINTPTR_WIDTH
+#define U8_WIDTH 8
+#define U16_WIDTH 16
+#define U32_WIDTH 32
+#define U64_WIDTH 64
+
+#if USIZE_MAX == U16_MAX
+	#define USUZE_WUDTH 16
+#elif USIZE_MAX == U32_MAX
+	#define USUZE_WUDTH 32
+#elif USIZE_MAX == U64_MAX
+	#define USIZE_WIDTH 64
+#endif
 
 #define TRB_STRFUNC ((const char *) (__PRETTY_FUNCTION__))
 #define TRB_STRFILE ((const char *) (__FILE__))

@@ -17,24 +17,49 @@ libversion = meson.project_version()
 
 pkg_api_name = '@0@-@1@'.format(meson.project_name(), apiversion)
 
-add_project_arguments([
-  '-pipe',
-  '-Wduplicated-branches',
-  '-funsigned-char',
-  '-Wimplicit-fallthrough',
-  '-Wmisleading-indentation',
-  '-Wunused',
-  '-Wno-pedantic',
-  '-Wno-format-zero-length',
-  '-Wimplicit',
-  '-Werror=format=2',
-  '-Wno-format-nonliteral',
-  '-Werror=init-self',
-  '-Werror=missing-include-dirs',
-  '-Werror=pointer-arith',
-  '-Wstrict-prototypes',
-  '-Werror=implicit-function-declaration',
-], language: 'c')
+cc = meson.get_compiler('c')
+cc_args = []
+
+if cc.get_id() == 'gcc'
+  cc_args += [
+    '-pipe',
+    '-Wduplicated-branches',
+    '-funsigned-char',
+    '-Wimplicit-fallthrough',
+    '-Wmisleading-indentation',
+    '-Wunused',
+    '-Wno-pedantic',
+    '-Wno-format-zero-length',
+    '-Wimplicit',
+    '-Werror=format=2',
+    '-Wno-format-nonliteral',
+    '-Werror=init-self',
+    '-Werror=missing-include-dirs',
+    '-Werror=pointer-arith',
+    '-Wstrict-prototypes',
+    '-Werror=implicit-function-declaration',
+  ]
+elif cc.get_id() == 'clang'
+  cc_args += [
+    '-pipe',
+    '-funsigned-char',
+    '-Wimplicit-fallthrough',
+    '-Wmisleading-indentation',
+    '-Wunused',
+    '-Wno-pedantic',
+    '-Wno-format-zero-length',
+    '-Wimplicit',
+    '-Werror=format=2',
+    '-Wno-format-nonliteral',
+    '-Werror=init-self',
+    '-Werror=missing-include-dirs',
+    '-Werror=pointer-arith',
+    '-Wno-strict-prototypes',
+    '-Werror=implicit-function-declaration',
+  ]
+endif
+
+add_project_arguments(cc.get_supported_arguments(cc_args), language: 'c')
 
 datadir = get_option('datadir')
 libdir  = get_option('libdir')
