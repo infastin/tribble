@@ -49,6 +49,10 @@
 		} while (--__size > 0); \
 	}
 
+#ifndef offsetof
+	#define offsetof(type, member) ((usize) & ((type *) 0)->member)
+#endif
+
 /**
  * trb_distance_of:
  * @type: The structure type.
