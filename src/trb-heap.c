@@ -87,21 +87,9 @@ bool trb_heap_insert(TrbHeap *self, const void *data)
 	return FALSE;
 }
 
-bool trb_heap_set(TrbHeap *self, usize index, const void *data)
+void trb_heap_fix(TrbHeap *self)
 {
-	trb_return_val_if_fail(self != NULL, NULL);
-
-	if (index >= self->vector.len) {
-		trb_msg_warn("element at [%zu] is out of bounds!", index);
-		return FALSE;
-	}
-
-	void *at_index = trb_vector_ptr(&self->vector, void, index);
-
-	if (data != NULL)
-		memcpy(at_index, data, self->vector.elemsize);
-	else
-		memset(at_index, 0, self->vector.elemsize);
+	trb_return_if_fail(self != NULL);
 
 	TrbSlice heap_slice;
 	trb_vector_slice(&self->vector, &heap_slice, 0, self->vector.len);
@@ -110,8 +98,6 @@ bool trb_heap_set(TrbHeap *self, usize index, const void *data)
 		trb_heapify_data(&heap_slice, self->cmpd_func, self->data);
 	else
 		trb_heapify(&heap_slice, self->cmp_func);
-
-	return TRUE;
 }
 
 static bool __trb_heap_remove(TrbHeap *self, usize index, void *ret)
@@ -170,56 +156,16 @@ bool trb_heap_pop_front(TrbHeap *self, void *ret)
 bool trb_heap_search(const TrbHeap *self, const void *target, TrbCmpFunc cmp_func, usize *index)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
-
 	cmp_func = cmp_func ?: self->cmp_func;
-
-	usize i = 0;
-
-	while (i < self->vector.len) {
-		void *current = trb_vector_ptr(&self->vector, void, i);
-
-		i32 cmp = cmp_func(current, target);
-
-		if (cmp > 0) {
-			i = (i << 1) + 1;
-		} else if (cmp < 0) {
-			i = (i << 1) + 2;
-		} else {
-			if (index != NULL)
-				*index = i;
-			return TRUE;
-		}
-	}
-
-	return FALSE;
+	return trb_vector_search(&self->vector, target, cmp_func, index);
 }
 
 bool trb_heap_search_data(const TrbHeap *self, const void *target, TrbCmpDataFunc cmpd_func, void *data, usize *index)
 {
 	trb_return_val_if_fail(self != NULL, FALSE);
-
 	cmpd_func = cmpd_func ?: self->cmpd_func;
 	data = data ?: self->data;
-
-	usize i = 0;
-
-	while (i < self->vector.len) {
-		void *current = trb_vector_ptr(&self->vector, void, i);
-
-		i32 cmp = cmpd_func(current, target, data);
-
-		if (cmp > 0) {
-			i = (i << 1) + 1;
-		} else if (cmp < 0) {
-			i = (i << 1) + 2;
-		} else {
-			if (index != NULL)
-				*index = i;
-			return TRUE;
-		}
-	}
-
-	return FALSE;
+	return trb_vector_search_data(&self->vector, target, cmpd_func, data, index);
 }
 
 void trb_heap_destroy(TrbHeap *self, TrbFreeFunc free_func)
